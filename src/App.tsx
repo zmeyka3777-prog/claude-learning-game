@@ -1,11 +1,16 @@
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
+import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Sparkles, User, Zap } from 'lucide-react';
 import { useProgressStore } from './engine/progressStore';
 import { StreakFlame } from './components/gamification/StreakFlame';
 import { XPToastHost } from './components/gamification/XPToast';
-import MapPage from './pages/MapPage';
-import LessonPage from './pages/LessonPage';
-import ProfilePage from './pages/ProfilePage';
+import { StarLoader } from './components/common/StarLoader';
+
+// Код-сплиттинг: каждая страница — отдельный чанк
+const MapPage = lazy(() => import('./pages/MapPage'));
+const LessonPage = lazy(() => import('./pages/LessonPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 
 /** Верхняя панель: лого, XP, стрик, профиль */
 function TopBar() {
@@ -73,6 +78,15 @@ function TopBar() {
 }
 
 export default function App() {
+  const track = useProgressStore((s) => s.track);
+  const location = useLocation();
+  const isOnboarding = location.pathname === '/onboarding';
+
+  // Первый вход: пока трек не выбран — только онбординг
+  if (track === null && !isOnboarding) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   return (
     <div className="relative min-h-screen">
       {/* Звёздный фон: 2 слоя параллакса */}
@@ -82,15 +96,28 @@ export default function App() {
       </div>
 
       <div className="relative z-10">
-        <TopBar />
-        <main className="mx-auto max-w-5xl px-4 pb-24">
-          <Routes>
-            <Route path="/" element={<MapPage />} />
-            <Route path="/lesson/:lessonId" element={<LessonPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="*" element={<MapPage />} />
-          </Routes>
-        </main>
+        {isOnboarding ? (
+          // Онбординг — полноэкранный, без шапки
+          <Suspense fallback={<StarLoader />}>
+            <Routes>
+              <Route path="/onboarding" element={<OnboardingPage />} />
+            </Routes>
+          </Suspense>
+        ) : (
+          <>
+            <TopBar />
+            <main className="mx-auto max-w-5xl px-4 pb-24">
+              <Suspense fallback={<StarLoader />}>
+                <Routes>
+                  <Route path="/" element={<MapPage />} />
+                  <Route path="/lesson/:lessonId" element={<LessonPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="*" element={<MapPage />} />
+                </Routes>
+              </Suspense>
+            </main>
+          </>
+        )}
       </div>
 
       {/* Всплывающие XP-тосты */}

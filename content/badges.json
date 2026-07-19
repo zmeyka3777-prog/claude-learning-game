@@ -41,6 +41,20 @@
       "description": "Накоплено 500 XP.",
       "icon": "zap",
       "condition": "суммарно 500 XP"
+    },
+    {
+      "id": "badge-world-2",
+      "title": "Сектор 2 исследован",
+      "description": "Все уроки мира «Продвинутый claude.ai» пройдены, включая босса.",
+      "icon": "sparkles",
+      "condition": "пройден босс adv-boss"
+    },
+    {
+      "id": "badge-world-4",
+      "title": "Сектор 4 исследован",
+      "description": "Все уроки мира «Claude Code — база» пройдены, включая босса.",
+      "icon": "terminal",
+      "condition": "пройден босс cc-boss"
     }
   ]
 }

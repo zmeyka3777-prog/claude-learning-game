@@ -5,6 +5,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
+import { Star } from 'lucide-react';
 import type { World } from '../../engine/types';
 import { getLesson, hasLessonContent } from '../../engine/content';
 import { useProgressStore } from '../../engine/progressStore';
@@ -16,6 +17,25 @@ const TOP_OFFSET = 70;
 
 interface WorldMapProps {
   world: World;
+  /** Мир рекомендован выбранным треком обучения */
+  recommended?: boolean;
+}
+
+/** Бейдж «Рекомендовано» для миров трека игрока */
+export function RecommendedBadge() {
+  return (
+    <span
+      className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
+      style={{
+        background: 'rgba(34, 211, 238, 0.12)',
+        border: '1px solid rgba(34, 211, 238, 0.3)',
+        color: 'var(--accent-cyan)',
+      }}
+    >
+      <Star size={12} />
+      Рекомендовано
+    </span>
+  );
 }
 
 interface MapNode {
@@ -27,7 +47,7 @@ interface MapNode {
   y: number; // px
 }
 
-export function WorldMap({ world }: WorldMapProps) {
+export function WorldMap({ world, recommended = false }: WorldMapProps) {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
   const completedLessons = useProgressStore((s) => s.completedLessons);
@@ -93,7 +113,7 @@ export function WorldMap({ world }: WorldMapProps) {
         >
           <WorldIcon size={24} className="text-white" />
         </span>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="text-xs font-semibold tracking-wide uppercase" style={{ color: accent }}>
             Сектор {world.order}
           </div>
@@ -104,6 +124,7 @@ export function WorldMap({ world }: WorldMapProps) {
             {world.subtitle}
           </p>
         </div>
+        {recommended && <RecommendedBadge />}
       </motion.div>
 
       {/* Тропа */}

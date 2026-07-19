@@ -62,6 +62,139 @@
       "rarity": "legendary",
       "description": "Босс мира 1 повержен: полный цикл — сформулировать, уточнить, получить результат. Ты уверенный пользователь Claude.",
       "icon": "crown"
+    },
+    {
+      "id": "card-adv-projects",
+      "title": "Projects",
+      "rarity": "rare",
+      "description": "Инструкции проекта и база знаний: ты организуешь работу с Claude в проектах, а не в куче разрозненных чатов.",
+      "icon": "folder-kanban"
+    },
+    {
+      "id": "card-adv-artifacts",
+      "title": "Artifacts",
+      "rarity": "epic",
+      "description": "Интерактивные документы и мини-приложения прямо в чате — ты создаёшь и публикуешь артефакты.",
+      "icon": "app-window"
+    },
+    {
+      "id": "card-adv-memory",
+      "title": "Память и инструкции",
+      "rarity": "common",
+      "description": "Персональные инструкции и память между чатами настроены под тебя.",
+      "icon": "brain"
+    },
+    {
+      "id": "card-adv-research",
+      "title": "Research",
+      "rarity": "rare",
+      "description": "Глубокое исследование с источниками: ты умеешь ставить исследовательский вопрос и читать отчёт критически.",
+      "icon": "telescope"
+    },
+    {
+      "id": "card-adv-connectors",
+      "title": "Коннекторы: теория",
+      "rarity": "common",
+      "description": "Ты понимаешь, что такое коннектор, чем verified отличается от community и как думать о безопасности.",
+      "icon": "cable"
+    },
+    {
+      "id": "card-adv-connectors-practice",
+      "title": "Коннекторы: практика",
+      "rarity": "rare",
+      "description": "Gmail, Drive, Calendar подключены — Claude работает с твоими данными по твоей команде.",
+      "icon": "plug-zap"
+    },
+    {
+      "id": "card-adv-documents",
+      "title": "Фабрика документов",
+      "rarity": "common",
+      "description": "docx, xlsx, pptx, pdf на выходе — ты просишь готовые файлы, а не копируешь текст руками.",
+      "icon": "file-output"
+    },
+    {
+      "id": "card-adv-data-analysis",
+      "title": "Аналитик данных",
+      "rarity": "rare",
+      "description": "Загрузить таблицу, задать вопрос, получить сводку и график — анализ данных с Claude освоен.",
+      "icon": "chart-spline"
+    },
+    {
+      "id": "card-adv-plans",
+      "title": "Тарифы и лимиты",
+      "rarity": "common",
+      "description": "Ты знаешь, как устроены лимиты и как работать с Claude эффективно на любом тарифе.",
+      "icon": "gauge"
+    },
+    {
+      "id": "card-adv-boss",
+      "title": "Рабочая неделя",
+      "rarity": "legendary",
+      "description": "Босс мира 2 повержен: проект → исследование → анализ → документ → артефакт. Полный рабочий конвейер с Claude.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-cc-what-is",
+      "title": "Агент в терминале",
+      "rarity": "common",
+      "description": "Ты понимаешь, чем агент Claude Code отличается от чата и на каких поверхностях он живёт.",
+      "icon": "square-terminal"
+    },
+    {
+      "id": "card-cc-install",
+      "title": "Первая сессия",
+      "rarity": "common",
+      "description": "Claude Code установлен и запущен — первая задача агенту поставлена.",
+      "icon": "play"
+    },
+    {
+      "id": "card-cc-permissions",
+      "title": "Страж разрешений",
+      "rarity": "rare",
+      "description": "Чтение, запись, команды: ты осознанно решаешь, что разрешить агенту, а что — нет.",
+      "icon": "shield"
+    },
+    {
+      "id": "card-cc-claude-md",
+      "title": "CLAUDE.md",
+      "rarity": "epic",
+      "description": "Память проекта настроена: агент знает твои команды, правила и структуру без объяснений в каждой сессии.",
+      "icon": "book-open-text"
+    },
+    {
+      "id": "card-cc-commands",
+      "title": "Slash-мастер",
+      "rarity": "common",
+      "description": "/init, /help, /clear, /compact и продолжение сессий — команды Claude Code под пальцами.",
+      "icon": "command"
+    },
+    {
+      "id": "card-cc-workflows",
+      "title": "Рабочие процессы",
+      "rarity": "rare",
+      "description": "Фича, багфикс, тесты, ревью — ты формулируешь задачи агенту по правилу «сначала план, потом код».",
+      "icon": "workflow"
+    },
+    {
+      "id": "card-cc-git",
+      "title": "Git-навигатор",
+      "rarity": "rare",
+      "description": "Коммиты, ветки и PR руками Claude — история изменений проекта под контролем.",
+      "icon": "git-branch"
+    },
+    {
+      "id": "card-cc-context",
+      "title": "Контекстное окно",
+      "rarity": "common",
+      "description": "Ты знаешь, почему сессия «устаёт», когда делать /compact и когда начинать новую.",
+      "icon": "scan-line"
+    },
+    {
+      "id": "card-cc-boss",
+      "title": "Первый проект",
+      "rarity": "legendary",
+      "description": "Босс мира 4 повержен: init → задача → разрешения → коммит. Ты работаешь с Claude Code как с напарником.",
+      "icon": "crown"
     }
   ]
 }

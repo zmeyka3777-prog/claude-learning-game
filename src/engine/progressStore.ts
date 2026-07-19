@@ -30,13 +30,20 @@ function daysBetween(a: string, b: string): number {
   return Math.round((db.getTime() - da.getTime()) / 86_400_000);
 }
 
+const VALID_TRACKS: readonly Track[] = ['novice', 'user', 'developer', 'business'];
+
+function parseTrack(value: unknown): Track | null {
+  return VALID_TRACKS.includes(value as Track) ? (value as Track) : null;
+}
+
 const DEFAULT_PROGRESS: Progress = {
   xp: 0,
   completedLessons: {},
   streak: { current: 0, best: 0, lastActiveDate: '' },
   badges: [],
   cards: [],
-  track: 'novice',
+  // Трек не выбран — при первом входе игрок проходит онбординг
+  track: null,
 };
 
 function loadProgress(): Progress {
@@ -54,7 +61,7 @@ function loadProgress(): Progress {
       },
       badges: Array.isArray(parsed.badges) ? parsed.badges : [],
       cards: Array.isArray(parsed.cards) ? parsed.cards : [],
-      track: (parsed.track as Track) ?? 'novice',
+      track: parseTrack(parsed.track),
     };
   } catch {
     // Битые данные не должны ронять приложение

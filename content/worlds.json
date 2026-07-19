@@ -20,14 +20,24 @@
       ]
     },
     {
-      "id": "world-2-advanced-claude-ai",
+      "id": "world-2-claude-ai",
       "order": 2,
       "title": "Продвинутый claude.ai",
       "subtitle": "Projects, Artifacts, коннекторы, Research — 80% функционала, о котором многие не знают",
       "icon": "sparkles",
       "color": "cyan",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "adv-projects",
+        "adv-artifacts",
+        "adv-memory",
+        "adv-research",
+        "adv-connectors",
+        "adv-connectors-practice",
+        "adv-documents",
+        "adv-data-analysis",
+        "adv-plans",
+        "adv-boss"
+      ]
     },
     {
       "id": "world-3-skills",
@@ -46,8 +56,17 @@
       "subtitle": "С нуля до уверенной работы в терминале и IDE",
       "icon": "terminal",
       "color": "violet",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "cc-what-is",
+        "cc-install",
+        "cc-permissions",
+        "cc-claude-md",
+        "cc-commands",
+        "cc-workflows",
+        "cc-git",
+        "cc-context",
+        "cc-boss"
+      ]
     },
     {
       "id": "world-5-claude-code-pro",

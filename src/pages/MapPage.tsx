@@ -1,16 +1,86 @@
 /**
  * Карта миров: активный мир с полной звёздной тропой,
  * миры 2–8 — карточки «Скоро» с замком.
+ * Миры выбранного трека отмечены бейджем «Рекомендовано».
  */
-import { motion, useReducedMotion } from 'motion/react';
-import { Lock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { Compass, Lock } from 'lucide-react';
 import { WORLDS } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
-import { WorldMap } from '../components/map/WorldMap';
+import { WorldMap, RecommendedBadge } from '../components/map/WorldMap';
 import { getAccentColor, getIcon } from '../lib/icons';
+import { getTrackInfo, isWorldRecommended } from '../lib/tracks';
 import type { World } from '../engine/types';
 
-function ComingSoonWorld({ world, index }: { world: World; index: number }) {
+/** Приветственный тост после выбора трека в онбординге */
+function WelcomeToast() {
+  const track = useProgressStore((s) => s.track);
+  const location = useLocation();
+  const [visible, setVisible] = useState(
+    () => Boolean((location.state as { welcome?: boolean } | null)?.welcome),
+  );
+
+  useEffect(() => {
+    if (!visible) return;
+    // Чистим state, чтобы тост не всплывал при обновлении страницы
+    window.history.replaceState({}, '');
+    const timer = window.setTimeout(() => setVisible(false), 4500);
+    return () => window.clearTimeout(timer);
+  }, [visible]);
+
+  const info = getTrackInfo(track);
+
+  return (
+    <div className="pointer-events-none fixed top-20 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2">
+      <AnimatePresence>
+        {visible && info && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: 0.92 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+            className="flex items-start gap-3 rounded-2xl p-4"
+            style={{
+              background: 'rgba(19, 26, 51, 0.94)',
+              border: '1px solid rgba(139, 92, 246, 0.45)',
+              boxShadow: '0 0 40px rgba(139, 92, 246, 0.35)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+            }}
+            role="status"
+          >
+            <span
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl"
+              style={{ background: 'var(--gradient-brand)' }}
+            >
+              <Compass size={20} className="text-white" />
+            </span>
+            <div className="min-w-0 text-sm">
+              <div className="font-display font-semibold">
+                Добро пожаловать в экспедицию, исследователь!
+              </div>
+              <div className="mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                Трек {info.emoji} «{info.title}» выбран — рекомендованные сектора отмечены на карте.
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function ComingSoonWorld({
+  world,
+  index,
+  recommended,
+}: {
+  world: World;
+  index: number;
+  recommended: boolean;
+}) {
   const reduced = useReducedMotion();
   const Icon = getIcon(world.icon);
   const accent = getAccentColor(world.color);
@@ -41,17 +111,20 @@ function ComingSoonWorld({ world, index }: { world: World; index: number }) {
           {world.subtitle}
         </p>
       </div>
-      <span
-        className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
-        style={{
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border-glass)',
-          color: 'var(--text-muted)',
-        }}
-      >
-        <Lock size={12} />
-        Скоро
-      </span>
+      <div className="flex shrink-0 flex-col items-end gap-1.5">
+        {recommended && <RecommendedBadge />}
+        <span
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-glass)',
+            color: 'var(--text-muted)',
+          }}
+        >
+          <Lock size={12} />
+          Скоро
+        </span>
+      </div>
     </motion.div>
   );
 }
@@ -59,12 +132,15 @@ function ComingSoonWorld({ world, index }: { world: World; index: number }) {
 export default function MapPage() {
   const reduced = useReducedMotion();
   const completedCount = useProgressStore((s) => Object.keys(s.completedLessons).length);
+  const track = useProgressStore((s) => s.track);
 
   const activeWorlds = WORLDS.filter((w) => !w.comingSoon);
   const upcomingWorlds = WORLDS.filter((w) => w.comingSoon);
 
   return (
     <div className="py-8">
+      <WelcomeToast />
+
       <motion.div
         className="mb-8 text-center"
         initial={reduced ? false : { opacity: 0, y: 24 }}
@@ -83,7 +159,11 @@ export default function MapPage() {
 
       <div className="space-y-6">
         {activeWorlds.map((world) => (
-          <WorldMap key={world.id} world={world} />
+          <WorldMap
+            key={world.id}
+            world={world}
+            recommended={isWorldRecommended(track, world.order)}
+          />
         ))}
 
         {upcomingWorlds.length > 0 && (
@@ -95,7 +175,12 @@ export default function MapPage() {
               Следующие сектора галактики
             </h2>
             {upcomingWorlds.map((world, i) => (
-              <ComingSoonWorld key={world.id} world={world} index={i} />
+              <ComingSoonWorld
+                key={world.id}
+                world={world}
+                index={i}
+                recommended={isWorldRecommended(track, world.order)}
+              />
             ))}
           </div>
         )}

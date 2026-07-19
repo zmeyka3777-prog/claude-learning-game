@@ -2,22 +2,27 @@
  * Профиль исследователя: XP, уровень, стрик, бейджи,
  * альбом карточек функций с редкостями.
  */
+import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { Award, BookOpenCheck, Layers, Zap } from 'lucide-react';
+import { Award, BookOpenCheck, Compass, Layers, Zap } from 'lucide-react';
 import { BADGES, CARDS } from '../engine/content';
 import { getLevel, useProgressStore, XP_PER_LEVEL } from '../engine/progressStore';
+import { getTrackInfo } from '../lib/tracks';
 import { BadgeHex } from '../components/gamification/BadgeUnlock';
 import { StreakFlame } from '../components/gamification/StreakFlame';
 import { FunctionCardView } from '../components/gamification/FunctionCardView';
 
 export default function ProfilePage() {
   const reduced = useReducedMotion();
+  const navigate = useNavigate();
+  const track = useProgressStore((s) => s.track);
   const xp = useProgressStore((s) => s.xp);
   const streak = useProgressStore((s) => s.streak);
   const earnedBadges = useProgressStore((s) => s.badges);
   const earnedCards = useProgressStore((s) => s.cards);
   const completedLessons = useProgressStore((s) => s.completedLessons);
 
+  const trackInfo = getTrackInfo(track);
   const level = getLevel(xp);
   const xpInLevel = xp % XP_PER_LEVEL;
   const levelProgress = (xpInLevel / XP_PER_LEVEL) * 100;
@@ -87,6 +92,44 @@ export default function ProfilePage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Трек обучения */}
+      <motion.section className="glass-card p-6" {...fadeUp(0.08)}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <span
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)' }}
+              aria-hidden="true"
+            >
+              {trackInfo ? trackInfo.emoji : <Compass size={22} style={{ color: 'var(--text-muted)' }} />}
+            </span>
+            <div className="min-w-0">
+              <h2 className="font-display text-lg font-semibold">
+                Трек: {trackInfo ? `«${trackInfo.title}»` : 'не выбран'}
+              </h2>
+              <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
+                {trackInfo
+                  ? trackInfo.description
+                  : 'Выбери трек — и на карте появятся рекомендованные сектора'}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/onboarding')}
+            className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.03] active:scale-[0.98]"
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid rgba(139, 92, 246, 0.45)',
+              color: 'var(--accent-violet)',
+            }}
+          >
+            <Compass size={16} />
+            Сменить трек
+          </button>
+        </div>
+      </motion.section>
 
       {/* Бейджи */}
       <motion.section className="glass-card p-6" {...fadeUp(0.1)}>

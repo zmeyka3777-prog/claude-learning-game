@@ -226,7 +226,8 @@ export interface Progress {
   streak: StreakState;
   badges: string[];
   cards: string[];
-  track: Track;
+  /** null — трек ещё не выбран (первый вход, показываем онбординг) */
+  track: Track | null;
 }
 
 // ---------------------------------------------------------------------------
