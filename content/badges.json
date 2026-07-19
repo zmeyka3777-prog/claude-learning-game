@@ -1,0 +1,46 @@
+{
+  "badges": [
+    {
+      "id": "badge-first-lesson",
+      "title": "Первая экспедиция",
+      "description": "Пройден первый урок Академии.",
+      "icon": "flag",
+      "condition": "закончен любой первый урок"
+    },
+    {
+      "id": "badge-first-prompt",
+      "title": "Первый промпт",
+      "description": "Ты составил свой первый настоящий промпт.",
+      "icon": "star",
+      "condition": "закончен урок basics-first-prompt"
+    },
+    {
+      "id": "badge-world-1",
+      "title": "Сектор 1 исследован",
+      "description": "Все уроки мира «Первые шаги» пройдены, включая босса.",
+      "icon": "rocket",
+      "condition": "пройдены все уроки мира world-1-basics"
+    },
+    {
+      "id": "badge-streak-3",
+      "title": "Разгон",
+      "description": "3 дня занятий подряд.",
+      "icon": "flame",
+      "condition": "стрик 3 дня"
+    },
+    {
+      "id": "badge-streak-7",
+      "title": "Неделя в космосе",
+      "description": "7 дней занятий подряд.",
+      "icon": "flame",
+      "condition": "стрик 7 дней"
+    },
+    {
+      "id": "badge-500-xp",
+      "title": "Полтысячи",
+      "description": "Накоплено 500 XP.",
+      "icon": "zap",
+      "condition": "суммарно 500 XP"
+    }
+  ]
+}

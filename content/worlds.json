@@ -1,0 +1,93 @@
+{
+  "worlds": [
+    {
+      "id": "world-1-basics",
+      "order": 1,
+      "title": "Первые шаги",
+      "subtitle": "От «что такое Claude» до уверенного диалога",
+      "icon": "rocket",
+      "color": "violet",
+      "lessons": [
+        "basics-what-is-claude",
+        "basics-interface",
+        "basics-first-prompt",
+        "basics-dialog",
+        "basics-models",
+        "basics-files",
+        "basics-verify",
+        "basics-mobile-voice",
+        "basics-boss"
+      ]
+    },
+    {
+      "id": "world-2-advanced-claude-ai",
+      "order": 2,
+      "title": "Продвинутый claude.ai",
+      "subtitle": "Projects, Artifacts, коннекторы, Research — 80% функционала, о котором многие не знают",
+      "icon": "sparkles",
+      "color": "cyan",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-3-skills",
+      "order": 3,
+      "title": "Скиллы",
+      "subtitle": "Главный «секретный» инструмент — от использования к созданию",
+      "icon": "wand",
+      "color": "pink",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-4-claude-code",
+      "order": 4,
+      "title": "Claude Code — база",
+      "subtitle": "С нуля до уверенной работы в терминале и IDE",
+      "icon": "terminal",
+      "color": "violet",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-5-claude-code-pro",
+      "order": 5,
+      "title": "Claude Code — продвинутый",
+      "subtitle": "Hooks, субагенты, расписания, CI/CD — автоматизация и масштабирование",
+      "icon": "cpu",
+      "color": "cyan",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-6-mcp-plugins",
+      "order": 6,
+      "title": "Плагины и MCP",
+      "subtitle": "Лестница интеграций: коннектор → скилл → плагин → свой MCP-сервер",
+      "icon": "plug",
+      "color": "amber",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-7-api-sdk",
+      "order": 7,
+      "title": "API и Agent SDK",
+      "subtitle": "Разработка на Claude: Messages API, tool use, свои агенты",
+      "icon": "code",
+      "color": "violet",
+      "lessons": [],
+      "comingSoon": true
+    },
+    {
+      "id": "world-8-ecosystem",
+      "order": 8,
+      "title": "Экосистема и профессиональная работа",
+      "subtitle": "Claude в Slack, Excel, Chrome, Cowork + безопасность и как быть в курсе",
+      "icon": "globe",
+      "color": "cyan",
+      "lessons": [],
+      "comingSoon": true
+    }
+  ]
+}

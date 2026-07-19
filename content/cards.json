@@ -1,0 +1,67 @@
+{
+  "cards": [
+    {
+      "id": "card-what-is-claude",
+      "title": "Знакомство с Claude",
+      "rarity": "common",
+      "description": "Ты знаешь, что такое Claude, чем ИИ-ассистент отличается от поисковика и какие модели есть в семействе.",
+      "icon": "bot"
+    },
+    {
+      "id": "card-interface",
+      "title": "Интерфейс claude.ai",
+      "rarity": "common",
+      "description": "Чаты, история, поиск по чатам и настройки — ты ориентируешься в интерфейсе как дома.",
+      "icon": "layout-dashboard"
+    },
+    {
+      "id": "card-first-prompt",
+      "title": "Первый промпт",
+      "rarity": "rare",
+      "description": "Контекст + задача + формат: ты умеешь формулировать запрос так, чтобы получить нужный результат с первого раза.",
+      "icon": "pen-line"
+    },
+    {
+      "id": "card-dialog",
+      "title": "Мастер диалога",
+      "rarity": "common",
+      "description": "Уточнения, переформулировки, продолжение мысли — ты ведёшь с Claude диалог, а не серию разовых запросов.",
+      "icon": "messages-square"
+    },
+    {
+      "id": "card-models",
+      "title": "Семейство моделей",
+      "rarity": "epic",
+      "description": "Opus, Sonnet, Haiku, Fable и extended thinking — ты подбираешь модель и режим под задачу осознанно.",
+      "icon": "sparkles"
+    },
+    {
+      "id": "card-files",
+      "title": "Работа с файлами",
+      "rarity": "common",
+      "description": "PDF, изображения, таблицы и код: ты знаешь, что можно загрузить в Claude и что попросить с этим сделать.",
+      "icon": "file-stack"
+    },
+    {
+      "id": "card-verify",
+      "title": "Доверяй, но проверяй",
+      "rarity": "rare",
+      "description": "Галлюцинации, дата знаний, проверка фактов — ты умеешь верифицировать ответы ИИ.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-mobile-voice",
+      "title": "Claude в кармане",
+      "rarity": "common",
+      "description": "Мобильное приложение и голосовой режим: Claude доступен тебе где угодно.",
+      "icon": "smartphone"
+    },
+    {
+      "id": "card-boss-1",
+      "title": "Личный помощник",
+      "rarity": "legendary",
+      "description": "Босс мира 1 повержен: полный цикл — сформулировать, уточнить, получить результат. Ты уверенный пользователь Claude.",
+      "icon": "crown"
+    }
+  ]
+}

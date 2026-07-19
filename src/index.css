@@ -1,0 +1,311 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+ * Дизайн-система «Neural Galaxy» — токены из docs/DESIGN.md
+ * ------------------------------------------------------------------------- */
+:root {
+  /* Фоны */
+  --bg-deep: #0b0e1a;
+  --bg-nebula: #131a33;
+  --bg-card: rgba(255, 255, 255, 0.06);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
+  --border-glass: rgba(255, 255, 255, 0.12);
+
+  /* Акценты */
+  --accent-violet: #8b5cf6;
+  --accent-cyan: #22d3ee;
+  --accent-amber: #f59e0b;
+  --accent-pink: #ec4899;
+  --success: #34d399;
+  --error: #f87171;
+
+  /* Текст */
+  --text-primary: #eef1ff;
+  --text-secondary: #a8b0d3;
+  --text-muted: #6b7399;
+
+  /* Фирменный градиент */
+  --gradient-brand: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #22d3ee 100%);
+
+  /* Шрифты */
+  --font-display: 'Unbounded', 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+@theme {
+  --color-deep: #0b0e1a;
+  --color-nebula: #131a33;
+  --color-violet-accent: #8b5cf6;
+  --color-cyan-accent: #22d3ee;
+  --color-amber-accent: #f59e0b;
+  --color-pink-accent: #ec4899;
+  --color-success: #34d399;
+  --color-error: #f87171;
+  --color-txt: #eef1ff;
+  --color-txt-secondary: #a8b0d3;
+  --color-txt-muted: #6b7399;
+  --font-display: 'Unbounded', 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+  background: var(--bg-deep);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background: radial-gradient(ellipse at top, #1b2350 0%, #131a33 40%, #0b0e1a 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.25;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+}
+
+/* ---------------------------------------------------------------------------
+ * Базовые примитивы
+ * ------------------------------------------------------------------------- */
+
+/* Стеклянная карточка */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  transition:
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.glass-card-hover:hover {
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
+}
+
+/* Градиентный текст */
+.gradient-text {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* CTA-кнопка с фирменным градиентом */
+.btn-gradient {
+  background: var(--gradient-brand);
+  color: #fff;
+  border-radius: 14px;
+  font-weight: 600;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.25s ease,
+    filter 0.2s ease;
+}
+
+.btn-gradient:hover:not(:disabled) {
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.45);
+  filter: brightness(1.08);
+}
+
+.btn-gradient:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-gradient:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Вторичная стеклянная кнопка */
+.btn-glass {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+  border-radius: 14px;
+  font-weight: 600;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.25s ease;
+}
+
+.btn-glass:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+ * Звёздный фон: 2 слоя CSS-частиц с параллаксом и мерцанием
+ * ------------------------------------------------------------------------- */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.stars-layer {
+  position: absolute;
+  inset: -200px 0 0 0;
+  background-repeat: repeat;
+}
+
+/* Дальний слой: мелкие тусклые звёзды, медленный дрейф */
+.stars-layer--far {
+  background-image:
+    radial-gradient(1px 1px at 25px 35px, rgba(238, 241, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(1px 1px at 110px 90px, rgba(168, 176, 211, 0.6) 50%, transparent 100%),
+    radial-gradient(1px 1px at 200px 160px, rgba(238, 241, 255, 0.5) 50%, transparent 100%),
+    radial-gradient(1px 1px at 290px 60px, rgba(168, 176, 211, 0.55) 50%, transparent 100%),
+    radial-gradient(1px 1px at 340px 220px, rgba(238, 241, 255, 0.45) 50%, transparent 100%),
+    radial-gradient(1px 1px at 60px 260px, rgba(168, 176, 211, 0.5) 50%, transparent 100%),
+    radial-gradient(1px 1px at 170px 310px, rgba(238, 241, 255, 0.6) 50%, transparent 100%);
+  background-size: 380px 380px;
+  animation:
+    stars-drift 240s linear infinite,
+    stars-twinkle 7s ease-in-out infinite;
+}
+
+/* Ближний слой: крупнее и ярче, дрейф быстрее (параллакс) */
+.stars-layer--near {
+  background-image:
+    radial-gradient(1.5px 1.5px at 70px 120px, rgba(238, 241, 255, 0.9) 50%, transparent 100%),
+    radial-gradient(2px 2px at 240px 40px, rgba(139, 92, 246, 0.8) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 420px 200px, rgba(34, 211, 238, 0.7) 50%, transparent 100%),
+    radial-gradient(2px 2px at 150px 320px, rgba(238, 241, 255, 0.85) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 500px 90px, rgba(238, 241, 255, 0.7) 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 330px 420px, rgba(34, 211, 238, 0.6) 50%, transparent 100%);
+  background-size: 560px 560px;
+  animation:
+    stars-drift 120s linear infinite,
+    stars-twinkle 5s ease-in-out infinite;
+  animation-delay: 0s, 2.5s;
+}
+
+@keyframes stars-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(200px);
+  }
+}
+
+@keyframes stars-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Пульс доступного узла карты */
+@keyframes node-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+.node-pulse {
+  animation: node-pulse 2s ease-in-out infinite;
+}
+
+/* Shake для неверного ответа */
+@keyframes shake-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake-x 0.45s ease-in-out;
+}
+
+/* Мигающий курсор терминала */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.terminal-cursor {
+  animation: cursor-blink 1.1s step-end infinite;
+}
+
+/* Голографическая карточка: лёгкий 3D-tilt при наведении */
+.holo-card {
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.holo-card:hover {
+  transform: perspective(700px) rotateX(4deg) rotateY(-6deg) translateY(-4px);
+}
+
+/* Скроллбары в тёмной теме */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+/* ---------------------------------------------------------------------------
+ * prefers-reduced-motion: отключаем пульсы, частицы, дрейф
+ * ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .stars-layer--far,
+  .stars-layer--near,
+  .node-pulse,
+  .terminal-cursor {
+    animation: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
