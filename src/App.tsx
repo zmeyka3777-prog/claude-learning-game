@@ -6,6 +6,7 @@ import { trackPageview } from './lib/analytics';
 import { StreakFlame } from './components/gamification/StreakFlame';
 import { XPToastHost } from './components/gamification/XPToast';
 import { StarLoader } from './components/common/StarLoader';
+import { SiteFooter } from './components/common/SiteFooter';
 import { LANGUAGES } from './i18n/languages';
 import { useLang, useT } from './i18n/useT';
 
@@ -170,7 +171,7 @@ export default function App() {
         ) : (
           <>
             <TopBar />
-            <main className="mx-auto max-w-5xl px-4 pb-24">
+            <main className="mx-auto max-w-5xl px-4 pb-12">
               <Suspense fallback={<StarLoader />}>
                 <Routes>
                   <Route path="/" element={<MapPage />} />
@@ -184,6 +185,7 @@ export default function App() {
                 </Routes>
               </Suspense>
             </main>
+            <SiteFooter />
           </>
         )}
       </div>

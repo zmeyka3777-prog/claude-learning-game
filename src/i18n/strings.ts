@@ -310,6 +310,14 @@ const ru: Record<string, string> = {
   'review.perSession': '+{n} XP за сессию',
   'review.fromLesson': 'Из урока «{title}»',
   'review.finish': 'Завершить повторение',
+
+  // --- Подвал / автор ---
+  'footer.madeBy': 'Автор проекта',
+  'footer.authorName': 'Евгения Малина',
+  'footer.channel': 'Telegram-канал «Вайбкодинг»',
+  'footer.contact': 'Написать в личку',
+  'footer.tagline': 'Нужно создать сайт, бота или приложение? Напишите — помогу.',
+  'footer.disclaimer': 'Неофициальный образовательный проект. Не аффилирован с Anthropic.',
 };
 
 const en: Record<string, string> = {
@@ -612,6 +620,14 @@ const en: Record<string, string> = {
   'review.perSession': '+{n} XP per session',
   'review.fromLesson': 'From lesson “{title}”',
   'review.finish': 'Finish the review',
+
+  // --- Footer / author ---
+  'footer.madeBy': 'Created by',
+  'footer.authorName': 'Evgenia Malina',
+  'footer.channel': 'Telegram channel “Vibecoding”',
+  'footer.contact': 'Message me directly',
+  'footer.tagline': 'Need a website, bot, or app built? Message me — I can help.',
+  'footer.disclaimer': 'An unofficial educational project. Not affiliated with Anthropic.',
 };
 
 export const STRINGS: Record<LangCode, Record<string, string>> = { ru, en };
