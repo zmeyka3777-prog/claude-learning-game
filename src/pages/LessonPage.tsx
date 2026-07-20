@@ -1,19 +1,37 @@
 /**
  * Экран урока: шаги теория → задания → завершение.
  * Сверху сегментный прогресс-бар, внизу ссылки «Читать оригинал».
+ *
+ * Режим испытания (?challenge=1, только босс-уроки): теория пропускается,
+ * сразу задания; больше одной ошибки — испытание провалено. Успех зачитывает
+ * весь мир (XP босса + бейдж мира), карточки уроков при этом не выдаются.
  */
 import { useCallback, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowLeft, ArrowRight, BookOpen, Clock, ExternalLink, Hourglass, Zap } from 'lucide-react';
-import { getLesson } from '../engine/content';
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Clock,
+  ExternalLink,
+  Hourglass,
+  RotateCcw,
+  ShieldAlert,
+  Zap,
+} from 'lucide-react';
+import { getBadge, getLesson, getWorld } from '../engine/content';
 import {
   useProgressStore,
+  type ChallengeResult,
   type LessonCompletionResult,
 } from '../engine/progressStore';
+import type { Lesson } from '../engine/types';
 import { TheoryBlocks } from '../components/theory/TheoryBlocks';
 import { TaskView } from '../components/tasks/TaskView';
 import { LessonCompleteOverlay } from '../components/gamification/LessonCompleteOverlay';
+import { BadgeUnlock } from '../components/gamification/BadgeUnlock';
+import { ConfettiBurst } from '../components/gamification/ConfettiBurst';
 import { showXpToast } from '../components/gamification/XPToast';
 
 /** Сегментный прогресс-бар урока */
@@ -39,37 +57,188 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
   );
 }
 
+/** Допустимое число ошибок в испытании: вторая ошибка = провал */
+const CHALLENGE_MAX_MISTAKES = 1;
+
+/** Экран «Испытание не пройдено» */
+function ChallengeFailOverlay({
+  lesson,
+  onRetry,
+  onStudy,
+}: {
+  lesson: Lesson;
+  onRetry: () => void;
+  onStudy: () => void;
+}) {
+  const worldTitle = getWorld(lesson.world)?.title ?? lesson.world;
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4"
+      style={{ background: 'rgba(11, 14, 26, 0.88)', backdropFilter: 'blur(12px)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="glass-card w-full max-w-md p-6 text-center sm:p-8"
+        initial={{ scale: 0.85, y: 30, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+      >
+        <span
+          className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl"
+          style={{
+            background: 'rgba(248, 113, 113, 0.12)',
+            border: '1px solid rgba(248, 113, 113, 0.35)',
+          }}
+        >
+          <ShieldAlert size={32} style={{ color: 'var(--error)' }} />
+        </span>
+        <h2 className="font-display text-xl font-semibold sm:text-2xl">Испытание не пройдено</h2>
+        <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+          Больше одной ошибки — босс сектора «{worldTitle}» устоял. Ничего страшного: попробуй ещё
+          раз или пройди уроки мира по порядку.
+        </p>
+        <div className="mt-6 flex flex-col gap-3">
+          <button
+            type="button"
+            onClick={onRetry}
+            className="btn-gradient flex items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
+          >
+            <RotateCcw size={16} />
+            Попробовать ещё раз
+          </button>
+          <button
+            type="button"
+            onClick={onStudy}
+            className="btn-glass flex items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
+          >
+            <BookOpen size={16} />
+            Учиться по порядку
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/** Экран успешного испытания: мир зачтён */
+function ChallengeSuccessOverlay({
+  lesson,
+  result,
+  onContinue,
+}: {
+  lesson: Lesson;
+  result: ChallengeResult;
+  onContinue: () => void;
+}) {
+  const worldTitle = getWorld(lesson.world)?.title ?? lesson.world;
+  const badge = result.newBadgeId ? getBadge(result.newBadgeId) : undefined;
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4"
+      style={{ background: 'rgba(11, 14, 26, 0.88)', backdropFilter: 'blur(12px)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="glass-card relative w-full max-w-md p-6 text-center sm:p-8"
+        initial={{ scale: 0.85, y: 30, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+      >
+        <ConfettiBurst count={36} spread={220} />
+        <div className="mb-3 text-4xl" aria-hidden="true">
+          ⚡
+        </div>
+        <h2 className="font-display text-xl font-semibold sm:text-2xl">Испытание пройдено!</h2>
+        <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
+          Мир «{worldTitle}» зачтён. Уроки мира остаются открытыми — вернись за карточками функций
+          и дополнительным XP.
+        </p>
+        <motion.div
+          className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full px-5 py-2 font-display text-lg font-semibold"
+          style={{
+            background: 'rgba(245, 158, 11, 0.12)',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            color: 'var(--accent-amber)',
+          }}
+          initial={{ scale: 0.7, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 18 }}
+        >
+          <Zap size={20} />
+          {result.alreadyPassed ? 'Мир уже был зачтён' : `+${result.xpGained} XP`}
+        </motion.div>
+        {badge && (
+          <div className="mt-5 flex justify-center">
+            <BadgeUnlock badge={badge} />
+          </div>
+        )}
+        <motion.button
+          type="button"
+          onClick={onContinue}
+          className="btn-gradient mt-7 w-full px-6 py-3.5 text-base"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          На карту галактики
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function LessonPage() {
   const { lessonId } = useParams<{ lessonId: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const reduced = useReducedMotion();
   const completeLesson = useProgressStore((s) => s.completeLesson);
+  const passWorldChallenge = useProgressStore((s) => s.passWorldChallenge);
   const addXp = useProgressStore((s) => s.addXp);
 
   const lesson = lessonId ? getLesson(lessonId) : undefined;
 
-  // Шаг 0 — теория, шаги 1..N — задания
-  const [step, setStep] = useState(0);
+  // Режим испытания: только босс-уроки с заданиями, ?challenge=1
+  const isChallenge =
+    searchParams.get('challenge') === '1' && Boolean(lesson?.isBoss) && (lesson?.tasks.length ?? 0) > 0;
+
+  // Шаг 0 — теория, шаги 1..N — задания (в испытании теория пропускается)
+  const [step, setStep] = useState(() => (isChallenge ? 1 : 0));
+  const [attempt, setAttempt] = useState(1);
   const [solvedSteps, setSolvedSteps] = useState<Record<number, boolean>>({});
   const [totalMistakes, setTotalMistakes] = useState(0);
   const [bonusXp, setBonusXp] = useState(0);
   const [result, setResult] = useState<LessonCompletionResult | null>(null);
+  const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null);
+  const [challengeFailed, setChallengeFailed] = useState(false);
 
   const totalSteps = lesson ? 1 + lesson.tasks.length : 1;
   const currentTask = lesson && step >= 1 ? lesson.tasks[step - 1] : undefined;
   const canContinue = step === 0 || Boolean(solvedSteps[step]);
+  // В испытании прогресс считаем по заданиям (теории нет)
+  const challengeTotal = lesson ? lesson.tasks.length : 0;
 
   const handleSolved = useCallback(
     (mistakes: number) => {
       setSolvedSteps((s) => ({ ...s, [step]: true }));
-      setTotalMistakes((m) => m + mistakes);
-      if (currentTask?.type === 'real-mission') {
+      const nextMistakes = totalMistakes + mistakes;
+      setTotalMistakes(nextMistakes);
+      if (isChallenge && nextMistakes > CHALLENGE_MAX_MISTAKES) {
+        // Вторая ошибка — испытание провалено
+        setChallengeFailed(true);
+        return;
+      }
+      if (!isChallenge && currentTask?.type === 'real-mission') {
         setBonusXp((b) => b + currentTask.xpBonus);
         addXp(currentTask.xpBonus);
         showXpToast(currentTask.xpBonus);
       }
     },
-    [step, currentTask, addXp],
+    [step, currentTask, addXp, isChallenge, totalMistakes],
   );
 
   const goNext = () => {
@@ -77,6 +246,11 @@ export default function LessonPage() {
     if (step < totalSteps - 1) {
       setStep(step + 1);
       window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    } else if (isChallenge) {
+      // Успех испытания: мир зачтён, XP босса, бейдж мира
+      const res = passWorldChallenge(lesson);
+      if (res.xpGained > 0) showXpToast(res.xpGained);
+      setChallengeResult(res);
     } else {
       // Завершение урока
       const res = completeLesson(lesson, totalMistakes);
@@ -85,7 +259,18 @@ export default function LessonPage() {
     }
   };
 
-  const stepKey = useMemo(() => `step-${step}`, [step]);
+  /** Новая попытка испытания: всё обнуляем, задания перемонтируются */
+  const retryChallenge = () => {
+    setChallengeFailed(false);
+    setChallengeResult(null);
+    setSolvedSteps({});
+    setTotalMistakes(0);
+    setStep(1);
+    setAttempt((a) => a + 1);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  };
+
+  const stepKey = useMemo(() => `attempt-${attempt}-step-${step}`, [attempt, step]);
 
   // --- Контент урока ещё не написан --------------------------------------
   if (!lesson) {
@@ -119,13 +304,23 @@ export default function LessonPage() {
         </Link>
         <div className="min-w-0 flex-1">
           <h1 className="truncate font-display text-lg font-semibold sm:text-xl">
-            {lesson.isBoss && <span style={{ color: 'var(--accent-amber)' }}>🏆 </span>}
+            {isChallenge ? (
+              <span style={{ color: 'var(--accent-amber)' }}>⚡ </span>
+            ) : (
+              lesson.isBoss && <span style={{ color: 'var(--accent-amber)' }}>🏆 </span>
+            )}
             {lesson.title}
           </h1>
           <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span className="flex items-center gap-1">
-              <Clock size={11} /> {lesson.durationMin} мин
-            </span>
+            {isChallenge ? (
+              <span className="font-semibold" style={{ color: 'var(--accent-amber)' }}>
+                Испытание босса: без теории, максимум 1 ошибка
+              </span>
+            ) : (
+              <span className="flex items-center gap-1">
+                <Clock size={11} /> {lesson.durationMin} мин
+              </span>
+            )}
             <span className="flex items-center gap-1" style={{ color: 'var(--accent-amber)' }}>
               <Zap size={11} /> {lesson.xp} XP
             </span>
@@ -133,9 +328,13 @@ export default function LessonPage() {
         </div>
       </div>
 
-      {/* Сегментный прогресс */}
+      {/* Сегментный прогресс (в испытании — только задания) */}
       <div className="mb-6">
-        <SegmentedProgress total={totalSteps} current={canContinue ? step + 1 : step} />
+        {isChallenge ? (
+          <SegmentedProgress total={challengeTotal} current={canContinue ? step : step - 1} />
+        ) : (
+          <SegmentedProgress total={totalSteps} current={canContinue ? step + 1 : step} />
+        )}
       </div>
 
       {/* Текущий шаг */}
@@ -179,13 +378,15 @@ export default function LessonPage() {
               : 'Завершить'
             : step < totalSteps - 1
               ? 'Продолжить'
-              : 'Завершить урок'}
+              : isChallenge
+                ? 'Завершить испытание'
+                : 'Завершить урок'}
           <ArrowRight size={17} />
         </button>
       </div>
 
-      {/* Первоисточники */}
-      {lesson.sources.length > 0 && (
+      {/* Первоисточники (в испытании скрыты — без подсказок) */}
+      {!isChallenge && lesson.sources.length > 0 && (
         <div
           className="mt-10 rounded-2xl border p-4"
           style={{ borderColor: 'var(--border-glass)', background: 'rgba(255,255,255,0.03)' }}
@@ -227,6 +428,22 @@ export default function LessonPage() {
             result={result}
             mistakes={totalMistakes}
             bonusXp={bonusXp}
+            onContinue={() => navigate('/')}
+          />
+        )}
+        {challengeFailed && (
+          <ChallengeFailOverlay
+            key="challenge-fail"
+            lesson={lesson}
+            onRetry={retryChallenge}
+            onStudy={() => navigate('/')}
+          />
+        )}
+        {challengeResult && (
+          <ChallengeSuccessOverlay
+            key="challenge-success"
+            lesson={lesson}
+            result={challengeResult}
             onContinue={() => navigate('/')}
           />
         )}

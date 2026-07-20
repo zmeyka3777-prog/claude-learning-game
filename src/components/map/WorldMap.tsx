@@ -5,9 +5,9 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { Star } from 'lucide-react';
+import { Star, Zap } from 'lucide-react';
 import type { World } from '../../engine/types';
-import { getLesson, hasLessonContent } from '../../engine/content';
+import { getBossLesson, getLesson, hasLessonContent } from '../../engine/content';
 import { useProgressStore } from '../../engine/progressStore';
 import { getAccentColor, getIcon } from '../../lib/icons';
 import { LessonNode, type NodeStatus } from './LessonNode';
@@ -51,8 +51,14 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
   const completedLessons = useProgressStore((s) => s.completedLessons);
+  const passedWorlds = useProgressStore((s) => s.passedWorlds);
   const WorldIcon = getIcon(world.icon);
   const accent = getAccentColor(world.color);
+
+  // Мир зачтён испытанием босса (или прохождением босс-урока)
+  const worldPassed = passedWorlds.includes(world.id);
+  // Босс-урок мира; undefined, если контент ещё не написан
+  const bossLesson = getBossLesson(world);
 
   const nodes = useMemo<MapNode[]>(() => {
     let previousDone = true; // первый урок доступен сразу
@@ -64,6 +70,10 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
       let status: NodeStatus;
       if (isDone) {
         status = 'done';
+      } else if (worldPassed) {
+        // Мир зачтён испытанием: полупрозрачная галочка,
+        // но урок остаётся доступным (за карточку и XP)
+        status = hasContent ? 'passed' : 'loading';
       } else if (previousDone) {
         // Урок по порядку доступен, но если контент ещё не написан — «загрузка»
         status = hasContent ? 'available' : 'loading';
@@ -81,7 +91,7 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
         y: TOP_OFFSET + i * NODE_SPACING,
       };
     });
-  }, [world, completedLessons]);
+  }, [world, completedLessons, worldPassed]);
 
   const height = TOP_OFFSET + Math.max(nodes.length - 1, 0) * NODE_SPACING + 110;
 
@@ -124,7 +134,51 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
             {world.subtitle}
           </p>
         </div>
-        {recommended && <RecommendedBadge />}
+        <div className="flex shrink-0 flex-col items-end gap-2">
+          {recommended && <RecommendedBadge />}
+          {worldPassed ? (
+            <span
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
+              style={{
+                background: 'rgba(52, 211, 153, 0.12)',
+                border: '1px solid rgba(52, 211, 153, 0.3)',
+                color: 'var(--success)',
+              }}
+            >
+              <Zap size={12} />
+              Мир зачтён
+            </span>
+          ) : bossLesson ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/lesson/${bossLesson.id}?challenge=1`)}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all hover:scale-[1.04] active:scale-[0.97]"
+              style={{
+                background: 'rgba(245, 158, 11, 0.12)',
+                border: '1px solid rgba(245, 158, 11, 0.35)',
+                color: 'var(--accent-amber)',
+                boxShadow: '0 0 20px rgba(245, 158, 11, 0.12)',
+              }}
+              title="Пройди босса без теории и зачти весь мир"
+            >
+              <Zap size={12} />
+              Испытание босса
+            </button>
+          ) : (
+            <span
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-glass)',
+                color: 'var(--text-muted)',
+              }}
+              title="Босс-урок мира ещё пишется"
+            >
+              <Zap size={12} />
+              Испытание — скоро
+            </span>
+          )}
+        </div>
       </motion.div>
 
       {/* Тропа */}

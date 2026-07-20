@@ -10,6 +10,8 @@ import type {
   CardsFile,
   FunctionCard,
   Lesson,
+  PlacementFile,
+  PlacementQuestion,
   World,
   WorldsFile,
 } from './types';
@@ -92,6 +94,44 @@ export function hasLessonContent(lessonId: string): boolean {
 export function getWorldLessons(world: World): Array<Lesson | undefined> {
   return world.lessons.map((id) => LESSONS.get(id));
 }
+
+/**
+ * Босс-урок мира; undefined, если контент босса ещё не написан.
+ * Ищем по isBoss, fallback — последний урок списка.
+ */
+export function getBossLesson(world: World): Lesson | undefined {
+  for (const id of world.lessons) {
+    const lesson = LESSONS.get(id);
+    if (lesson?.isBoss) return lesson;
+  }
+  const lastId = world.lessons[world.lessons.length - 1];
+  return lastId ? LESSONS.get(lastId) : undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Входной тест
+// ---------------------------------------------------------------------------
+
+function isPlacementQuestion(value: unknown): value is PlacementQuestion {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.id === 'string' &&
+    typeof v.worldId === 'string' &&
+    typeof v.question === 'string' &&
+    Array.isArray(v.options) &&
+    typeof v.correct === 'number'
+  );
+}
+
+function loadPlacementQuestions(): PlacementQuestion[] {
+  const raw = readJson('/content/placement.json') as PlacementFile | undefined;
+  if (!raw || !Array.isArray(raw.questions)) return [];
+  return raw.questions.filter(isPlacementQuestion);
+}
+
+/** Вопросы входного теста (по 2 на мир) */
+export const PLACEMENT_QUESTIONS: PlacementQuestion[] = loadPlacementQuestions();
 
 // ---------------------------------------------------------------------------
 // Карточки и бейджи

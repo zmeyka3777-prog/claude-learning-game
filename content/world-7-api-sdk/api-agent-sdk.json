@@ -1,0 +1,119 @@
+{
+  "id": "api-agent-sdk",
+  "world": "world-7-api-sdk",
+  "order": 10,
+  "title": "Agent SDK",
+  "subtitle": "Claude Code как библиотека: query(), ClaudeSDKClient, @tool, hooks и permissions",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Agent SDK (Python) — GitHub", "url": "https://github.com/anthropics/claude-agent-sdk-python" },
+    { "title": "Claude Agent SDK (TypeScript) — GitHub", "url": "https://github.com/anthropics/claude-agent-sdk-typescript" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Что такое Agent SDK" },
+    { "type": "text", "md": "В уроке про tool use ты собирал агента руками: цикл, инструменты, tool_result. Работает, но у твоего агента не было ни файловой системы, ни терминала, ни поиска по коду — всё это пришлось бы писать самому.\n\n**Claude Agent SDK** — это агентная начинка Claude Code, упакованная в библиотеку. Ставишь пакет — и получаешь готового агента со встроенными инструментами (чтение и правка файлов, bash, glob/grep, веб-поиск), агентным циклом, управлением контекстом и системой разрешений. Твой код формулирует задачу — SDK делает всё остальное.\n\nВажно не путать: **`anthropic`** — SDK для «голого» API (запрос-ответ, свои инструменты, свой цикл). **`claude-agent-sdk`** — надстройка-агент с батарейками. Это разные пакеты под разные задачи." },
+    { "type": "heading", "text": "query(): агент одной функцией" },
+    { "type": "text", "md": "Python-пакет ставится командой `pip install claude-agent-sdk`. Простейший вход — асинхронная функция **`query()`**: передаёшь промпт, получаешь поток сообщений о работе агента — какие инструменты он вызывает и что отвечает.\n\n`query()` подходит для одноразовых задач: «разбери этот лог», «наведи порядок в папке», «напиши тесты для модуля». Каждый вызов — новая сессия без памяти о предыдущей.\n\nНастройки передаются объектом **`ClaudeAgentOptions`**: системный промпт, рабочая директория, список разрешённых инструментов (`allowed_tools`), режим разрешений и лимит ходов." },
+    { "type": "code", "lang": "python", "title": "pip install claude-agent-sdk", "code": "import anyio\nfrom claude_agent_sdk import query, ClaudeAgentOptions\n\nasync def main():\n    options = ClaudeAgentOptions(\n        system_prompt=\"Ты — аккуратный помощник-аналитик.\",\n        allowed_tools=[\"Read\", \"Glob\", \"Grep\"],  # только чтение — ничего не меняем\n        max_turns=10,\n    )\n    async for message in query(\n        prompt=\"Изучи файлы проекта и опиши его структуру\",\n        options=options,\n    ):\n        print(message)  # ходы агента: вызовы инструментов, тексты, итог\n\nanyio.run(main)" },
+    { "type": "heading", "text": "ClaudeSDKClient: диалог с продолжением" },
+    { "type": "text", "md": "Когда нужен **многоходовый разговор с общим контекстом** — «сделай А», посмотрел, «теперь на основе этого сделай Б» — используется класс **`ClaudeSDKClient`**. Он держит сессию открытой: агент помнит, что делал в предыдущих ходах.\n\n```python\nasync with ClaudeSDKClient(options=options) as client:\n    await client.query(\"Найди самый большой файл в проекте\")\n    async for msg in client.receive_response():\n        ...\n    await client.query(\"Теперь предложи, как его разбить\")  # контекст сохранён\n    ...\n```\n\nПравило выбора простое: разовая задача — `query()`, интерактивная работа с продолжением — `ClaudeSDKClient`." },
+    { "type": "heading", "text": "Свои инструменты, hooks и permissions" },
+    { "type": "text", "md": "Три механизма расширения и контроля:\n\n- **`@tool`** — декоратор для собственных инструментов: функция с именем, описанием и схемой аргументов подключается к агенту рядом со встроенными (через внутрипроцессный MCP-сервер, который SDK создаёт функцией `create_sdk_mcp_server`).\n- **Hooks** — перехватчики на событиях жизненного цикла: например, `PreToolUse` вызывается **перед** каждым инструментом и может запретить вызов. Идеально для жёстких правил: «никаких команд с rm -rf», «не трогать файлы вне проекта».\n- **Permissions** — режим разрешений в options: `permission_mode` со значениями вроде `default` (спрашивать подтверждение), `acceptEdits` (правки файлов — автоматически), `bypassPermissions` (всё без вопросов — только в изолированной песочнице!). Плюс `allowed_tools` — белый список доступного.\n\nВместе это даёт управляемую автономию: агент самостоятелен ровно настолько, насколько ты разрешил кодом." },
+    { "type": "code", "lang": "python", "title": "Свой инструмент через @tool", "code": "from claude_agent_sdk import tool, create_sdk_mcp_server, ClaudeAgentOptions\n\n@tool(\"check_order\", \"Проверяет статус заказа по номеру\", {\"order_id\": str})\nasync def check_order(args):\n    status = db_lookup(args[\"order_id\"])  # твоя логика\n    return {\"content\": [{\"type\": \"text\", \"text\": f\"Статус: {status}\"}]}\n\nserver = create_sdk_mcp_server(name=\"shop\", version=\"1.0.0\", tools=[check_order])\n\noptions = ClaudeAgentOptions(\n    mcp_servers={\"shop\": server},\n    allowed_tools=[\"mcp__shop__check_order\", \"Read\"],\n)" },
+    { "type": "text", "md": "У TypeScript — зеркальный пакет **`@anthropic-ai/claude-agent-sdk`** (`npm install @anthropic-ai/claude-agent-sdk`): та же функция `query()` с асинхронной итерацией, те же options, инструменты и hooks:\n\n```typescript\nimport { query } from \"@anthropic-ai/claude-agent-sdk\";\n\nfor await (const message of query({\n  prompt: \"Найди в проекте все TODO и составь список\",\n  options: { allowedTools: [\"Read\", \"Grep\"], maxTurns: 10 },\n})) {\n  console.log(message);\n}\n```" },
+    { "type": "heading", "text": "Когда SDK, а когда голый API" },
+    { "type": "table",
+      "headers": ["Ситуация", "Выбор", "Почему"],
+      "rows": [
+        ["Чат-бот, классификация, извлечение данных", "Messages API", "Запрос-ответ без автономии; агентная обвязка не нужна"],
+        ["Агент работает с файлами, кодом, терминалом", "Agent SDK", "Встроенные инструменты и цикл уже написаны и отлажены"],
+        ["Автоматизация: код-ревью, разбор логов, рутина по расписанию", "Agent SDK", "Это «Claude Code без человека» — ровно его специализация"],
+        ["Свой набор инструментов, полный контроль над каждым шагом цикла", "Messages API + tool use", "Максимум гибкости, минимум магии"]
+      ]
+    },
+    { "type": "example",
+      "bad": "Задача: агент, который находит в репозитории устаревшие зависимости и правит package.json. План: на Messages API написать свои инструменты чтения файлов, листинга директорий, редактирования, свой агентный цикл и систему подтверждений.",
+      "good": "Задача: та же. План: claude-agent-sdk — query() с allowed_tools=[\"Read\", \"Edit\", \"Glob\", \"Bash\"], permission_mode с подтверждением правок, hook PreToolUse с запретом на выход за пределы проекта.",
+      "explanation": "В плохом плане ты неделями переписываешь то, что в SDK уже есть и отлажено на Claude Code: файловые инструменты, цикл, разрешения. Голый API оправдан, когда агенту НЕ нужны файлы и терминал или нужен нестандартный контроль каждого шага. Для агента над кодом и файлами SDK — короткий путь." },
+    { "type": "callout", "kind": "docs", "md": "README репозитория claude-agent-sdk-python (github.com/anthropics/claude-agent-sdk-python) описывает установку `pip install claude-agent-sdk`, функцию `query()` для разовых сессий и `ClaudeSDKClient` для интерактивных диалогов, декоратор `@tool` с `create_sdk_mcp_server` для собственных инструментов, hooks (в том числе `PreToolUse`) и управление разрешениями через `ClaudeAgentOptions` — `allowed_tools` и `permission_mode`." },
+    { "type": "callout", "kind": "tip", "md": "Начинай любой SDK-эксперимент с инструментов «только чтение» (`Read`, `Glob`, `Grep`) и режима по умолчанию: посмотри в логах, как агент рассуждает и что пытается делать, — и лишь потом выдавай права на запись и bash. Права проще выдать, чем отозвать последствия." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Чем Agent SDK принципиально отличается от обычного SDK для Messages API (пакета anthropic)?",
+      "options": [
+        "Agent SDK — это готовый агент со встроенными инструментами (файлы, bash, поиск) и циклом; пакет anthropic — клиент запрос-ответ, где цикл и инструменты пишешь сам",
+        "Agent SDK быстрее отправляет HTTP-запросы",
+        "Agent SDK работает без API-ключа и бесплатно",
+        "Различий нет — это один пакет под двумя именами"
+      ],
+      "correct": [0],
+      "explanation": "Пакет `anthropic` — тонкий клиент к Messages API: ты сам определяешь инструменты и крутишь агентный цикл. `claude-agent-sdk` — это начинка Claude Code библиотекой: встроенные Read/Edit/Bash/Grep, цикл, контекст, разрешения. Разные пакеты под разные уровни задач.",
+      "hint": "Вспомни, что в уроке tool use ты писал руками — и что здесь уже «в коробке»."
+    },
+    {
+      "type": "quiz",
+      "question": "Когда вместо query() нужен ClaudeSDKClient?",
+      "options": [
+        "Когда нужен многоходовый диалог: следующие задачи опираются на контекст предыдущих",
+        "Когда задача слишком сложная для функции",
+        "Когда нужно работать без интернета",
+        "Всегда — query() устарела"
+      ],
+      "correct": [0],
+      "explanation": "`query()` — новая сессия на каждый вызов, без памяти. `ClaudeSDKClient` держит сессию: «найди проблему» → «теперь исправь то, что нашёл» работает, потому что агент помнит первый ход. Обе точки входа актуальны — выбор зависит от того, нужна ли непрерывность.",
+      "hint": "Ключевое слово — контекст между задачами."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Агент должен только анализировать проект, но в логах видно, что он редактирует файлы. Найди строку с ошибкой конфигурации.",
+      "lang": "python",
+      "lines": [
+        "from claude_agent_sdk import query, ClaudeAgentOptions",
+        "",
+        "options = ClaudeAgentOptions(",
+        "    system_prompt=\"Ты — аналитик. Только изучай код, ничего не меняй.\",",
+        "    allowed_tools=[\"Read\", \"Grep\", \"Edit\", \"Bash\"],",
+        "    max_turns=15,",
+        ")",
+        "",
+        "async for message in query(prompt=\"Проанализируй качество кода\", options=options):",
+        "    print(message)"
+      ],
+      "bugLineIndex": 4,
+      "explanation": "Системный промпт просит «ничего не менять», но в `allowed_tools` выданы `Edit` и `Bash` — инструменты записи и выполнения команд. Промпт — пожелание, allowed_tools — техническая граница: агент физически может то, что разрешено списком. Для анализа достаточно `[\"Read\", \"Grep\", \"Glob\"]`. Правило: права задаются конфигурацией, а не вежливой просьбой в промпте."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Собери конфигурацию безопасного агента для автоматического код-ревью: роль → инструменты чтения → лимит ходов → защитный hook. Отбрось опасные блоки.",
+      "blocks": [
+        "system_prompt=\"Ты — строгий ревьюер. Ищи баги и уязвимости, предлагай правки текстом.\"",
+        "allowed_tools=[\"Read\", \"Glob\", \"Grep\"]",
+        "max_turns=20",
+        "hooks: PreToolUse — блокировать любые попытки вызова инструментов записи"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "permission_mode=\"bypassPermissions\" — пусть работает без ограничений, так быстрее",
+        "allowed_tools=[\"Bash\"] — вдруг агенту понадобится что-нибудь удалить"
+      ],
+      "explanation": "Ревьюеру достаточно читать: белый список из Read/Glob/Grep, лимит ходов против зацикливания и hook как второй рубеж. Ловушки: bypassPermissions отключает подтверждения (допустимо только в изолированной песочнице), а Bash «на всякий случай» — это выдача терминала агенту, которому он не нужен. Минимально необходимые права — базовый принцип агентостроения."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Миссия: первый агент на SDK.** Понадобится API-ключ (создаётся в консоли платформы Claude).\n\n1. Установи пакет: `pip install claude-agent-sdk` (нужен также установленный Claude Code) или `npm install @anthropic-ai/claude-agent-sdk`.\n2. Возьми любой свой проект (или создай папку с несколькими файлами кода).\n3. Напиши скрипт с `query()`: options с `allowed_tools=[\"Read\", \"Glob\", \"Grep\"]`, промпт — «изучи проект и опиши его структуру и слабые места».\n4. Запусти и прочитай поток сообщений: какие инструменты агент вызывал и в каком порядке.\n5. Эксперимент: убери `Grep` из allowed_tools и посмотри, как изменится стратегия агента.",
+      "checklist": [
+        "Пакет установлен, скрипт запускается",
+        "Агент прошёлся по файлам только инструментами чтения",
+        "Ты проследил в логах цепочку вызовов инструментов",
+        "Эксперимент с изменением allowed_tools проведён"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-agent-sdk", "badgeId": null }
+}

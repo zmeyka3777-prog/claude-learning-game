@@ -195,6 +195,314 @@
       "rarity": "legendary",
       "description": "Босс мира 4 повержен: init → задача → разрешения → коммит. Ты работаешь с Claude Code как с напарником.",
       "icon": "crown"
+    },
+    {
+      "id": "card-sk-what-is",
+      "title": "Папка с инструкциями",
+      "rarity": "common",
+      "description": "Скилл — это папка со SKILL.md, которую Claude подключает сам по описанию.",
+      "icon": "folder-open"
+    },
+    {
+      "id": "card-sk-library",
+      "title": "Библиотека Anthropic",
+      "rarity": "common",
+      "description": "17 официальных скиллов: документы, дизайн, разработка, тексты и мета-скилл.",
+      "icon": "library"
+    },
+    {
+      "id": "card-sk-anatomy",
+      "title": "Анатомия SKILL.md",
+      "rarity": "common",
+      "description": "YAML frontmatter с name и description, Markdown-инструкции и ресурсы рядом — три слоя любого скилла.",
+      "icon": "file-code"
+    },
+    {
+      "id": "card-sk-trigger",
+      "title": "Триггер-описание",
+      "rarity": "rare",
+      "description": "Description решает, когда скилл сработает: результат, триггер-слова и границы.",
+      "icon": "crosshair"
+    },
+    {
+      "id": "card-sk-first",
+      "title": "Первый скилл",
+      "rarity": "rare",
+      "description": "Полный цикл своими руками: задача, шаблон, SKILL.md, три теста и итерация.",
+      "icon": "hammer"
+    },
+    {
+      "id": "card-sk-creator",
+      "title": "Мастер skill-creator",
+      "rarity": "epic",
+      "description": "Скилл, создающий скиллы: даёшь сырьё, проходишь интервью и принимаешь работу по чек-листу.",
+      "icon": "wand-sparkles"
+    },
+    {
+      "id": "card-sk-boss",
+      "title": "Скилл для себя",
+      "rarity": "legendary",
+      "description": "Рабочий скилл под собственную задачу, прошедший все тесты, — инструмент, который остаётся с тобой после игры.",
+      "icon": "trophy"
+    },
+    {
+      "id": "card-pro-skills",
+      "title": "Скиллы проекта",
+      "rarity": "common",
+      "description": "Ты кладёшь методики команды в .claude/skills, вызываешь их slash-командой и знаешь, чем проектный скилл отличается от личного.",
+      "icon": "puzzle"
+    },
+    {
+      "id": "card-pro-hooks",
+      "title": "Мастер хуков",
+      "rarity": "epic",
+      "description": "PreToolUse, PostToolUse, Stop: твои проверки выполняются всегда — автолинт, автотест и автосейв работают без напоминаний.",
+      "icon": "webhook"
+    },
+    {
+      "id": "card-pro-subagents",
+      "title": "Повелитель субагентов",
+      "rarity": "epic",
+      "description": "Черновая работа — в чужих контекстных окнах: ты делегируешь подзадачи помощникам и получаешь только компактные отчёты.",
+      "icon": "git-fork"
+    },
+    {
+      "id": "card-pro-teams",
+      "title": "Оркестратор",
+      "rarity": "rare",
+      "description": "Команды агентов и фоновая работа: ты делишь большую задачу на независимые куски и перестаёшь быть узким местом.",
+      "icon": "users"
+    },
+    {
+      "id": "card-pro-schedules",
+      "title": "Хозяин расписаний",
+      "rarity": "common",
+      "description": "/loop, запланированные задачи и рутины: утренний отчёт и автопроверка PR происходят сами — и без «как обычно» в заданиях.",
+      "icon": "alarm-clock"
+    },
+    {
+      "id": "card-pro-ci",
+      "title": "Агент в конвейере",
+      "rarity": "rare",
+      "description": "Claude Code в GitHub Actions и GitLab: авторевью каждого PR, автофикс тестов по @claude — и ключи только в секретах.",
+      "icon": "git-pull-request"
+    },
+    {
+      "id": "card-pro-settings",
+      "title": "Страж конфигурации",
+      "rarity": "rare",
+      "description": "Уровни settings.json, allowlist без Bash(*), deny сильнее allow и песочница: свобода агенту — без дыр в безопасности.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-pro-surfaces",
+      "title": "Вездесущий",
+      "rarity": "common",
+      "description": "Slack, Chrome, десктоп, веб и мобильный: ты ставишь задачи агенту там, где они рождаются, а сессии путешествуют за тобой.",
+      "icon": "layout-grid"
+    },
+    {
+      "id": "card-pro-boss",
+      "title": "Автопилот",
+      "rarity": "legendary",
+      "description": "Финальный босс Мира 5 повержен: хуки, субагенты и расписание собраны в проект, который обслуживает себя сам.",
+      "icon": "plane"
+    },
+    {
+      "id": "card-mcp-what-is",
+      "title": "Разъём MCP",
+      "rarity": "common",
+      "description": "Хост, клиент, сервер и три примитива — tools, resources, prompts: ты понимаешь, как ИИ подключается к внешнему миру.",
+      "icon": "usb"
+    },
+    {
+      "id": "card-mcp-connect",
+      "title": "Мастер подключений",
+      "rarity": "common",
+      "description": "claude mcp add, /mcp, реестр серверов и каталог коннекторов — ты подключаешь готовые серверы и знаешь, кому доверять.",
+      "icon": "cable"
+    },
+    {
+      "id": "card-mcp-servers",
+      "title": "Эталонная семёрка",
+      "rarity": "rare",
+      "description": "Everything, Fetch, Filesystem, Git, Memory, Sequential Thinking, Time — ты знаешь, что делает каждый reference-сервер и чему учит его код.",
+      "icon": "server"
+    },
+    {
+      "id": "card-mcp-build-simple",
+      "title": "Автор сервера",
+      "rarity": "epic",
+      "description": "Python/TypeScript SDK и первый собственный tool: ты перешёл из пользователей MCP в авторы серверов.",
+      "icon": "hammer"
+    },
+    {
+      "id": "card-mcp-build-deep",
+      "title": "Три примитива в деле",
+      "rarity": "rare",
+      "description": "Resources, prompts, описания-триггеры и ошибки, которые помогают модели, — твой сервер работает предсказуемо и безопасно.",
+      "icon": "layers"
+    },
+    {
+      "id": "card-mcp-plugins",
+      "title": "Сборщик плагинов",
+      "rarity": "epic",
+      "description": "Манифест plugin.json, компоненты skills/commands/agents/hooks/.mcp.json и тест через --plugin-dir — ты упаковываешь расширения в плагины.",
+      "icon": "puzzle"
+    },
+    {
+      "id": "card-mcp-marketplaces",
+      "title": "Знаток каталогов",
+      "rarity": "rare",
+      "description": "Официальный и community-маркетплейсы, команда /plugin и чек-лист доверия — ты выбираешь и ставишь плагины осознанно.",
+      "icon": "store"
+    },
+    {
+      "id": "card-mcp-boss",
+      "title": "Опубликовано!",
+      "rarity": "legendary",
+      "description": "Сквозной путь пройден: свой плагин со скиллом и MCP-сервером — от пустой папки до GitHub и заявки в каталог.",
+      "icon": "trophy"
+    },
+    {
+      "id": "card-api-first-request",
+      "title": "Первый запрос",
+      "rarity": "common",
+      "description": "API-ключ получен, первый вызов Messages API выполнен.",
+      "icon": "send"
+    },
+    {
+      "id": "card-api-messages",
+      "title": "Messages API",
+      "rarity": "common",
+      "description": "System prompt, история диалога и стриминг — база любого приложения на Claude.",
+      "icon": "messages-square"
+    },
+    {
+      "id": "card-api-prompting",
+      "title": "Промпт-инженер",
+      "rarity": "rare",
+      "description": "XML-теги, few-shot и chain-of-thought — промпты уровня документации Anthropic.",
+      "icon": "braces"
+    },
+    {
+      "id": "card-api-tool-use",
+      "title": "Tool use",
+      "rarity": "epic",
+      "description": "Агентный цикл освоен: Claude вызывает твои инструменты и работает с результатами.",
+      "icon": "wrench"
+    },
+    {
+      "id": "card-api-structured",
+      "title": "Structured outputs",
+      "rarity": "rare",
+      "description": "Гарантированный JSON по схеме — никакого парсинга «на удачу».",
+      "icon": "file-json"
+    },
+    {
+      "id": "card-api-vision",
+      "title": "Vision и PDF",
+      "rarity": "common",
+      "description": "Изображения и документы на входе API — мультимодальность в деле.",
+      "icon": "image"
+    },
+    {
+      "id": "card-api-thinking",
+      "title": "Extended thinking",
+      "rarity": "epic",
+      "description": "Ты знаешь, когда дать модели подумать дольше — и когда это лишнее.",
+      "icon": "brain-circuit"
+    },
+    {
+      "id": "card-api-economy",
+      "title": "Экономика токенов",
+      "rarity": "rare",
+      "description": "Токены, prompt caching и батчи — расходы под контролем.",
+      "icon": "coins"
+    },
+    {
+      "id": "card-api-cookbooks",
+      "title": "Cookbooks",
+      "rarity": "common",
+      "description": "Официальные Jupyter-рецепты Anthropic: RAG, evals, суб-агенты — запущены и разобраны.",
+      "icon": "book-open"
+    },
+    {
+      "id": "card-api-agent-sdk",
+      "title": "Agent SDK",
+      "rarity": "epic",
+      "description": "Свой агент на движке Claude Code: query(), инструменты, hooks, permissions.",
+      "icon": "bot"
+    },
+    {
+      "id": "card-api-managed",
+      "title": "Managed Agents",
+      "rarity": "rare",
+      "description": "Агенты на инфраструктуре Anthropic: sessions и sandbox без своего хостинга.",
+      "icon": "cloud-cog"
+    },
+    {
+      "id": "card-api-boss",
+      "title": "Продукт на API",
+      "rarity": "legendary",
+      "description": "Босс мира 7 повержен: от ключа до работающего приложения с tool use.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-eco-slack",
+      "title": "Claude в команде",
+      "rarity": "common",
+      "description": "Claude Tag в Slack: выжимки тредов, ответы по документам и черновики — прямо в каналах и личке команды.",
+      "icon": "message-square"
+    },
+    {
+      "id": "card-eco-excel",
+      "title": "Мастер таблиц",
+      "rarity": "common",
+      "description": "Claude в Excel и Microsoft 365: разбор чужих моделей, формулы, поиск ошибок — и железное правило проверки чисел.",
+      "icon": "table"
+    },
+    {
+      "id": "card-eco-chrome",
+      "title": "Агент за рулём браузера",
+      "rarity": "rare",
+      "description": "Claude в Chrome: навигация, действия на страницах и полный цикл отладки веб-приложений — с узкими правами и подтверждениями.",
+      "icon": "globe"
+    },
+    {
+      "id": "card-eco-cowork",
+      "title": "Автономный напарник",
+      "rarity": "epic",
+      "description": "Cowork: ты ставишь задачу целиком, агент планирует и выполняет — а ты принимаешь работу как руководитель.",
+      "icon": "briefcase"
+    },
+    {
+      "id": "card-eco-security",
+      "title": "Щит от инъекций",
+      "rarity": "epic",
+      "description": "Ты распознаёшь prompt injection, не отдаёшь секреты в чат и держишь необратимые действия агентов за подтверждением.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-eco-org",
+      "title": "Корпоративный контур",
+      "rarity": "rare",
+      "description": "Роли, политики, SSO и zero data retention: ты понимаешь, как Claude внедряется в организацию без хаоса.",
+      "icon": "building-2"
+    },
+    {
+      "id": "card-eco-news",
+      "title": "Всегда в курсе",
+      "rarity": "common",
+      "description": "Changelog, release notes, newsroom и Anthropic Academy: твой месячный ритуал на 15 минут против устаревания знаний.",
+      "icon": "newspaper"
+    },
+    {
+      "id": "card-eco-exam",
+      "title": "Мастер Claude",
+      "rarity": "legendary",
+      "description": "Финальный экзамен сдан: ясная постановка, правильный инструмент, контроль доступа и проверка результата — четыре принципа мастера у тебя в руках.",
+      "icon": "crown"
     }
   ]
 }

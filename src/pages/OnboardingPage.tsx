@@ -1,13 +1,15 @@
 /**
  * Полноэкранный онбординг при первом входе:
  * 1) экран-приветствие с градиентным заголовком,
- * 2) выбор трека обучения (4 стеклянные карточки).
- * После выбора трек сохраняется в progress store, игрок попадает на карту.
+ * 2) выбор трека обучения (4 стеклянные карточки),
+ * 3) предложение входного теста для тех, кто уже пользуется Claude.
+ * После выбора трек сохраняется в progress store, игрок попадает
+ * на входной тест или сразу на карту.
  */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Rocket, Sparkles } from 'lucide-react';
+import { ArrowRight, ClipboardCheck, Rocket, Sparkles } from 'lucide-react';
 import { useProgressStore } from '../engine/progressStore';
 import { TRACKS, type TrackInfo } from '../lib/tracks';
 
@@ -157,17 +159,94 @@ function TrackScreen({ onSelect }: { onSelect: (track: TrackInfo) => void }) {
   );
 }
 
+/** Экран 3: предложение входного теста для практиков */
+function PlacementOfferScreen({
+  onTakeTest,
+  onSkip,
+}: {
+  onTakeTest: () => void;
+  onSkip: () => void;
+}) {
+  const reduced = useReducedMotion();
+
+  return (
+    <motion.div
+      key="placement"
+      className="flex w-full max-w-xl flex-col items-center text-center"
+      variants={containerVariants}
+      initial={reduced ? 'visible' : 'hidden'}
+      animate="visible"
+    >
+      <motion.span
+        variants={itemVariants}
+        className="mb-6 grid h-16 w-16 place-items-center rounded-3xl"
+        style={{
+          background: 'var(--gradient-brand)',
+          boxShadow: '0 0 50px rgba(139, 92, 246, 0.45)',
+        }}
+      >
+        <ClipboardCheck size={30} className="text-white" />
+      </motion.span>
+
+      <motion.h2
+        variants={itemVariants}
+        className="font-display text-2xl font-semibold sm:text-4xl"
+      >
+        Уже пользуешься <span className="gradient-text">Claude</span>?
+      </motion.h2>
+
+      <motion.p
+        variants={itemVariants}
+        className="mx-auto mt-3 max-w-md text-sm sm:text-base"
+        style={{ color: 'var(--text-secondary)' }}
+      >
+        Пройди входной тест (2 минуты) — 16 вопросов покажут, какие сектора ты уже знаешь, а какие
+        стали слепыми зонами. Знакомые миры можно зачесть испытаниями боссов.
+      </motion.p>
+
+      <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
+        <button
+          type="button"
+          onClick={onTakeTest}
+          className="flex items-center gap-2.5 rounded-full px-8 py-4 font-display text-base font-semibold text-white transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          style={{
+            background: 'var(--gradient-brand)',
+            boxShadow: '0 0 40px rgba(139, 92, 246, 0.45)',
+          }}
+        >
+          <ClipboardCheck size={19} />
+          Пройти тест
+        </button>
+        <button
+          type="button"
+          onClick={onSkip}
+          className="rounded-full px-8 py-4 font-display text-base font-semibold transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-glass)',
+            color: 'var(--text-secondary)',
+          }}
+        >
+          Пропустить
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function OnboardingPage() {
   const navigate = useNavigate();
   const setTrack = useProgressStore((s) => s.setTrack);
   const hasTrack = useProgressStore((s) => s.track !== null);
   // Если трек уже выбран (пришли «сменить трек») — сразу экран выбора
-  const [step, setStep] = useState<'welcome' | 'tracks'>(hasTrack ? 'tracks' : 'welcome');
+  const [step, setStep] = useState<'welcome' | 'tracks' | 'placement'>(
+    hasTrack ? 'tracks' : 'welcome',
+  );
 
   const handleSelect = (track: TrackInfo) => {
     setTrack(track.id);
-    // На карту с приветственным тостом
-    navigate('/', { state: { welcome: true } });
+    // После выбора трека предлагаем входной тест для практиков
+    setStep('placement');
   };
 
   return (
@@ -175,8 +254,14 @@ export default function OnboardingPage() {
       <AnimatePresence mode="wait">
         {step === 'welcome' ? (
           <WelcomeScreen key="welcome" onStart={() => setStep('tracks')} />
-        ) : (
+        ) : step === 'tracks' ? (
           <TrackScreen key="tracks" onSelect={handleSelect} />
+        ) : (
+          <PlacementOfferScreen
+            key="placement"
+            onTakeTest={() => navigate('/placement')}
+            onSkip={() => navigate('/', { state: { welcome: true } })}
+          />
         )}
       </AnimatePresence>
     </div>

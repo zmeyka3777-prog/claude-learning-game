@@ -1,0 +1,105 @@
+{
+  "id": "api-first-request",
+  "world": "world-7-api-sdk",
+  "order": 1,
+  "title": "Первый запрос",
+  "subtitle": "API-ключ, Messages API и первый код на Python и TypeScript",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Quickstart — Claude Docs", "url": "https://platform.claude.com/docs/en/quickstart" },
+    { "title": "Working with messages — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Что такое API Claude" },
+    { "type": "text", "md": "До сих пор ты общался с Claude через готовые интерфейсы: сайт claude.ai, приложения, Claude Code. **API** (Application Programming Interface) — это способ обращаться к Claude из собственного кода. Твоя программа отправляет HTTP-запрос — Claude возвращает ответ. На этом строятся чат-боты, ассистенты внутри продуктов, конвейеры обработки документов, агенты.\n\nДом разработчика — **платформа Claude** (platform.claude.com): там живут консоль (Console), документация и управление ключами. В консоли ты создаёшь аккаунт разработчика, пополняешь баланс и получаешь главный пропуск — API-ключ.\n\nВажно понимать: подписка на claude.ai и API — это **разные вещи с разной оплатой**. Подписка — фиксированная цена за интерфейс, API — оплата по факту использования, за объём обработанного текста." },
+    { "type": "heading", "text": "API-ключ и его безопасность" },
+    { "type": "text", "md": "**API-ключ** — строка вида `sk-ant-...`, которая создаётся в консоли платформы (раздел API Keys). Ключ — это одновременно и логин, и пароль, и кошелёк: любой, у кого он есть, может делать запросы **за твой счёт**.\n\nПравила обращения с ключом:\n\n- **Никогда не вставляй ключ прямо в код.** Код попадает в git, git — на GitHub, а ключи из публичных репозиториев крадут боты за считанные минуты.\n- Храни ключ в **переменной окружения** `ANTHROPIC_API_KEY` — официальные SDK подхватывают её автоматически, и в коде ключ вообще не появляется.\n- В проектах используй файл `.env` и обязательно добавь его в `.gitignore`.\n- Если ключ засветился — немедленно **отзови его в консоли** и создай новый. Ключ, попавший в историю git, считается скомпрометированным навсегда." },
+    { "type": "callout", "kind": "warning", "md": "Клиентский код (сайт в браузере, мобильное приложение) — тоже публичное место: всё, что ушло пользователю, можно извлечь. API-ключ должен жить **только на сервере**. Фронтенд обращается к твоему серверу, а уже сервер — к API Claude." },
+    { "type": "heading", "text": "Messages API: анатомия запроса" },
+    { "type": "text", "md": "Основной эндпоинт — **Messages API**: `POST https://api.anthropic.com/v1/messages`. Три обязательных параметра:\n\n- **`model`** — какая модель отвечает, например `\"claude-opus-4-8\"`.\n- **`max_tokens`** — максимальная длина ответа в токенах (жёсткий потолок: достигнут — генерация обрывается).\n- **`messages`** — список сообщений диалога. Каждое сообщение — объект с полями `role` и `content`.\n\nРолей в `messages` две: **`user`** (твои реплики) и **`assistant`** (ответы Claude). Диалог всегда начинается с `user`, роли чередуются. Когда ты отправляешь историю из нескольких сообщений, Claude «видит» весь диалог и продолжает его — так устроена многоходовая беседа, к которой мы вернёмся в следующем уроке.\n\nОтвет приходит объектом: массив `content` с блоками (текст — в `content[0].text`), `stop_reason` (почему генерация закончилась) и `usage` — сколько токенов ушло на вход и выход." },
+    { "type": "code", "lang": "python", "title": "Python: pip install anthropic", "code": "import anthropic\n\n# Ключ берётся из переменной окружения ANTHROPIC_API_KEY\nclient = anthropic.Anthropic()\n\nmessage = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=1024,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Объясни в двух предложениях, что такое API.\"}\n    ],\n)\n\nprint(message.content[0].text)\nprint(message.usage)  # сколько токенов потрачено" },
+    { "type": "code", "lang": "typescript", "title": "TypeScript: npm install @anthropic-ai/sdk", "code": "import Anthropic from \"@anthropic-ai/sdk\";\n\n// Ключ берётся из переменной окружения ANTHROPIC_API_KEY\nconst client = new Anthropic();\n\nconst message = await client.messages.create({\n  model: \"claude-opus-4-8\",\n  max_tokens: 1024,\n  messages: [{ role: \"user\", content: \"Объясни в двух предложениях, что такое API.\" }],\n});\n\nconst block = message.content[0];\nif (block.type === \"text\") console.log(block.text);" },
+    { "type": "example",
+      "bad": "client = anthropic.Anthropic(api_key=\"sk-ant-api03-XXXX...\")  # ключ прямо в коде",
+      "good": "client = anthropic.Anthropic()  # ключ — в переменной окружения ANTHROPIC_API_KEY",
+      "explanation": "В плохом варианте ключ зашит в исходник: один `git push` — и он в истории репозитория навсегда, даже если потом удалить строку. В хорошем варианте код чист, а секрет живёт в окружении: локально — в `.env` (добавленном в `.gitignore`), на сервере — в настройках хостинга. SDK найдёт переменную сам, аргумент `api_key` даже не нужен." },
+    { "type": "callout", "kind": "docs", "md": "Официальный Quickstart (platform.claude.com/docs/en/quickstart) описывает ровно этот путь: создать API-ключ в консоли, экспортировать его как переменную окружения `ANTHROPIC_API_KEY`, установить SDK (`pip install anthropic` или `npm install @anthropic-ai/sdk`) и сделать первый вызов `client.messages.create` с параметрами `model`, `max_tokens` и `messages`." },
+    { "type": "callout", "kind": "tip", "md": "Не выбирай модель наугад: у каждой задачи своя «весовая категория». Для первых экспериментов подойдёт любая актуальная модель, а осознанный выбор по цене и качеству мы разберём в уроке «Экономика API». Список актуальных идентификаторов моделей всегда есть в документации — они выглядят как `claude-opus-4-8`, `claude-sonnet-4-6`, `claude-haiku-4-5`." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Какие роли допустимы в массиве messages при запросе к Messages API?",
+      "options": [
+        "user и assistant",
+        "human и ai",
+        "sender и receiver",
+        "client и server"
+      ],
+      "correct": [0],
+      "explanation": "В `messages` чередуются две роли: `user` — реплики твоего пользователя, `assistant` — ответы Claude. Диалог всегда начинается с сообщения `user`. Передавая историю с обеими ролями, ты позволяешь Claude видеть весь контекст беседы.",
+      "hint": "Одна роль — тот, кто спрашивает, вторая — сам ассистент."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Разработчик написал первый запрос и собирается закоммитить код в публичный репозиторий. Найди строку, которая приведёт к утечке денег с его счёта.",
+      "lang": "python",
+      "lines": [
+        "import anthropic",
+        "",
+        "client = anthropic.Anthropic(api_key=\"sk-ant-api03-h7Kd9s...\")",
+        "message = client.messages.create(",
+        "    model=\"claude-opus-4-8\",",
+        "    max_tokens=1024,",
+        "    messages=[{\"role\": \"user\", \"content\": \"Привет!\"}],",
+        ")",
+        "print(message.content[0].text)"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "API-ключ захардкожен прямо в исходнике. После пуша в публичный репозиторий его найдут боты-сканеры — и начнут делать запросы за счёт владельца. Правильно: убрать аргумент `api_key` совсем и положить ключ в переменную окружения `ANTHROPIC_API_KEY` — конструктор `Anthropic()` подхватит её автоматически. А засвеченный ключ — отозвать в консоли."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Собери тело запроса к Messages API в правильном порядке: модель → лимит ответа → сообщения. Отбрось параметры, которых в API не существует.",
+      "blocks": [
+        "\"model\": \"claude-opus-4-8\"",
+        "\"max_tokens\": 1024",
+        "\"messages\": [{\"role\": \"user\", \"content\": \"Составь план статьи про API\"}]"
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "\"password\": \"sk-ant-api03-...\"",
+        "\"speed\": \"turbo-max\""
+      ],
+      "explanation": "Минимальный валидный запрос — это `model`, `max_tokens` и `messages`. Ключ передаётся не в теле запроса, а в HTTP-заголовке (SDK делает это сам), поэтому блок «password» — ловушка. Параметра `speed: turbo-max` не существует — не выдумывай поля: API отклонит запрос с неизвестными параметрами."
+    },
+    {
+      "type": "quiz",
+      "question": "Что произойдёт, если ответ Claude окажется длиннее, чем указанный max_tokens?",
+      "options": [
+        "API вернёт ошибку 400, и придётся повторить запрос",
+        "Ответ оборвётся на лимите, а stop_reason будет равен \"max_tokens\"",
+        "Claude автоматически сожмёт ответ, чтобы уложиться в лимит",
+        "Лимит проигнорируется — max_tokens только для статистики"
+      ],
+      "correct": [1],
+      "explanation": "`max_tokens` — жёсткий потолок: генерация просто останавливается на нём, и в ответе будет `stop_reason: \"max_tokens\"` вместо обычного `\"end_turn\"`. Поэтому в коде полезно проверять `stop_reason` — обрезанный ответ легко принять за полный. Модель заранее не знает про лимит и не «ужимает» текст под него.",
+      "hint": "Вспомни: max_tokens — это ограничение, которое действует во время генерации, а не инструкция для модели."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Миссия: твой первый настоящий запрос.** Понадобится API-ключ — он создаётся в консоли платформы Claude (platform.claude.com).\n\n1. Зайди в консоль платформы и создай API-ключ (раздел **API Keys**). Скопируй его сразу — целиком он показывается один раз.\n2. Сохрани ключ в переменную окружения: `export ANTHROPIC_API_KEY=\"sk-ant-...\"` (macOS/Linux) или через настройки окружения в Windows.\n3. Установи SDK: `pip install anthropic` или `npm install @anthropic-ai/sdk`.\n4. Скопируй пример из теории, запусти и получи ответ.\n5. Выведи `message.usage` и посмотри, сколько токенов стоил твой запрос.",
+      "checklist": [
+        "Ключ создан в консоли и НЕ вставлен в код",
+        "Переменная окружения ANTHROPIC_API_KEY установлена",
+        "Запрос выполнился, ответ Claude напечатан",
+        "Ты посмотрел usage и знаешь, сколько токенов ушло"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-first-request", "badgeId": null }
+}

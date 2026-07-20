@@ -46,8 +46,15 @@
       "subtitle": "Главный «секретный» инструмент — от использования к созданию",
       "icon": "wand",
       "color": "pink",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "sk-what-is",
+        "sk-library",
+        "sk-anatomy",
+        "sk-trigger",
+        "sk-first",
+        "sk-creator",
+        "sk-boss"
+      ]
     },
     {
       "id": "world-4-claude-code",
@@ -75,8 +82,17 @@
       "subtitle": "Hooks, субагенты, расписания, CI/CD — автоматизация и масштабирование",
       "icon": "cpu",
       "color": "cyan",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "pro-skills",
+        "pro-hooks",
+        "pro-subagents",
+        "pro-teams",
+        "pro-schedules",
+        "pro-ci",
+        "pro-settings",
+        "pro-surfaces",
+        "pro-boss"
+      ]
     },
     {
       "id": "world-6-mcp-plugins",
@@ -85,8 +101,16 @@
       "subtitle": "Лестница интеграций: коннектор → скилл → плагин → свой MCP-сервер",
       "icon": "plug",
       "color": "amber",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "mcp-what-is",
+        "mcp-connect",
+        "mcp-servers",
+        "mcp-build-simple",
+        "mcp-build-deep",
+        "mcp-plugins",
+        "mcp-marketplaces",
+        "mcp-boss"
+      ]
     },
     {
       "id": "world-7-api-sdk",
@@ -95,8 +119,20 @@
       "subtitle": "Разработка на Claude: Messages API, tool use, свои агенты",
       "icon": "code",
       "color": "violet",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "api-first-request",
+        "api-messages",
+        "api-prompting",
+        "api-tool-use",
+        "api-structured",
+        "api-vision",
+        "api-thinking",
+        "api-economy",
+        "api-cookbooks",
+        "api-agent-sdk",
+        "api-managed",
+        "api-boss"
+      ]
     },
     {
       "id": "world-8-ecosystem",
@@ -105,8 +141,16 @@
       "subtitle": "Claude в Slack, Excel, Chrome, Cowork + безопасность и как быть в курсе",
       "icon": "globe",
       "color": "cyan",
-      "lessons": [],
-      "comingSoon": true
+      "lessons": [
+        "eco-slack",
+        "eco-excel",
+        "eco-chrome",
+        "eco-cowork",
+        "eco-security",
+        "eco-org",
+        "eco-news",
+        "eco-exam"
+      ]
     }
   ]
 }

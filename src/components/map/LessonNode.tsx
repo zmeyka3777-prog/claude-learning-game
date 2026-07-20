@@ -2,11 +2,13 @@
  * Узел урока на звёздной тропе.
  * Состояния: заблокирован / доступен (пульс) / пройден / босс.
  * Отдельное состояние loading — контент урока ещё не написан.
+ * Состояние passed — мир зачтён испытанием босса: полупрозрачная галочка,
+ * урок остаётся доступным (за карточку и XP).
  */
 import { motion, useReducedMotion } from 'motion/react';
 import { Check, Crown, Hourglass, Lock } from 'lucide-react';
 
-export type NodeStatus = 'locked' | 'available' | 'done' | 'loading';
+export type NodeStatus = 'locked' | 'available' | 'done' | 'loading' | 'passed';
 
 interface LessonNodeProps {
   title: string;
@@ -19,7 +21,7 @@ interface LessonNodeProps {
 export function LessonNode({ title, status, isBoss, order, onClick }: LessonNodeProps) {
   const reduced = useReducedMotion();
   const size = isBoss ? 72 : 64;
-  const clickable = status === 'available' || status === 'done';
+  const clickable = status === 'available' || status === 'done' || status === 'passed';
 
   const circleStyle = (): React.CSSProperties => {
     switch (status) {
@@ -28,6 +30,13 @@ export function LessonNode({ title, status, isBoss, order, onClick }: LessonNode
           background: 'var(--gradient-brand)',
           boxShadow: '0 0 24px rgba(139, 92, 246, 0.45)',
           border: isBoss ? '3px solid var(--accent-amber)' : 'none',
+        };
+      case 'passed':
+        // Зачтено испытанием: полупрозрачная галочка, но узел кликабелен
+        return {
+          background: 'var(--gradient-brand)',
+          border: isBoss ? '3px solid rgba(245, 158, 11, 0.5)' : 'none',
+          opacity: 0.45,
         };
       case 'available':
         return {
@@ -47,7 +56,8 @@ export function LessonNode({ title, status, isBoss, order, onClick }: LessonNode
   const icon = () => {
     const iconColor =
       status === 'done' ? '#fff' : status === 'available' ? 'var(--accent-violet)' : 'var(--text-muted)';
-    if (status === 'done') return <Check size={isBoss ? 30 : 26} color="#fff" strokeWidth={3} />;
+    if (status === 'done' || status === 'passed')
+      return <Check size={isBoss ? 30 : 26} color="#fff" strokeWidth={3} />;
     if (isBoss)
       return (
         <Crown
@@ -97,6 +107,11 @@ export function LessonNode({ title, status, isBoss, order, onClick }: LessonNode
         {status === 'loading' && (
           <span className="block text-[10px]" style={{ color: 'var(--text-muted)' }}>
             загрузка контента
+          </span>
+        )}
+        {status === 'passed' && (
+          <span className="block text-[10px]" style={{ color: 'var(--text-muted)' }}>
+            зачтено испытанием
           </span>
         )}
       </span>

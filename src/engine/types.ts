@@ -228,6 +228,29 @@ export interface Progress {
   cards: string[];
   /** null — трек ещё не выбран (первый вход, показываем онбординг) */
   track: Track | null;
+  /** Миры, зачтённые испытанием босса или прохождением босс-урока */
+  passedWorlds: string[];
+  /** Результат входного теста: worldId → баллы (0–2); null — тест не пройден */
+  placementResult: Record<string, number> | null;
+}
+
+// ---------------------------------------------------------------------------
+// Входной тест (content/placement.json)
+// ---------------------------------------------------------------------------
+
+export interface PlacementQuestion {
+  id: string;
+  /** Мир, знание которого проверяет вопрос */
+  worldId: string;
+  question: string;
+  /** Ровно 4 варианта ответа */
+  options: string[];
+  /** Индекс правильного варианта */
+  correct: number;
+}
+
+export interface PlacementFile {
+  questions: PlacementQuestion[];
 }
 
 // ---------------------------------------------------------------------------

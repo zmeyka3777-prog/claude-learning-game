@@ -4,7 +4,7 @@
  */
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { Award, BookOpenCheck, Compass, Layers, Zap } from 'lucide-react';
+import { Award, BookOpenCheck, ClipboardCheck, Compass, Layers, Zap } from 'lucide-react';
 import { BADGES, CARDS } from '../engine/content';
 import { getLevel, useProgressStore, XP_PER_LEVEL } from '../engine/progressStore';
 import { getTrackInfo } from '../lib/tracks';
@@ -115,19 +115,35 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => navigate('/onboarding')}
-            className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.03] active:scale-[0.98]"
-            style={{
-              background: 'var(--bg-card)',
-              border: '1px solid rgba(139, 92, 246, 0.45)',
-              color: 'var(--accent-violet)',
-            }}
-          >
-            <Compass size={16} />
-            Сменить трек
-          </button>
+          <div className="flex shrink-0 flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/placement')}
+              className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.03] active:scale-[0.98]"
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid rgba(34, 211, 238, 0.45)',
+                color: 'var(--accent-cyan)',
+              }}
+              title="16 вопросов — покажут, какие миры можно зачесть испытанием"
+            >
+              <ClipboardCheck size={16} />
+              Входной тест
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/onboarding')}
+              className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.03] active:scale-[0.98]"
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid rgba(139, 92, 246, 0.45)',
+                color: 'var(--accent-violet)',
+              }}
+            >
+              <Compass size={16} />
+              Сменить трек
+            </button>
+          </div>
         </div>
       </motion.section>
 

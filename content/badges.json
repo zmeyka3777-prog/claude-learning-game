@@ -55,6 +55,41 @@
       "description": "Все уроки мира «Claude Code — база» пройдены, включая босса.",
       "icon": "terminal",
       "condition": "пройден босс cc-boss"
+    },
+    {
+      "id": "badge-world-3",
+      "title": "Сектор 3 исследован",
+      "description": "Мир «Скиллы» пройден, включая босса.",
+      "icon": "wand",
+      "condition": "пройден босс sk-boss"
+    },
+    {
+      "id": "badge-world-5",
+      "title": "Сектор 5 исследован",
+      "description": "Мир «Claude Code — продвинутый» пройден, включая босса.",
+      "icon": "cpu",
+      "condition": "пройден босс pro-boss"
+    },
+    {
+      "id": "badge-world-6",
+      "title": "Сектор 6 исследован",
+      "description": "Мир «Плагины и MCP» пройден, включая босса.",
+      "icon": "plug",
+      "condition": "пройден босс mcp-boss"
+    },
+    {
+      "id": "badge-world-7",
+      "title": "Сектор 7 исследован",
+      "description": "Мир «API и Agent SDK» пройден, включая босса.",
+      "icon": "code",
+      "condition": "пройден босс api-boss"
+    },
+    {
+      "id": "badge-world-8",
+      "title": "Мастер Claude",
+      "description": "Финальный экзамен сдан. Вся программа Академии пройдена.",
+      "icon": "crown",
+      "condition": "сдан экзамен eco-exam"
     }
   ]
 }

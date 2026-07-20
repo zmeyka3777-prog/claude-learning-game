@@ -44,7 +44,18 @@ const DEFAULT_PROGRESS: Progress = {
   cards: [],
   // Трек не выбран — при первом входе игрок проходит онбординг
   track: null,
+  passedWorlds: [],
+  placementResult: null,
 };
+
+function parsePlacementResult(value: unknown): Record<string, number> | null {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+  const result: Record<string, number> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof v === 'number') result[k] = v;
+  }
+  return result;
+}
 
 function loadProgress(): Progress {
   try {
@@ -62,6 +73,10 @@ function loadProgress(): Progress {
       badges: Array.isArray(parsed.badges) ? parsed.badges : [],
       cards: Array.isArray(parsed.cards) ? parsed.cards : [],
       track: parseTrack(parsed.track),
+      passedWorlds: Array.isArray(parsed.passedWorlds)
+        ? parsed.passedWorlds.filter((w): w is string => typeof w === 'string')
+        : [],
+      placementResult: parsePlacementResult(parsed.placementResult),
     };
   } catch {
     // Битые данные не должны ронять приложение
@@ -78,6 +93,8 @@ function saveProgress(p: Progress): void {
       badges: p.badges,
       cards: p.cards,
       track: p.track,
+      passedWorlds: p.passedWorlds,
+      placementResult: p.placementResult,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -94,6 +111,14 @@ export interface LessonCompletionResult {
   alreadyCompleted: boolean;
 }
 
+/** Итог успешного испытания босса — для экрана результата */
+export interface ChallengeResult {
+  xpGained: number;
+  newBadgeId: string | null;
+  /** Мир уже был зачтён раньше — XP и награды не дублируем */
+  alreadyPassed: boolean;
+}
+
 interface ProgressStore extends Progress {
   /** Начислить XP (например, бонус реальной миссии) */
   addXp: (amount: number) => void;
@@ -104,6 +129,13 @@ interface ProgressStore extends Progress {
   unlockCard: (cardId: string) => boolean;
   /** Полный цикл завершения урока: XP, стрик, награды, бейджи-условия */
   completeLesson: (lesson: Lesson, mistakes: number) => LessonCompletionResult;
+  /**
+   * Зачесть мир испытанием босса: мир → passedWorlds, XP босса, бейдж мира.
+   * Карточки уроков при этом НЕ выдаются — стимул вернуться и пройти уроки.
+   */
+  passWorldChallenge: (bossLesson: Lesson) => ChallengeResult;
+  /** Сохранить результат входного теста: worldId → баллы (0–2) */
+  setPlacementResult: (result: Record<string, number>) => void;
   resetProgress: () => void;
 }
 
@@ -175,6 +207,11 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
         ...s.completedLessons,
         [lesson.id]: { completedAt: new Date().toISOString(), mistakes },
       },
+      // Прохождение босс-урока автоматически «зачитывает» весь мир
+      passedWorlds:
+        lesson.isBoss && !s.passedWorlds.includes(lesson.world)
+          ? [...s.passedWorlds, lesson.world]
+          : s.passedWorlds,
     }));
 
     const newBadgeIds: string[] = [];
@@ -220,7 +257,52 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
     };
   },
 
-  resetProgress: () => set({ ...DEFAULT_PROGRESS, completedLessons: {}, badges: [], cards: [] }),
+  passWorldChallenge: (bossLesson) => {
+    const state = get();
+    // Мир уже зачтён (испытанием или обычным прохождением босса) — не дублируем
+    const alreadyPassed =
+      state.passedWorlds.includes(bossLesson.world) ||
+      Boolean(state.completedLessons[bossLesson.id]);
+
+    // Испытание — активность за день
+    get().touchStreak();
+
+    if (!state.passedWorlds.includes(bossLesson.world)) {
+      set((s) => ({ passedWorlds: [...s.passedWorlds, bossLesson.world] }));
+    }
+
+    if (alreadyPassed) {
+      return { xpGained: 0, newBadgeId: null, alreadyPassed: true };
+    }
+
+    set((s) => ({ xp: s.xp + bossLesson.xp }));
+
+    // Бейдж мира выдаётся; карточки уроков — нет (стимул вернуться)
+    let newBadgeId: string | null = null;
+    if (bossLesson.reward.badgeId && get().unlockBadge(bossLesson.reward.badgeId)) {
+      newBadgeId = bossLesson.reward.badgeId;
+    }
+
+    // Условные бейджи, которые могло затронуть испытание
+    const after = get();
+    if (after.streak.current >= 3) after.unlockBadge('badge-streak-3');
+    if (after.streak.current >= 7) after.unlockBadge('badge-streak-7');
+    if (after.xp >= 500) after.unlockBadge('badge-500-xp');
+
+    return { xpGained: bossLesson.xp, newBadgeId, alreadyPassed: false };
+  },
+
+  setPlacementResult: (result) => set({ placementResult: { ...result } }),
+
+  resetProgress: () =>
+    set({
+      ...DEFAULT_PROGRESS,
+      completedLessons: {},
+      badges: [],
+      cards: [],
+      passedWorlds: [],
+      placementResult: null,
+    }),
 }));
 
 // Автосохранение: любое изменение стора пишем в localStorage

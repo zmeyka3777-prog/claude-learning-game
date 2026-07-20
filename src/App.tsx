@@ -11,6 +11,7 @@ const MapPage = lazy(() => import('./pages/MapPage'));
 const LessonPage = lazy(() => import('./pages/LessonPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
+const PlacementTestPage = lazy(() => import('./pages/PlacementTestPage'));
 
 /** Верхняя панель: лого, XP, стрик, профиль */
 function TopBar() {
@@ -111,6 +112,7 @@ export default function App() {
                 <Routes>
                   <Route path="/" element={<MapPage />} />
                   <Route path="/lesson/:lessonId" element={<LessonPage />} />
+                  <Route path="/placement" element={<PlacementTestPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<MapPage />} />
                 </Routes>
