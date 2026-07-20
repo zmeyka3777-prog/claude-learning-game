@@ -4,9 +4,9 @@
  * Миры выбранного трека отмечены бейджем «Рекомендовано».
  */
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { Compass, Lock } from 'lucide-react';
+import { ArrowRight, Compass, Lock } from 'lucide-react';
 import { WORLDS } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
 import { WorldMap, RecommendedBadge } from '../components/map/WorldMap';
@@ -184,6 +184,38 @@ export default function MapPage() {
             ))}
           </div>
         )}
+
+        {/* Баннер библиотеки — после списка миров */}
+        <motion.div
+          initial={reduced ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-30px' }}
+          transition={{ duration: 0.4 }}
+          className="pt-2"
+        >
+          <Link
+            to="/library"
+            className="glass-card glass-card-hover flex items-center gap-4 p-5"
+            style={{ border: '1px solid rgba(34, 211, 238, 0.3)' }}
+          >
+            <span
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)' }}
+              aria-hidden="true"
+            >
+              📚
+            </span>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-display text-base font-semibold">
+                <span className="gradient-text">Библиотека</span>: готовые скиллы, плагины и MCP
+              </h3>
+              <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
+                Проверенные расширения с командами установки — прокачай свой арсенал.
+              </p>
+            </div>
+            <ArrowRight size={18} className="shrink-0" style={{ color: 'var(--accent-cyan)' }} />
+          </Link>
+        </motion.div>
       </div>
     </div>
   );

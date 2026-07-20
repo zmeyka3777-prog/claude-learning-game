@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Sparkles, User, Zap } from 'lucide-react';
+import { Library, Sparkles, User, Zap } from 'lucide-react';
 import { useProgressStore } from './engine/progressStore';
 import { StreakFlame } from './components/gamification/StreakFlame';
 import { XPToastHost } from './components/gamification/XPToast';
@@ -12,6 +12,7 @@ const LessonPage = lazy(() => import('./pages/LessonPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PlacementTestPage = lazy(() => import('./pages/PlacementTestPage'));
+const LibraryPage = lazy(() => import('./pages/LibraryPage'));
 
 /** Верхняя панель: лого, XP, стрик, профиль */
 function TopBar() {
@@ -58,6 +59,20 @@ function TopBar() {
             </span>
 
             <StreakFlame days={streak.current} />
+
+            <Link
+              to="/library"
+              className="grid h-9 w-9 place-items-center rounded-full transition-colors"
+              style={{
+                background:
+                  location.pathname === '/library' ? 'var(--bg-card-hover)' : 'var(--bg-card)',
+                border: '1px solid var(--border-glass)',
+              }}
+              aria-label="Библиотека"
+              title="Библиотека"
+            >
+              <Library size={17} style={{ color: 'var(--text-secondary)' }} />
+            </Link>
 
             <Link
               to="/profile"
@@ -113,6 +128,7 @@ export default function App() {
                   <Route path="/" element={<MapPage />} />
                   <Route path="/lesson/:lessonId" element={<LessonPage />} />
                   <Route path="/placement" element={<PlacementTestPage />} />
+                  <Route path="/library" element={<LibraryPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<MapPage />} />
                 </Routes>

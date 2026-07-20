@@ -283,3 +283,32 @@ export interface Badge {
 export interface BadgesFile {
   badges: Badge[];
 }
+
+// ---------------------------------------------------------------------------
+// Библиотека расширений (content/library/*.json)
+// ---------------------------------------------------------------------------
+
+export type LibraryKind = 'skill' | 'plugin' | 'mcp';
+
+export type LibrarySource = 'official' | 'verified' | 'community';
+
+export interface LibraryItem {
+  id: string;
+  name: string;
+  kind: LibraryKind;
+  source: LibrarySource;
+  category: string;
+  description: string;
+  /** Для чего пригодится (короткий сценарий использования) */
+  useFor: string;
+  /** Команда установки */
+  install: string;
+  /** Ссылка на репозиторий/страницу */
+  link: string;
+  /** Ссылка на документацию (опционально) */
+  docs?: string;
+}
+
+export interface LibraryFile {
+  items: LibraryItem[];
+}

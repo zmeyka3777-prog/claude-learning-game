@@ -10,6 +10,7 @@ import type {
   CardsFile,
   FunctionCard,
   Lesson,
+  LibraryItem,
   PlacementFile,
   PlacementQuestion,
   World,
@@ -66,6 +67,8 @@ function loadLessons(): Map<string, Lesson> {
   for (const [path, mod] of Object.entries(modules)) {
     // Уроки лежат в подпапках: /content/<world-id>/<lesson-id>.json
     if (!/^\/content\/[^/]+\/[^/]+\.json$/.test(path)) continue;
+    // Файлы библиотеки (/content/library/*.json) — не уроки, пропускаем сразу
+    if (path.startsWith('/content/library/')) continue;
     try {
       const data = (mod as { default?: unknown }).default ?? mod;
       if (isLesson(data)) {
@@ -157,3 +160,58 @@ export function getCard(cardId: string): FunctionCard | undefined {
 export function getBadge(badgeId: string): Badge | undefined {
   return BADGES.find((b) => b.id === badgeId);
 }
+
+// ---------------------------------------------------------------------------
+// Библиотека расширений (content/library/*.json)
+// ---------------------------------------------------------------------------
+
+const LIBRARY_KINDS = ['skill', 'plugin', 'mcp'] as const;
+const LIBRARY_SOURCES = ['official', 'verified', 'community'] as const;
+
+function isLibraryItem(value: unknown): value is LibraryItem {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.id === 'string' &&
+    typeof v.name === 'string' &&
+    typeof v.kind === 'string' &&
+    (LIBRARY_KINDS as readonly string[]).includes(v.kind) &&
+    typeof v.source === 'string' &&
+    (LIBRARY_SOURCES as readonly string[]).includes(v.source) &&
+    typeof v.category === 'string' &&
+    typeof v.description === 'string' &&
+    typeof v.useFor === 'string' &&
+    typeof v.install === 'string' &&
+    typeof v.link === 'string' &&
+    (v.docs === undefined || typeof v.docs === 'string')
+  );
+}
+
+// Отдельный glob библиотеки: файлы пишутся параллельно и могут отсутствовать —
+// в этом случае glob просто вернёт пустой объект, приложение не падает.
+const libraryModules = import.meta.glob('/content/library/*.json', { eager: true }) as Record<
+  string,
+  { default?: unknown }
+>;
+
+function loadLibraryItems(): LibraryItem[] {
+  const items: LibraryItem[] = [];
+  const seen = new Set<string>();
+  for (const mod of Object.values(libraryModules)) {
+    const data = (mod as { default?: unknown }).default ?? mod;
+    if (typeof data !== 'object' || data === null) continue;
+    const raw = (data as { items?: unknown }).items;
+    if (!Array.isArray(raw)) continue;
+    for (const entry of raw) {
+      // Битые записи не роняют приложение — просто пропускаем
+      if (isLibraryItem(entry) && !seen.has(entry.id)) {
+        seen.add(entry.id);
+        items.push(entry);
+      }
+    }
+  }
+  return items;
+}
+
+/** Все записи библиотеки: скиллы, плагины, MCP-серверы */
+export const LIBRARY_ITEMS: LibraryItem[] = loadLibraryItems();
