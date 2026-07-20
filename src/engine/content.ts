@@ -3,6 +3,12 @@
  * Движок не знает о конкретных уроках: всё читается из JSON на этапе сборки
  * через import.meta.glob. Отсутствующий файл урока не роняет приложение —
  * карта просто показывает такой узел как «контент загружается».
+ *
+ * Локализация: базовый язык — ru (файлы в /content/**), английский — зеркало
+ * под /content/en/** с теми же относительными путями и id. Геттеры принимают
+ * активный язык; для 'en' берут запись из en-индекса, при отсутствии — фолбэк
+ * на ru (частичный перевод не ломает игру). Сопоставление ru/en — по id
+ * (для changelog — по стабильной дате).
  */
 import type {
   Badge,
@@ -11,6 +17,7 @@ import type {
   ChangelogEntry,
   ChangelogFile,
   FunctionCard,
+  LangCode,
   Lesson,
   LibraryItem,
   PlacementFile,
@@ -19,16 +26,35 @@ import type {
   WorldsFile,
 } from './types';
 
-// Все JSON контента (eager: включаются в бандл на этапе сборки)
+// Все JSON контента (eager: включаются в бандл на этапе сборки).
+// Glob захватывает и /content/en/**, если папка существует; если её нет —
+// en-индексы просто пусты и все геттеры отдают ru.
 const modules = import.meta.glob('/content/**/*.json', { eager: true }) as Record<
   string,
   { default: unknown }
 >;
 
-function readJson(path: string): unknown | undefined {
+/** Локаль пути и его путь относительно корня локали */
+interface LocalePath {
+  locale: LangCode;
+  /** Путь без префикса локали, напр. 'worlds.json' или 'world-1/lesson.json' */
+  rel: string;
+}
+
+const EN_PREFIX = '/content/en/';
+const RU_PREFIX = '/content/';
+
+function classifyPath(path: string): LocalePath | null {
+  if (path.startsWith(EN_PREFIX)) return { locale: 'en', rel: path.slice(EN_PREFIX.length) };
+  if (path.startsWith(RU_PREFIX)) return { locale: 'ru', rel: path.slice(RU_PREFIX.length) };
+  return null;
+}
+
+/** Прочитать конкретный файл локали по относительному пути */
+function readByRel(locale: LangCode, rel: string): unknown | undefined {
+  const path = locale === 'en' ? `${EN_PREFIX}${rel}` : `${RU_PREFIX}${rel}`;
   const mod = modules[path];
   if (!mod) return undefined;
-  // Vite отдаёт JSON и как default-экспорт, и как namespace
   return (mod as { default?: unknown }).default ?? mod;
 }
 
@@ -36,17 +62,31 @@ function readJson(path: string): unknown | undefined {
 // Миры
 // ---------------------------------------------------------------------------
 
-function loadWorlds(): World[] {
-  const raw = readJson('/content/worlds.json') as WorldsFile | undefined;
+function loadWorlds(locale: LangCode): World[] {
+  const raw = readByRel(locale, 'worlds.json') as WorldsFile | undefined;
   if (!raw || !Array.isArray(raw.worlds)) return [];
   return [...raw.worlds].sort((a, b) => a.order - b.order);
 }
 
-/** Все миры, отсортированные по order */
-export const WORLDS: World[] = loadWorlds();
+// ru — базовый порядок и структура; en — оверлей по id (переопределяет тексты)
+const WORLDS_RU: World[] = loadWorlds('ru');
+const worldsEnById = new Map(loadWorlds('en').map((w) => [w.id, w]));
 
-export function getWorld(worldId: string): World | undefined {
-  return WORLDS.find((w) => w.id === worldId);
+let WORLDS_EN_CACHE: World[] | null = null;
+function worldsEn(): World[] {
+  if (!WORLDS_EN_CACHE) {
+    WORLDS_EN_CACHE = WORLDS_RU.map((w) => worldsEnById.get(w.id) ?? w);
+  }
+  return WORLDS_EN_CACHE;
+}
+
+/** Все миры активного языка, отсортированные по order (фолбэк на ru) */
+export function getWorlds(lang: LangCode = 'ru'): World[] {
+  return lang === 'en' ? worldsEn() : WORLDS_RU;
+}
+
+export function getWorld(worldId: string, lang: LangCode = 'ru'): World | undefined {
+  return getWorlds(lang).find((w) => w.id === worldId);
 }
 
 // ---------------------------------------------------------------------------
@@ -64,13 +104,15 @@ function isLesson(value: unknown): value is Lesson {
   );
 }
 
-function loadLessons(): Map<string, Lesson> {
+function loadLessons(locale: LangCode): Map<string, Lesson> {
   const lessons = new Map<string, Lesson>();
   for (const [path, mod] of Object.entries(modules)) {
-    // Уроки лежат в подпапках: /content/<world-id>/<lesson-id>.json
-    if (!/^\/content\/[^/]+\/[^/]+\.json$/.test(path)) continue;
-    // Файлы библиотеки (/content/library/*.json) — не уроки, пропускаем сразу
-    if (path.startsWith('/content/library/')) continue;
+    const info = classifyPath(path);
+    if (!info || info.locale !== locale) continue;
+    // Уроки лежат в подпапках: <world-id>/<lesson-id>.json (ровно один слэш)
+    if (!/^[^/]+\/[^/]+\.json$/.test(info.rel)) continue;
+    // Файлы библиотеки — не уроки, пропускаем
+    if (info.rel.startsWith('library/')) continue;
     try {
       const data = (mod as { default?: unknown }).default ?? mod;
       if (isLesson(data)) {
@@ -83,34 +125,36 @@ function loadLessons(): Map<string, Lesson> {
   return lessons;
 }
 
-const LESSONS: Map<string, Lesson> = loadLessons();
+const LESSONS_RU: Map<string, Lesson> = loadLessons('ru');
+const LESSONS_EN: Map<string, Lesson> = loadLessons('en');
 
-/** Урок по id; undefined, если файл контента ещё не написан */
-export function getLesson(lessonId: string): Lesson | undefined {
-  return LESSONS.get(lessonId);
+/** Урок по id для активного языка; undefined, если контента ещё нет. Фолбэк на ru. */
+export function getLesson(lessonId: string, lang: LangCode = 'ru'): Lesson | undefined {
+  if (lang === 'en') return LESSONS_EN.get(lessonId) ?? LESSONS_RU.get(lessonId);
+  return LESSONS_RU.get(lessonId);
 }
 
-/** Есть ли контент урока (написан ли JSON-файл) */
+/** Есть ли контент урока (написан ли ru-JSON-файл) */
 export function hasLessonContent(lessonId: string): boolean {
-  return LESSONS.has(lessonId);
+  return LESSONS_RU.has(lessonId);
 }
 
 /** Уроки мира в порядке из worlds.json (undefined на месте ненаписанных) */
-export function getWorldLessons(world: World): Array<Lesson | undefined> {
-  return world.lessons.map((id) => LESSONS.get(id));
+export function getWorldLessons(world: World, lang: LangCode = 'ru'): Array<Lesson | undefined> {
+  return world.lessons.map((id) => getLesson(id, lang));
 }
 
 /**
  * Босс-урок мира; undefined, если контент босса ещё не написан.
  * Ищем по isBoss, fallback — последний урок списка.
  */
-export function getBossLesson(world: World): Lesson | undefined {
+export function getBossLesson(world: World, lang: LangCode = 'ru'): Lesson | undefined {
   for (const id of world.lessons) {
-    const lesson = LESSONS.get(id);
+    const lesson = getLesson(id, lang);
     if (lesson?.isBoss) return lesson;
   }
   const lastId = world.lessons[world.lessons.length - 1];
-  return lastId ? LESSONS.get(lastId) : undefined;
+  return lastId ? getLesson(lastId, lang) : undefined;
 }
 
 // ---------------------------------------------------------------------------
@@ -129,38 +173,60 @@ function isPlacementQuestion(value: unknown): value is PlacementQuestion {
   );
 }
 
-function loadPlacementQuestions(): PlacementQuestion[] {
-  const raw = readJson('/content/placement.json') as PlacementFile | undefined;
+function loadPlacementQuestions(locale: LangCode): PlacementQuestion[] {
+  const raw = readByRel(locale, 'placement.json') as PlacementFile | undefined;
   if (!raw || !Array.isArray(raw.questions)) return [];
   return raw.questions.filter(isPlacementQuestion);
 }
 
-/** Вопросы входного теста (по 2 на мир) */
-export const PLACEMENT_QUESTIONS: PlacementQuestion[] = loadPlacementQuestions();
+const PLACEMENT_RU: PlacementQuestion[] = loadPlacementQuestions('ru');
+const placementEnById = new Map(loadPlacementQuestions('en').map((q) => [q.id, q]));
+
+/** Вопросы входного теста активного языка (по 2 на мир). Фолбэк на ru по id. */
+export function getPlacementQuestions(lang: LangCode = 'ru'): PlacementQuestion[] {
+  if (lang === 'en') return PLACEMENT_RU.map((q) => placementEnById.get(q.id) ?? q);
+  return PLACEMENT_RU;
+}
 
 // ---------------------------------------------------------------------------
 // Карточки и бейджи
 // ---------------------------------------------------------------------------
 
-function loadCards(): FunctionCard[] {
-  const raw = readJson('/content/cards.json') as CardsFile | undefined;
+function loadCards(locale: LangCode): FunctionCard[] {
+  const raw = readByRel(locale, 'cards.json') as CardsFile | undefined;
   return raw && Array.isArray(raw.cards) ? raw.cards : [];
 }
 
-function loadBadges(): Badge[] {
-  const raw = readJson('/content/badges.json') as BadgesFile | undefined;
+function loadBadges(locale: LangCode): Badge[] {
+  const raw = readByRel(locale, 'badges.json') as BadgesFile | undefined;
   return raw && Array.isArray(raw.badges) ? raw.badges : [];
 }
 
-export const CARDS: FunctionCard[] = loadCards();
-export const BADGES: Badge[] = loadBadges();
+const CARDS_RU: FunctionCard[] = loadCards('ru');
+const cardsEnById = new Map(loadCards('en').map((c) => [c.id, c]));
+const BADGES_RU: Badge[] = loadBadges('ru');
+const badgesEnById = new Map(loadBadges('en').map((b) => [b.id, b]));
 
-export function getCard(cardId: string): FunctionCard | undefined {
-  return CARDS.find((c) => c.id === cardId);
+/** Все карточки активного языка (фолбэк на ru по id) */
+export function getCards(lang: LangCode = 'ru'): FunctionCard[] {
+  if (lang === 'en') return CARDS_RU.map((c) => cardsEnById.get(c.id) ?? c);
+  return CARDS_RU;
 }
 
-export function getBadge(badgeId: string): Badge | undefined {
-  return BADGES.find((b) => b.id === badgeId);
+/** Все бейджи активного языка (фолбэк на ru по id) */
+export function getBadges(lang: LangCode = 'ru'): Badge[] {
+  if (lang === 'en') return BADGES_RU.map((b) => badgesEnById.get(b.id) ?? b);
+  return BADGES_RU;
+}
+
+export function getCard(cardId: string, lang: LangCode = 'ru'): FunctionCard | undefined {
+  if (lang === 'en') return cardsEnById.get(cardId) ?? CARDS_RU.find((c) => c.id === cardId);
+  return CARDS_RU.find((c) => c.id === cardId);
+}
+
+export function getBadge(badgeId: string, lang: LangCode = 'ru'): Badge | undefined {
+  if (lang === 'en') return badgesEnById.get(badgeId) ?? BADGES_RU.find((b) => b.id === badgeId);
+  return BADGES_RU.find((b) => b.id === badgeId);
 }
 
 // ---------------------------------------------------------------------------
@@ -177,15 +243,22 @@ function isChangelogEntry(value: unknown): value is ChangelogEntry {
   );
 }
 
-function loadChangelog(): ChangelogEntry[] {
-  const raw = readJson('/content/changelog.json') as ChangelogFile | undefined;
+function loadChangelog(locale: LangCode): ChangelogEntry[] {
+  const raw = readByRel(locale, 'changelog.json') as ChangelogFile | undefined;
   if (!raw || !Array.isArray(raw.entries)) return [];
   // Битые записи не роняют приложение; свежие — первыми (даты YYYY-MM-DD)
   return raw.entries.filter(isChangelogEntry).sort((a, b) => b.date.localeCompare(a.date));
 }
 
-/** Записи ленты «Что нового», свежие первыми */
-export const CHANGELOG: ChangelogEntry[] = loadChangelog();
+const CHANGELOG_RU: ChangelogEntry[] = loadChangelog('ru');
+// Сопоставление ru/en — по стабильной дате (дата не переводится)
+const changelogEnByDate = new Map(loadChangelog('en').map((e) => [e.date, e]));
+
+/** Записи ленты «Что нового» активного языка, свежие первыми (фолбэк на ru) */
+export function getChangelog(lang: LangCode = 'ru'): ChangelogEntry[] {
+  if (lang === 'en') return CHANGELOG_RU.map((e) => changelogEnByDate.get(e.date) ?? e);
+  return CHANGELOG_RU;
+}
 
 // ---------------------------------------------------------------------------
 // Библиотека расширений (content/library/*.json)
@@ -213,17 +286,14 @@ function isLibraryItem(value: unknown): value is LibraryItem {
   );
 }
 
-// Отдельный glob библиотеки: файлы пишутся параллельно и могут отсутствовать —
-// в этом случае glob просто вернёт пустой объект, приложение не падает.
-const libraryModules = import.meta.glob('/content/library/*.json', { eager: true }) as Record<
-  string,
-  { default?: unknown }
->;
-
-function loadLibraryItems(): LibraryItem[] {
+function loadLibraryItems(locale: LangCode): LibraryItem[] {
   const items: LibraryItem[] = [];
   const seen = new Set<string>();
-  for (const mod of Object.values(libraryModules)) {
+  for (const [path, mod] of Object.entries(modules)) {
+    const info = classifyPath(path);
+    if (!info || info.locale !== locale) continue;
+    // Файлы библиотеки: library/<name>.json (ровно один уровень вложенности)
+    if (!/^library\/[^/]+\.json$/.test(info.rel)) continue;
     const data = (mod as { default?: unknown }).default ?? mod;
     if (typeof data !== 'object' || data === null) continue;
     const raw = (data as { items?: unknown }).items;
@@ -239,5 +309,11 @@ function loadLibraryItems(): LibraryItem[] {
   return items;
 }
 
-/** Все записи библиотеки: скиллы, плагины, MCP-серверы */
-export const LIBRARY_ITEMS: LibraryItem[] = loadLibraryItems();
+const LIBRARY_RU: LibraryItem[] = loadLibraryItems('ru');
+const libraryEnById = new Map(loadLibraryItems('en').map((it) => [it.id, it]));
+
+/** Все записи библиотеки активного языка: скиллы, плагины, MCP (фолбэк на ru) */
+export function getLibraryItems(lang: LangCode = 'ru'): LibraryItem[] {
+  if (lang === 'en') return LIBRARY_RU.map((it) => libraryEnById.get(it.id) ?? it);
+  return LIBRARY_RU;
+}

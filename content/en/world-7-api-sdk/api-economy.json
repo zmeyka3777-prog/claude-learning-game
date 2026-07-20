@@ -1,0 +1,117 @@
+{
+  "id": "api-economy",
+  "world": "world-7-api-sdk",
+  "order": 8,
+  "title": "API economics",
+  "subtitle": "Tokens, prompt caching, batches, and choosing a model by price/quality",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Pricing — Claude", "url": "https://claude.com/pricing" },
+    { "title": "Prompt caching — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-caching" },
+    { "title": "Batch processing — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/batch-processing" },
+    { "title": "Token counting — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/token-counting" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Tokens: the API's currency" },
+    { "type": "text", "md": "The API is billed not \"per request\" but **per token**. A token is a piece of text the model operates on: part of a word, a word, a punctuation mark. In English a token is roughly 3–4 characters; text in some other languages \"fragments\" into more tokens than English for the same meaning.\n\nTwo kinds of tokens are counted, at different prices:\n\n- **Input** — everything you sent: the system prompt, the conversation history, documents, tool definitions.\n- **Output** — everything the model generated, including reasoning blocks. Output tokens are noticeably more expensive than input.\n\nEvery response carries a `usage` object with exact numbers — that's your receipt for the request. And to estimate a prompt in advance, the `count_tokens` endpoint helps — free counting with no generation." },
+    { "type": "heading", "text": "Where the money leaks" },
+    { "type": "text", "md": "Three classic expense items people forget about:\n\n1. **Conversation history.** In a stateless API you send the whole history with every request: by the thirtieth turn, every \"hi\" drags the entire conversation along with it. Cured by summarization and trimming old turns.\n2. **The system prompt and tools.** Your 2000-token prompt and ten tool definitions go out in **every** request. A thousand requests a day means millions of identical input tokens.\n3. **Chatty answers.** \"Of course! I'd be happy to help! Here is a detailed answer...\" — output tokens are the most expensive. The instruction \"answer briefly, no preamble\" in the system prompt is literally saving money.\n\nItem 2 is fought with the main optimization tool — prompt caching." },
+    { "type": "heading", "text": "Prompt caching: don't pay twice for the same thing" },
+    { "type": "text", "md": "**Prompt caching** lets you store the unchanging part of a request on the API side and, in following requests, read it from the cache. Reading from the cache costs **about ten times less** than ordinary input processing; writing to the cache is a bit more expensive than a one-off processing, so the cache pays off from the second request.\n\nThe mechanics: you mark the boundary of the stable part with a `cache_control: {\"type\": \"ephemeral\"}` marker — for example, at the end of the system prompt. Everything before the marker is cached. The cache lives for a few minutes and is extended with each use.\n\nThe main rule: **the cache is a byte-for-byte prefix match**. Change even one character at the start of the prompt and the cache misses. Hence the architectural principle: the stable stuff (system, tools, examples) goes at the start of the request, the variable stuff (the user's question) goes at the end. And no \"Today: {current_time}\" in the system prompt — a line like that kills the cache with every request." },
+    { "type": "code", "lang": "python", "title": "Caching a large system prompt", "code": "message = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=1024,\n    system=[\n        {\n            \"type\": \"text\",\n            \"text\": BIG_SYSTEM_PROMPT,  # rules + knowledge base, thousands of tokens\n            \"cache_control\": {\"type\": \"ephemeral\"},  # cache boundary\n        }\n    ],\n    messages=[{\"role\": \"user\", \"content\": user_question}],  # changes — after the cache\n)\n\nu = message.usage\nprint(\"written to cache:\", u.cache_creation_input_tokens)\nprint(\"read from cache:\", u.cache_read_input_tokens)  # if 0 — the cache isn't working!" },
+    { "type": "heading", "text": "Batches: minus half the price for patience" },
+    { "type": "text", "md": "If you don't need the answer immediately — use the **Batch API**: you upload a batch of requests (even tens of thousands), they run asynchronously — usually within an hour, at most a day — and cost **half as much** as regular ones.\n\nIdeal candidates: overnight classification of accumulated tickets, mass generation of product descriptions, running evals, re-indexing a knowledge base. Poor fits: a chat with a live user — there latency is what matters.\n\nThe pattern is simple: `batches.create` with a list of requests (each with its own `custom_id`), polling the status, downloading the results. Results come back in arbitrary order — match them by `custom_id`, not by position." },
+    { "type": "heading", "text": "Choosing a model: quality for a reasonable price" },
+    { "type": "text", "md": "The model family is a \"power ↔ price\" ladder: **Opus** — maximum intelligence for complex tasks, **Sonnet** — the balance for most products, **Haiku** — speed and cheapness for high-volume simple operations. Look up the specific prices at claude.com/pricing — they change, but the selection principles don't:\n\n- **Start from the task, not from the maximum.** Classification and field extraction are fine with a light model; architectural analysis needs the flagship.\n- **Route.** Within one product, different tasks get different models: a cheap one sorts tickets, a powerful one handles the complex cases. This is called model routing.\n- **Measure on your own data.** Run your test set through neighboring models: if the cheap one copes, that's savings of several times over for nothing.\n- **Do the full math:** price = input tokens × input rate + output tokens × output rate. A long system prompt on an expensive model can sometimes cost more than the generation itself." },
+    { "type": "example",
+      "bad": "# support bot: 3000 tokens of rules in system, flagship model,\n# conversation history is never trimmed, no cache\n# every question = the full price of all 3000 rule tokens + the whole history",
+      "good": "# rules are cached (cache_control on system), history older than 20 turns\n# is summarized, simple questions are routed to a light model,\n# overnight ticket analytics goes through batches",
+      "explanation": "The same bot, and the bill differs by several times. The cache cuts the bulk of the input tokens from repeating rules, summarization keeps history from growing forever, routing avoids spending the flagship price on \"how do I change my password\", and batches make non-urgent analytics half as expensive. Not one of these measures required making the product worse." },
+    { "type": "callout", "kind": "docs", "md": "The Prompt caching docs (platform.claude.com/docs/en/build-with-claude/prompt-caching) describe the mechanics: `cache_control: {\"type\": \"ephemeral\"}` marks the boundary of the cacheable prefix, reading from the cache costs a small fraction of the regular input price, and you can check that the cache works via the `cache_read_input_tokens` and `cache_creation_input_tokens` fields in usage. The Batch processing page states: batches are processed asynchronously and cost 50% of the standard price." },
+    { "type": "callout", "kind": "tip", "md": "Make it a habit: in every project, log the `usage` of each response. A week of logs answers questions that are otherwise settled by guesswork: what share of the cost is conversation history, whether the cache works (cache_read > 0?), which requests eat the budget." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What counts as a request's input tokens? Select all that apply.",
+      "options": [
+        "The system prompt",
+        "The entire conversation history that was sent",
+        "The tool definitions from the tools parameter",
+        "The answer the model generated"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Input is everything you sent: the system prompt, the full messages history, the tool schemas, documents. The model's answer is output tokens, and they're more expensive. That's why long history and heavy tool definitions hit the bill on every request — and that's what caching and summarization fight.",
+      "hint": "Separate what flies TO the server from what comes back FROM the server."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A developer turned on caching, but cache_read_input_tokens is always zero. Find the line that breaks the cache.",
+      "lang": "python",
+      "lines": [
+        "from datetime import datetime",
+        "",
+        "system_blocks = [{",
+        "    \"type\": \"text\",",
+        "    \"text\": f\"It is now {datetime.now()}. \" + BIG_RULES_PROMPT,",
+        "    \"cache_control\": {\"type\": \"ephemeral\"},",
+        "}]",
+        "",
+        "message = client.messages.create(",
+        "    model=\"claude-opus-4-8\",",
+        "    max_tokens=1024,",
+        "    system=system_blocks,",
+        "    messages=[{\"role\": \"user\", \"content\": question}],",
+        ")"
+      ],
+      "bugLineIndex": 4,
+      "explanation": "The cache is a byte-for-byte prefix match, and `datetime.now()` at the start of the system prompt changes the text with every request: the cache is written anew and never read (you pay for the write with no benefit from the read). The rule: nothing changeable in the cacheable part. If you need the time, pass it in the user message — after the cache boundary."
+    },
+    {
+      "type": "quiz",
+      "question": "Overnight you need to classify 40,000 tickets accumulated during the day. The answers are needed by morning. What's the cheapest way?",
+      "options": [
+        "Fire off 40,000 regular requests in a loop as fast as possible",
+        "Use the Batch API — asynchronous and half the price",
+        "Pick the most powerful model to do it all in one request",
+        "Glue all the tickets into one giant prompt"
+      ],
+      "correct": [1],
+      "explanation": "A classic for batches: the result isn't needed immediately, the volume is large — the Batch API gives a 50% discount and handles the queue itself. One giant prompt hits the context limit and jumbles the tickets, and \"the most powerful model\" is about quality, not price — for classification a light model is usually enough anyway.",
+      "hint": "The task's keywords: \"overnight\", \"by morning\", \"40 thousand\". Which API mode was made for exactly this?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Arrange the principles of an economical request in \"from structure to verification\" order: stable at the start → cache marker → variable at the end → control via usage. Drop the harmful advice.",
+      "blocks": [
+        "Place the stable part (rules, examples, tools) at the start of the request",
+        "At the boundary of the stable part put cache_control: {\"type\": \"ephemeral\"}",
+        "The variable part (the user's question, fresh data) goes at the end, after the cache boundary",
+        "After running, check usage: cache_read_input_tokens should become greater than zero"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Add the current time to the start of the system prompt for freshness",
+        "For reliability, always pick the most expensive model"
+      ],
+      "explanation": "The order reflects the main principle of the cache: an unchanging prefix → marker → changeable tail → verification that the cache is actually being read. The traps are two antipatterns from the lesson: a changeable time at the start of the prompt kills the cache with every request, and \"always the most expensive model\" is a refusal to route, paying the flagship rate where a light model would do."
+    },
+    {
+      "type": "quiz",
+      "question": "What principle should guide your choice of model for a task?",
+      "options": [
+        "Always take the most powerful — quality is everything",
+        "Always take the cheapest — cost is everything",
+        "Start from the task: run a test set on neighboring models and take the cheapest of the ones that cope",
+        "Take the model with the newest version number"
+      ],
+      "correct": [2],
+      "explanation": "Model choice is an engineering decision made on data: gather a test set, run it through models of different classes, compare quality and price. Classification is often fine with a light model, complex analysis needs the flagship — and within one product you can route tasks between models. \"Always the most powerful\" and \"always the cheapest\" both leave money or quality on the table.",
+      "hint": "Recall the word \"routing\" — what does it tell you about the one and only right model?"
+    }
+  ],
+  "reward": { "cardId": "card-api-economy", "badgeId": null }
+}

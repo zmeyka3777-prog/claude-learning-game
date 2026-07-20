@@ -1,0 +1,109 @@
+{
+  "id": "eco-org",
+  "world": "world-8-ecosystem",
+  "order": 6,
+  "title": "Claude in the organization",
+  "subtitle": "Roles, admin settings, and access management: how a company rolls out Claude without chaos",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Admin setup — Claude Code Docs", "url": "https://code.claude.com/docs/en/admin-setup" },
+    { "title": "Compliance & Security — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A personal account and a corporate one are different worlds" },
+    { "type": "text", "md": "Everything you've done so far could live in a personal account: your chats, your projects, your connectors. But when Claude comes to a company of fifty or five thousand people, questions of a different order arise: who manages the accounts? Who decides which connectors are allowed? Where does data from corporate chats go? Who pays and how do they control the spend?\n\nThe answers to these make up Claude's **corporate perimeter**: plans for teams and organizations with centralized management. Understanding it is useful not only to admins: to a rank-and-file employee it explains why 'Claude at work is set up differently than at home', and to someone championing Claude in their company — where a rollout begins." },
+    { "type": "heading", "text": "Roles: who can do what" },
+    { "type": "text", "md": "A corporate account is arranged hierarchically. The exact role names depend on the plan, but the logic is universal:\n\n- **Owner** — the top person for the account: billing, critical settings, appointing admins. Usually one or two people.\n- **Administrators** — manage users (inviting, disabling), settings, and policies: what's allowed, what isn't.\n- **Members** — employees who use Claude within the set policies.\n\nWhy this is needed: an employee left — the admin disables them in a minute, and access to corporate data is closed. A new team joins — the admin invites it as a batch, with the rules already configured. Without roles this turns into a zoo of personal accounts that nobody controls." },
+    { "type": "heading", "text": "Policies: central control of capabilities" },
+    { "type": "text", "md": "The second pillar of the corporate perimeter is **policies**: the administrator centrally decides which capabilities are available to employees. Typical levers:\n\n- **Feature access:** which capabilities are enabled for the organization.\n- **Connectors and integrations:** which are allowed — so that employees don't connect just anything to corporate data (recall the verified rule from World 2 — here it becomes a company policy).\n- **For Claude Code:** managed settings — the organization can centrally set agent permissions, a tool allowlist, and other security parameters that an employee can't weaken locally.\n- **Authentication:** login through corporate SSO — access to Claude automatically follows the fate of the employee's corporate account.\n\nThe point of policies isn't 'forbid everything' but to level up security: not relying on each of a thousand employees having read the lesson on injections, but setting safe bounds once at the organization level." },
+    { "type": "heading", "text": "Data: what happens to it" },
+    { "type": "text", "md": "The corporate customer's main question is 'where does our data go?'. The answer comes together from several parts:\n\n- **Commercial terms.** Corporate plans have their own data-handling guarantees, fixed in the contract, including the approach to using data for training models.\n- **Zero data retention (conceptually).** For organizations with heightened requirements there's a mode in which request data isn't stored on the provider's side after processing: processed — answered — not stored. This is a matter of a separate agreement, not a checkbox in the settings, but knowing such a mode exists is important — it's what removes the objections of the strictest security teams.\n- **Certifications and compliance.** Conformance with industry security standards is described in the Compliance & Security section and in Anthropic's Trust documentation — that's where to send the security team for details.\n\nFor you as an employee the practical takeaway is: work data goes in the corporate account, where the company's contractual guarantees apply, not in a personal one, where there are none." },
+    { "type": "text", "md": "And one more practical point: corporate policies are sometimes perceived as 'they've forbidden us everything'. It's more useful to see it differently — a policy is a map of what's allowed: which connectors are approved, which data can be uploaded, whom to go to with a request to 'add tool X'. If the tool you need isn't on the list — that's not a dead end but a reason for a request to the admin with a justification: lists of what's allowed in living organizations are regularly expanded." },
+    { "type": "example",
+      "bad": "A company 'rolled out AI': every employee set up a personal account, some on personal email, everyone uploads client data, the security team learns about it from the news, and departed employees keep their access.",
+      "good": "A company connected a corporate plan: login through SSO, the admin configured the allowed connectors and Claude Code policies, employees went through a briefing on 'what can be uploaded', the security team has a contract with data-handling guarantees, and offboarding disables access automatically.",
+      "explanation": "'Shadow' rollout through personal accounts is the most common and most dangerous scenario: corporate data with no contract, access controlled by nobody. The corporate perimeter solves this systematically: roles, policies, SSO, and contractual guarantees instead of hoping for people's conscientiousness."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Admin setup page of the Claude Code documentation (code.claude.com/docs/en/admin-setup) describes deployment in an organization: user management and centralized managed settings that set security policies for all employees. The Compliance & Security section of the support.claude.com Help Center is the starting point for questions of data handling and standards conformance." },
+    { "type": "callout", "kind": "warning", "md": "If your company has no corporate Claude but you want to work — don't quietly drag work data into a personal account. This creates risks for both you and the company. The right path: show the value on data that isn't confidential, and initiate a proper rollout through IT." },
+    { "type": "callout", "kind": "tip", "md": "Want to become a 'Claude champion' in your company? Start small: gather 3–5 tasks of colleagues that Claude solves in minutes, show them in a demo, and come to the IT director not with 'let's buy AI' but with 'here's the calculated time savings and here's what we need from a corporate plan'." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Why does a company need a corporate Claude plan instead of employees' personal accounts?",
+      "options": [
+        "Only for the volume discount",
+        "Centralized management: roles and offboarding, access policies, SSO, and contractual data-handling guarantees",
+        "A corporate plan is the only way to use connectors",
+        "Personal accounts work slower"
+      ],
+      "correct": [1],
+      "explanation": "The core of the corporate perimeter is manageability: the admin controls users and policies, login goes through SSO, and data handling is fixed by contract. A 'zoo' of personal accounts gives none of this.",
+      "hint": "Recall the problems the company from the bad example had."
+    },
+    {
+      "type": "quiz",
+      "question": "What does zero data retention mode mean conceptually?",
+      "options": [
+        "Employees' data is stored forever for history",
+        "Request data isn't stored on the provider's side after processing: processed — answered — not stored",
+        "Employees are forbidden to save their chats",
+        "The model forgets its base knowledge after every answer"
+      ],
+      "correct": [1],
+      "explanation": "Zero data retention is a mode for organizations with heightened requirements: the content of requests isn't stored at the provider after processing. This is a matter of an agreement between the company and Anthropic — and the main answer to strict security teams' objections.",
+      "hint": "Translate it literally: 'zero data retention' — what doesn't happen to the data?"
+    },
+    {
+      "type": "quiz",
+      "question": "What levers does an administrator of corporate Claude have? Select all that apply.",
+      "options": [
+        "Manage users: invite and disable employees",
+        "Set policies: which connectors and capabilities are allowed",
+        "Centrally manage Claude Code security settings that an employee can't weaken locally",
+        "Read all of employees' personal conversations in their personal accounts outside the organization"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Users, capability policies, and managed security settings — that's exactly the organization's admin perimeter. Personal accounts outside the organization aren't part of it.",
+      "hint": "The admin manages the corporate perimeter — what lies beyond its bounds?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A draft memo for employees about corporate Claude. One statement is dangerously wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Login to corporate Claude is through the work SSO account.",
+        "2. The allowed connectors are determined by the administrator — see the list in the internal wiki.",
+        "3. We handle client data only in the corporate account, where the contractual guarantees apply.",
+        "4. If the corporate limit runs out, keep working with client data in your personal account — it's the same thing.",
+        "5. On departure, access to corporate Claude is disabled automatically along with the work account."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Line 4 destroys the whole point of the corporate perimeter: a personal account has none of the company's contractual guarantees, no admin policies, no access control — moving client data there is off-limits under any limits. The other points are normal corporate hygiene."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you're an employee who wants to propose that management roll out corporate Claude. Ask Claude to help prepare the argument.",
+      "steps": [
+        {
+          "expect": ["roll out", "corporate", "argument", "management", "propos", "director", "justif", "plan", "help", "pitch"],
+          "minMatches": 1,
+          "claudeReply": "I'll help put together the proposal. 📋 A skeleton of the argument for management:\n\n1. **Problem:** employees already use AI — spontaneously, in personal accounts, with no data control.\n2. **Value:** 3–5 concrete tasks with calculated time savings (this is stronger than any general words).\n3. **Manageability:** a corporate plan = roles, connector policies, SSO, offboarding.\n4. **Security:** contractual data-handling guarantees; for strict requirements a zero data retention mode exists.\n\nWhich point shall we start with? I can help calculate the savings — name a couple of tasks colleagues do by hand.",
+          "failHint": "Ask it to help prepare arguments for management about rolling out corporate Claude."
+        },
+        {
+          "expect": ["report", "email", "summar", "table", "docum", "saving", "task", "hour", "time", "calculat"],
+          "minMatches": 1,
+          "claudeReply": "Let's count on an example. 🧮 Suppose: a weekly project summary — 10 managers × 2 hours = 20 hours a week; with Claude — 20 minutes each to check a draft, for about 3.5 hours total. Savings — 16+ hours a week on one task.\n\nGather 3–5 such tasks — and you have a ready first slide. Then follow the skeleton: the point about spontaneous use (the risk), the point about manageability (the solution), the point about data guarantees (for the security team). Final tip: ask not to 'buy AI' but for a pilot on one team with measurable metrics — that's easy for management to say 'yes' to.",
+          "failHint": "Name a colleagues' task where savings can be calculated: reports, emails, summaries, breaking down documents."
+        }
+      ],
+      "successMessage": "You have a rollout champion's plan: the problem of spontaneous use → calculated value → manageability → data guarantees → a pilot proposal."
+    }
+  ],
+  "reward": { "cardId": "card-eco-org", "badgeId": null }
+}

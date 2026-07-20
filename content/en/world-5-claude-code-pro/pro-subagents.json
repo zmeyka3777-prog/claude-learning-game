@@ -1,0 +1,104 @@
+{
+  "id": "pro-subagents",
+  "world": "world-5-claude-code-pro",
+  "order": 3,
+  "title": "Subagents",
+  "subtitle": "Delegate subtasks to helpers with a clean context — and work in parallel",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Subagents — Claude Code Docs", "url": "https://code.claude.com/docs/en/sub-agents" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "One agent — one pair of hands" },
+    { "type": "text", "md": "You already know from the context-window lesson: a session's memory isn't infinite. Ask an agent to \"find all the places where payments are handled\" in a big project, and it will read dozens of files. The answer takes three lines, but every file it read settles into the session's context and takes up space until the very end. A few searches like that and the session is \"tired,\" even though the real work hasn't started yet.\n\nThe solution is **subagents**. A subagent is a separate helper agent that your main session launches for a specific subtask. It has **its own, clean context window**: it reads its dozens of files on its own, draws conclusions — and returns only a final report to the main session. The grunt work stays offstage, your context stays clean." },
+    { "type": "heading", "text": "Three superpowers" },
+    { "type": "table",
+      "headers": ["Ability", "What it gives you"],
+      "rows": [
+        ["Context isolation", "The subagent \"dirties\" its own window, not yours: only the result reaches the main session"],
+        ["Parallelism", "Several subagents work at once: one searches, another checks, a third writes"],
+        ["Specialization", "A subagent can be given its own role, instructions, and toolset — for example, a read-only reviewer"]
+      ]
+    },
+    { "type": "text", "md": "Using subagents is easy: you just ask for them in plain language. \"Send a subagent to study how authorization is set up in the project,\" \"launch two subagents in parallel: one to find all the database calls, the other all the external APIs.\" Claude will launch the helpers itself, wait for their reports, and merge them together. Sometimes it delegates without being asked — when it sees a subtask is bulky and worth farming out.\n\nBesides one-off helpers there are **named subagents** — presets with their own role. They're described by files in the project's `.claude/agents/` folder (or `~/.claude/agents/` for personal ones): each has its own name, a description of \"when to call me,\" and instructions; you can also restrict its toolset. The classic example is a `code-reviewer` subagent that can read code but not edit it: it physically cannot \"fix\" the code instead of reviewing it." },
+    { "type": "code", "lang": "markdown", "title": ".claude/agents/code-reviewer.md (the idea; check the format against the docs)", "code": "---\nname: code-reviewer\ndescription: Reviews code for bugs and readability. Call after code is written or changed.\ntools: reading files and searching only\n---\n\nYou are a strict reviewer. Check the changes:\n1. Logic errors and edge-case handling\n2. Readability: names, duplication, needless complexity\n3. Security: secrets, input validation\nReturn a list of comments in descending order of importance. Fix nothing yourself." },
+    { "type": "heading", "text": "When a subagent beats doing it all in one session" },
+    { "type": "text", "md": "The signs of a task for a subagent: **a lot of grunt work, a short result**. Search the project and return a list of places; read through a long log and name the cause of the error; check the changes and give comments — in every case the intermediate reading spans thousands of lines, while all you need out of it is one conclusion.\n\nThe second sign is **independent chunks** that can be done at once: research three modules, test five hypotheses about a bug's cause. Parallel subagents will manage faster than a single session taking them in turn.\n\nAnd when is a subagent a bad idea? When the task is tiny (\"rename a variable\" — faster to do on the spot) and when the steps **depend on one another**: subagents don't see your session's context and don't talk to each other directly, so a chain of related edits is better run in the main session. And remember the cost: each subagent is a full-fledged agent that spends tokens; a dozen helpers for something trivial is using a cannon to swat a fly.\n\nA simple check before delegating: imagine the helper's report fits in five lines, while its grunt work fills fifty files. A ratio in favor of the report — delegate freely. The reverse ratio (\"a minute of work, ten minutes of explaining\") — do it in the main session." },
+    { "type": "example",
+      "bad": "Launch a subagent to rename the function getData to fetchOrders in the file api.ts.",
+      "good": "Launch two subagents in parallel: the first to find all the places in the project where environment variables are read, the second all the places where logs are written. From each I want a short list: file, line, what's happening.",
+      "explanation": "The first task is tiny and touches one file — a subagent is a needless middleman here: the main session will make the edit faster than a helper can even launch. The second is ideal for delegation: two independent project-wide searches, mountains of grunt reading, and all you need back are compact lists. Note the wording too: each subagent has a clear goal and a specified report format."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Subagents page) describes subagents as specialized helpers with their own context window, their own instructions, and a configurable toolset. Named subagents are defined by files with frontmatter in `.claude/agents` (project) and `~/.claude/agents` (personal); Claude delegates tasks to them automatically based on the description or by an explicit request." },
+    { "type": "callout", "kind": "tip", "md": "When you phrase a task for a subagent, remember: it hasn't seen your conversation. It has no session context — only your wording. So include everything it needs in the task: what to look for, where, what counts as the result. The rule is the same as for a good prompt, only stricter: you can't \"clarify later\" with a subagent." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "The main benefit of a subagent having its own context window:",
+      "options": [
+        "The subagent works for free",
+        "The grunt reading of dozens of files stays in its window, while only the final report returns to the main session",
+        "The subagent is smarter than the main agent",
+        "The subagent can work without the internet"
+      ],
+      "correct": [1],
+      "explanation": "Context isolation is the essence of subagents: the helper \"dirties\" its own memory, not yours. The main session gets three lines of output instead of thousands of lines of files read, and stays fresh for the main work. The subagent doesn't get any smarter, and it spends tokens like any agent.",
+      "hint": "What happens to the dozens of files that were read — where do they settle?"
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in a Claude Code session in the large shop-api project. You need to understand how authorization is set up, but you don't want to clutter the session's context by reading a pile of files. Delegate the research to a subagent (ask in plain language).",
+      "steps": [
+        {
+          "expectPattern": "(subagent|sub-agent|delegate|send an agent|launch an agent|helper)",
+          "output": "● Launching a subagent to research authorization...\n\n  ⏺ Subagent working: reading src/auth/, middleware, config...\n     (23 files read in its own context)\n\n● Subagent's report:\n  • Login: JWT tokens, issued in src/auth/login.ts\n  • Verification: middleware/verify.ts on every request\n  • Roles: admin/manager/user, permission matrix in src/auth/roles.ts\n\n  Only this result reached our session — the context stayed clean.",
+          "failHint": "Ask it to delegate in your own words, for example: \"Send a subagent to study how authorization is set up and return a brief report.\""
+        }
+      ],
+      "successMessage": "Excellent: 23 files of grunt work stayed in the subagent's context, and you got a compact report. That's exactly how you save the main session's context."
+    },
+    {
+      "type": "quiz",
+      "question": "For which two tasks is a subagent a poor choice? (pick two)",
+      "options": [
+        "Rename one variable in one file",
+        "Search the whole project and return a list of places that handle payments",
+        "A chain of edits where each step depends on the result of the previous one and on the conversation's context",
+        "Test three independent hypotheses about a bug's cause in parallel"
+      ],
+      "correct": [0, 2],
+      "explanation": "A tiny edit is faster done on the spot — a subagent is a needless middleman and needless tokens here. A connected chain shouldn't be split up either: subagents don't see your session's context and don't talk to each other directly. But a big search with a short result and independent parallel checks are textbook tasks for delegation.",
+      "hint": "A subagent is strong where the work is bulky, the result is short, and the chunks are independent."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a good task for a researcher subagent: goal, boundaries, report format. Toss the extra block overboard.",
+      "blocks": [
+        "Task: find all the places in the project where the code calls external APIs.",
+        "Boundaries: look only in the src/ folder, skip tests and examples.",
+        "Report format: a list of \"file — line — which API and why,\" no more than one page."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "Context: well, you remember what we talked about earlier in this session."
+      ],
+      "explanation": "A subagent starts from a blank slate: it has only your wording, it hasn't seen any of \"our conversation.\" So the task must be self-contained: what to look for, where to look, in what form to return the result. The block \"you remember what we talked about\" is a trap: the subagent doesn't remember, and such a task will fail."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to the mission later.**\n\n1. Run `claude` in the folder of any non-empty project.\n2. Ask: \"Launch two subagents in parallel: one to map out the project structure, the other to find all TODOs and FIXMEs in the code. From each — a brief report.\"\n3. Watch: the agent will report launching the helpers and return two merged reports.\n4. Bonus: ask it to create a named code-reviewer subagent in .claude/agents/ — with the instruction \"comments only, fix nothing\" — and look at which file appears.",
+      "checklist": [
+        "Both subagents finished, I got two reports",
+        "The reports are brief summaries, not walls of files read",
+        "I understand why this saved the main session's context",
+        "Bonus: the subagent file in .claude/agents/ was created and read"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-subagents", "badgeId": null }
+}

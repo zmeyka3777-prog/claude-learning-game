@@ -1,0 +1,111 @@
+{
+  "id": "cc-commands",
+  "world": "world-4-claude-code",
+  "order": 5,
+  "title": "Slash commands and the CLI",
+  "subtitle": "Your session control panel: /help, /clear, /compact and launching from the terminal",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "CLI reference — Claude Code Docs", "url": "https://code.claude.com/docs/en/cli-reference" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Two languages for talking to Claude Code" },
+    { "type": "text", "md": "With Claude Code you speak two languages. The first is plain human speech: \"add a button,\" \"fix the test,\" \"tell me what changed.\" The second is the language of **commands** — short service instructions. Commands aren't about tasks; they're about controlling the tool itself: clear the history, look at the help, resume yesterday's work. It's like driving a car: with the wheel you steer toward your destination, but with the buttons on the dashboard you control the car itself — headlights, heater, wipers.\n\nCommands live in two places:\n- **slash commands** — typed inside a session, starting with a `/`;\n- **CLI arguments** — added to the `claude` command when you launch it from the terminal.\n\nThe difference is simple: slash commands control the **current** session from the inside, while CLI arguments decide **how the session starts**. They're also hard to mix up visually: you type `/help` in the dialog line with Claude, but `claude -c` in a plain terminal, before launching.\n\nKnowing five or six commands turns \"just a chat in the terminal\" into a controllable working tool: you stop losing sessions, clear the memory in time, and quickly find help." },
+    { "type": "heading", "text": "The main slash commands" },
+    { "type": "table",
+      "headers": ["Command", "What it does", "When to use it"],
+      "rows": [
+        ["/help", "Help: list of commands and hints", "You forgot a command or want to learn the possibilities"],
+        ["/init", "Scans the project and creates a draft CLAUDE.md", "First launch in a new project"],
+        ["/clear", "Fully clears the session history", "You're switching to a new, unrelated task"],
+        ["/compact", "Compresses the history into a short summary, keeping the essence", "The session is long, but you still need the context"]
+      ]
+    },
+    { "type": "text", "md": "The pair `/clear` and `/compact` deserves a separate look, because people confuse them.\n\n**`/clear`** means \"start with a clean slate\": the entire dialog history is erased, the agent forgets everything you discussed in the session (except CLAUDE.md — that's always loaded). Use it when the previous task is finished and its details are no longer needed.\n\n**`/compact`** means \"compress, but don't forget\": the long history is replaced by a short summary, the essence of the work is preserved, and room in the session's memory is freed up. Use it in the middle of a large task, when the history has grown but you can't abandon the context. There's a detailed explanation of why this matters in the lesson on the context window.\n\nNeither command touches your project files — they only manage the dialog's memory. And neither one cancels CLAUDE.md: the project memory is always loaded, no matter what happens to the history." },
+    { "type": "heading", "text": "CLI: control at launch" },
+    { "type": "text", "md": "The second language is command-line arguments. The most useful ones early on:\n\n- **`claude`** — start a normal interactive session;\n- **`claude \"task\"`** — start a session and immediately pass the first task as text;\n- **`claude -c`** (or `--continue`) — **resume the last session** in this folder: its entire history comes back, as if you never left;\n- **`claude --resume`** — choose which of the previous sessions to resume, if there were several.\n\nThe `-c` flag is the main answer to a classic beginner's woe: \"I closed the terminal — I lost all my work.\" You didn't: sessions are saved, and you can resume with a single command.\n\nLaunching with a task in quotes — `claude \"run the tests\"` — is handy for quick errands: the session starts and immediately gets to work, without waiting for you to type the first message. And the difference between `-c` and `--resume` is remembered like this: `-c` silently continues the **last** session, `--resume` shows a **list** of past sessions and lets you choose. If you were working on two tasks in parallel — you need exactly `--resume`." },
+    { "type": "code", "lang": "bash", "title": "Typical launches", "code": "# A normal session\nclaude\n\n# A session that starts with a task right away\nclaude \"run the tests and tell me what's failing\"\n\n# Go back to the last session in this folder\nclaude -c\n\n# Choose a session from the list of past ones\nclaude --resume" },
+    { "type": "example",
+      "bad": "(accidentally closed the terminal) Well, that's it, it's gone... I'll launch claude again and explain everything from scratch: we were building the cart, already fixed three files, agreed not to touch the styles...",
+      "good": "(accidentally closed the terminal) claude -c — and we continue from the same spot: the agent remembers the cart task, the edits, and the agreements.",
+      "explanation": "Session history doesn't die along with the terminal window. Re-explaining isn't just ten lost minutes: as you retell it, you're bound to miss details, and the agent will start solving a slightly different task. The -c (--continue) flag brings back the exact history — with the same context, agreements, and intermediate results."
+    },
+    { "type": "callout", "kind": "docs", "md": "The full list of slash commands and CLI arguments is gathered in the reference at code.claude.com/docs (the CLI reference page). It also describes the session's interactive capabilities and additional launch flags — from choosing a model to the non-interactive mode for scripts. Keep the page bookmarked: there are far more commands than you need in your first week, and it's better to pick them up as you need them." },
+    { "type": "callout", "kind": "tip", "md": "Don't memorize all the commands at once — remember two \"doors\": /help inside a session will show you the other slash commands, and claude -c from the outside will bring you back to the last session. These two doors cover 90% of a beginner's situations. The rest of the commands will come on their own: you needed a capability — you looked in /help or the reference — you remembered it, because you actually used it." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in an active Claude Code session. First open the command help, and then — since the old task is finished — fully clear the session history.",
+      "steps": [
+        {
+          "expectPattern": "^/help$",
+          "output": "Claude Code Help\n\n  Available commands (main ones):\n  /init     — create a draft CLAUDE.md\n  /clear    — clear the session history\n  /compact  — compress the history, keeping the essence\n  /help     — this help\n\n  Phrase tasks in plain text. Exit: exit\n\n> _",
+          "failHint": "The help is opened by the /help command — with a slash at the start."
+        },
+        {
+          "expectPattern": "^/clear$",
+          "output": "✔ Session history cleared.\n\n  Starting with a clean slate. CLAUDE.md is still loaded —\n  the agent remembers the project's commands and rules.\n\n> _",
+          "failHint": "A full history clear is done by /clear. Don't confuse it with /compact — that one compresses rather than erases."
+        }
+      ],
+      "successMessage": "Great! Notice an important detail in the output: /clear erased the dialog history, but CLAUDE.md didn't go anywhere — the project memory is loaded in every session."
+    },
+    {
+      "type": "quiz",
+      "question": "How does /compact differ from /clear?",
+      "options": [
+        "It doesn't — they're synonyms",
+        "/compact compresses the history into a short summary, keeping the essence; /clear erases the history entirely",
+        "/compact deletes project files, /clear deletes only the history",
+        "/clear works faster, but the result is the same"
+      ],
+      "correct": [1],
+      "explanation": "/clear is a clean slate: the history disappears entirely, which fits when you switch to a new task. /compact is compression: the long history is replaced by a summary, and the agent keeps remembering the essence of the work. Neither command touches the project files — they only manage the session's memory.",
+      "hint": "One command means \"forget everything,\" the other means \"remember the main thing, freeing up room.\""
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Yesterday you were working with Claude Code on an online store's shopping cart and closed the terminal halfway through. Today you're back in the project folder. Resume exactly yesterday's session with a single command.",
+      "steps": [
+        {
+          "expectPattern": "^claude (-c|--continue)$",
+          "output": "✻ Resuming the last session in ~/projects/shop\n\n  History restored: task \"recalculate the total in the cart\",\n  files cart.js and cart.test.js changed, tests were passing.\n\n● Welcome back! We left off with the discount display still\n  to be added. Shall we continue?\n\n> _",
+          "failHint": "You need to launch claude with the flag for resuming the last session: -c or --continue."
+        }
+      ],
+      "successMessage": "Exactly right: claude -c (or claude --continue) brought back the session with its whole history — the task, the edits, and the agreements. You didn't have to explain anything again."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A beginner's cheat sheet of commands. One line describes a command incorrectly — find it.",
+      "lang": "markdown",
+      "lines": [
+        "/help — show the help and the list of commands.",
+        "/init — scan the project and create a draft CLAUDE.md.",
+        "/clear — make a backup copy of the project on disk.",
+        "claude -c — resume the last session in the current folder.",
+        "claude \"task\" — start a session and immediately pass a task."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "/clear has nothing to do with files or backups — the command clears the current session's history, and only that. The project on disk stays untouched. Backups are a Git thing entirely (upcoming lessons), not a slash command. The other lines of the cheat sheet are correct."
+    },
+    {
+      "type": "quiz",
+      "question": "Your project had several sessions, and you need to resume not the last one but the one from two days ago. What do you use?",
+      "options": [
+        "claude --resume — choose the needed session from a list",
+        "claude -c — it always asks which session to open",
+        "/init — it restores old sessions",
+        "No way: only the very latest session is available"
+      ],
+      "correct": [0],
+      "explanation": "The split is this: -c (--continue) silently resumes the last session, while --resume shows a list of past sessions and lets you choose the one you need. /init has nothing to do with it here — it creates CLAUDE.md.",
+      "hint": "There's a flag for \"resume the last one\" and a flag for \"choose from a list.\""
+    }
+  ],
+  "reward": { "cardId": "card-cc-commands", "badgeId": null }
+}

@@ -1,0 +1,114 @@
+{
+  "id": "cc-claude-md",
+  "world": "world-4-claude-code",
+  "order": 4,
+  "title": "CLAUDE.md — Project Memory",
+  "subtitle": "One file that saves you from re-explaining things in every session",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Memory (CLAUDE.md) — Claude Code Docs", "url": "https://code.claude.com/docs/en/memory" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The problem: every session starts from a blank slate" },
+    { "type": "text", "md": "Yesterday you spent half an hour explaining to the agent how the project runs, which commands run the tests, and that the `legacy/` folder must not be touched. Today you opened a new session — and Claude remembers none of it: sessions don't inherit each other's memory. Tomorrow will be the same, and the day after — explanations on repeat, every day from scratch.\n\nSounds like a life sentence? No — like a problem with a ready-made solution. Claude Code has a mechanism for persistent project memory: the file **CLAUDE.md**. Everything important that you write into it once, the agent will know in every new session — automatically, without reminders." },
+    { "type": "heading", "text": "What CLAUDE.md is" },
+    { "type": "text", "md": "**CLAUDE.md** is an ordinary text file in Markdown format that sits in the root of the project. When a session starts in that folder, Claude Code automatically reads it and treats everything written there as instructions.\n\nIn essence it's a \"handbook for a new employee\", except the employee is the agent: how to build the project, how to check that nothing broke, what the team's rules are, where not to poke. Write it once — it works forever. And the handbook is shared: if the project is a team one and lives in Git, CLAUDE.md is committed together with the code — and every team member's agent plays by the same rules.\n\nBesides the project file, there's also a **personal global** one: `~/.claude/CLAUDE.md` in your home folder. It applies across all your projects at once — that's where you put personal preferences, for example \"answer in English\" or \"explain what you're doing in simple terms\"." },
+    { "type": "heading", "text": "What to write in it" },
+    { "type": "table",
+      "headers": ["Section", "What to write", "Example"],
+      "rows": [
+        ["Commands", "How to build, run, test the project", "\"Tests: npm test, run: npm run dev\""],
+        ["Structure", "What sits where, briefly", "\"Data — in data/, pages — in src/pages/\""],
+        ["Code rules", "Conventions and style adopted in the project", "\"Comments — in English, no abbreviations in names\""],
+        ["Off-limits zones", "What not to touch and why", "\"Don't edit the migrations/ folder by hand\""],
+        ["Gotchas", "Non-obvious things people trip over", "\"The server listens on port 5000, not 3000\""]
+      ]
+    },
+    { "type": "code", "lang": "markdown", "title": "Example of a compact CLAUDE.md", "code": "# CLAUDE.md — recipes site\n\n## Commands\n- Run: npm run dev\n- Tests: npm test (run after every change)\n- Build: npm run build\n\n## Structure\n- Recipes — JSON files in data/\n- Pages — src/pages/, components — src/components/\n\n## Rules\n- Interface text — in English\n- Don't edit data/archive/ — those are backups\n- Before committing, make sure the tests pass" },
+    { "type": "heading", "text": "/init — a draft in a minute" },
+    { "type": "text", "md": "You don't have to write CLAUDE.md from scratch: the command **`/init`** does it for you. Type it in a session — Claude will scan the project (folder structure, configuration, scripts, README) and generate a draft CLAUDE.md itself, with commands and a description of how the project is built.\n\nThe draft is a start, not a finish: go through it and add what you can't read off the files — the team's rules, off-limits zones, non-obvious gotchas. Check the reverse too: whether /init wrote something unnecessary or inaccurate — you know the project better than any scan.\n\nAnd keep the file **short**: it loads into every session, so \"filler\" eats up space in the agent's memory and dilutes what matters. The ideal CLAUDE.md is a page or a page and a half of specifics, not a novel." },
+    { "type": "example",
+      "bad": "# About the project\nOur project started in 2019, when founder Sergey decided... (three pages of company history, mission, values). Code should preferably be written well.",
+      "good": "# CLAUDE.md\n## Commands\nTests: npm test. Run: npm run dev.\n## Rules\nText — in English. Don't touch the migrations/ folder. Run the tests after edits.",
+      "explanation": "The first version takes up a ton of space in the agent's memory but carries no useful information: company history doesn't help write code, and \"preferably well\" isn't a rule — it can't be followed or broken. The second version is all verifiable specifics: commands you can run, and rules you can comply with. Those are exactly the kind of instructions the agent actually applies." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Memory page) describes the memory levels: the project CLAUDE.md in the repository root — shared instructions for everyone who works with the project, and personal memory in your home folder — your preferences across all projects. Memory files load automatically at the start of a session; it's recommended to keep them concrete and structured — lists, short rules, commands." },
+    { "type": "callout", "kind": "warning", "md": "Never write secrets into CLAUDE.md: passwords, API keys, tokens. The file sits in the project and usually ends up in Git — and together with the repository the secrets will travel to where strangers can see them. For secrets there are environment variables and the .env file, which isn't committed to Git." },
+    { "type": "callout", "kind": "tip", "md": "Top up the memory right as you work: noticed the agent made a mistake because it didn't know a rule — ask it directly: \"Add a rule to CLAUDE.md: run npm test before committing\". That way the file grows out of real situations, not out of fantasies about what \"might come in handy\"." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in a Claude Code session in a project that doesn't have a CLAUDE.md yet. Generate a draft of the project memory with the /init command, and when the agent has the file ready — approve its creation (y or \"yes\").",
+      "steps": [
+        {
+          "expectPattern": "^/init$",
+          "output": "● Analyzing the project to create CLAUDE.md...\n\n  Reading: package.json, folder structure, README.md, configuration...\n\n● Draft ready. Included sections:\n  • Commands: run, tests, build (found in package.json)\n  • Structure: a brief map of the project folders\n  • Detected code conventions\n\n⚠ Create the file CLAUDE.md in the project root? (y/n) _",
+          "failHint": "A draft of the project memory is generated by a special slash command: /init"
+        },
+        {
+          "expectPattern": "^(y|yes|create|make|allow|approve|1)$",
+          "output": "✔ The CLAUDE.md file has been created.\n\n● Done! Now every new session in this folder will start\n  knowing the project's commands and structure.\n\n  Tip: go through the file and add what isn't visible in the code —\n  the team's rules and off-limits zones.",
+          "failHint": "The agent is asking permission to create the file — type y or \"yes\"."
+        }
+      ],
+      "successMessage": "Done: /init scanned the project and created a draft CLAUDE.md. Remember that the draft is worth topping up by hand — with rules and gotchas you can't read off the files."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "In front of you is a CLAUDE.md, line by line. One line in it is dangerous and shouldn't be there. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "# CLAUDE.md — online store",
+        "Tests: npm test, run: npm run dev.",
+        "Interface text — in English.",
+        "Database password: qwerty123 — use it to connect.",
+        "Don't edit the migrations/ folder by hand."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Secrets have no place in CLAUDE.md: the file sits in the project and will almost certainly end up in Git — and the password will travel along with it to everyone who has access to the repository. Passwords and keys are kept in environment variables or in .env, which isn't committed. The other lines are exemplary content: commands, rules, off-limits zones."
+    },
+    {
+      "type": "quiz",
+      "question": "When does Claude Code read CLAUDE.md?",
+      "options": [
+        "Only if you ask: \"read CLAUDE.md\"",
+        "Automatically at the start of every session in the project folder",
+        "Once, when Claude Code is installed",
+        "Never — the file is only for people"
+      ],
+      "correct": [1],
+      "explanation": "That's the whole value: the file loads automatically at the start of every session, so what's written in it doesn't need to be repeated. Fix the commands and rules once — and any future session starts work already \"in the know\".",
+      "hint": "CLAUDE.md is called project memory precisely because you don't need to remind it about the file."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the contents of a good CLAUDE.md for a \"blog\" project: commands first, then structure, then rules. Leave the extra blocks out.",
+      "blocks": [
+        "## Commands: run — npm run dev, tests — npm test, build — npm run build.",
+        "## Structure: articles — in content/posts/, page templates — in src/templates/.",
+        "## Rules: text in English; run tests after edits; don't publish the content/drafts/ folder."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "## History: our blog was founded in 2021, and it was an amazing story...",
+        "## Access: the analytics API key — sk-live-8842, handy for integrations."
+      ],
+      "explanation": "A good CLAUDE.md is commands, a project map, and verifiable rules: exactly what the agent needs in every session. Project history is ballast that takes up memory and helps with nothing. And the block with the API key is dangerous: secrets in CLAUDE.md sooner or later end up in Git. Keys belong in .env, not in project memory."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **If Claude Code isn't installed yet — skip the mission, you'll come back to it later.**\n\n1. Open the terminal in the folder of any of your projects (or in a test folder with a couple of files) and launch `claude`.\n2. Type `/init` and wait for the CLAUDE.md draft; approve the file creation.\n3. Read what came out and add by hand (or ask Claude to add) at least one rule the agent couldn't have learned from the files — for example \"answer in English\" or \"don't touch folder X\".\n4. End the session, launch `claude` again, and ask: \"What project rules do you know?\" — confirm that the new session remembers your rule.",
+      "checklist": [
+        "The CLAUDE.md draft was created via /init",
+        "I added at least one rule of my own",
+        "There's not a single password or key in the file",
+        "The new session knows the rule without reminders — the memory works"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-cc-claude-md", "badgeId": null }
+}

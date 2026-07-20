@@ -1,0 +1,106 @@
+{
+  "id": "api-prompting",
+  "world": "world-7-api-sdk",
+  "order": 3,
+  "title": "Prompt engineering, systematically",
+  "subtitle": "XML tags, few-shot examples, chain-of-thought, and role — the engineering approach",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Prompt engineering overview — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" },
+    { "title": "Claude prompting best practices — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why prompting in the API is engineering" },
+    { "type": "text", "md": "In a chat, a bad prompt costs one follow-up. In an app, a prompt runs **thousands of times with no human nearby**: every percent of errors means real users getting bad answers. That's why in the API a prompt isn't a \"message\" but part of the code: it's designed, versioned, and tested.\n\nThe basic formula from the first worlds hasn't gone anywhere — context, task, format, role. But a developer gains systematic techniques that make a prompt predictable: **XML tags** for structure, **few-shot examples** for format, **chain-of-thought** for complex reasoning. Let's go through each." },
+    { "type": "heading", "text": "XML tags: mark up your prompt like data" },
+    { "type": "text", "md": "When a prompt is glued together from pieces — an instruction, a user document, history, rules — the model needs to understand what's what. The best way is to wrap the parts in **XML tags**: `<instructions>`, `<document>`, `<example>`. Claude is trained to recognize this kind of markup well.\n\nWhat this gives you:\n\n- **No mixing.** The document text won't get confused with the instruction — even if the document says \"ignore all rules\" (this, by the way, is a basic defense against prompt injection).\n- **Precise references.** You can write: \"Answer only based on `<document>`.\"\n- **Clean substitution.** In code, a prompt template with tags reads and maintains like a normal template.\n\nTag names are free-form — what matters is that they're meaningful and consistent throughout the prompt." },
+    { "type": "code", "lang": "python", "title": "A structured prompt with XML tags", "code": "prompt = f\"\"\"Analyze the customer review.\n\n<instructions>\nDetermine the sentiment (positive/negative/neutral) and the main complaint,\nif there is one. Rely only on the text inside <review>.\n</instructions>\n\n<review>\n{user_review}\n</review>\"\"\"\n\nmessage = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=500,\n    system=\"You are a quality-department analyst for an online store.\",\n    messages=[{\"role\": \"user\", \"content\": prompt}],\n)" },
+    { "type": "heading", "text": "Few-shot: show, don't tell" },
+    { "type": "text", "md": "**Few-shot** is a handful of \"input → correct output\" examples right in the prompt. One good example often replaces a paragraph of explanation: the model grasps the format, style, and edge cases from a sample more precisely than from a description.\n\nRules for strong examples:\n\n- Examples should be **diverse** and cover hard cases (empty input, mixed sentiment), not just the obvious ones.\n- Wrap them in `<example>` tags — 3–5 is usually enough.\n- An example is the law: if the examples show output with no explanations, Claude won't write any either.\n\nThe second few-shot mechanism in the API is the **message history**: you can put user/assistant pairs with model answers into `messages` before the real question. The model will continue in the given style." },
+    { "type": "heading", "text": "Chain-of-thought: let it think before answering" },
+    { "type": "text", "md": "On tasks with logic — calculations, comparing options, analyzing contradictions — quality noticeably improves if you ask the model to **reason first, then answer**. This is called **chain-of-thought**.\n\nThe classic technique: \"First work through the task step by step in `<thinking>`, then give the final answer in `<answer>`.\" The app shows the user only the contents of `<answer>`, while `<thinking>` stays internal. The cost is more output tokens and time; on simple tasks (classification, extraction) CoT isn't needed.\n\nNewer models also have a built-in extended thinking mode — that's a separate lesson. Prompt-based CoT is manual, cheap, and compatible with everything." },
+    { "type": "example",
+      "bad": "Here's a review: the item arrived fast, but the packaging was dented. Determine the sentiment and, like in the example, a good review we mark as positive.",
+      "good": "<instructions>Determine the sentiment of the review: positive / negative / mixed.</instructions>\n\n<example>\nReview: \"Delivered in a day, but the mug is cracked\"\nAnswer: mixed\n</example>\n\n<review>The item arrived fast, but the packaging was dented.</review>",
+      "explanation": "In the bad prompt the instruction, example, and data are stuck together into one sentence — the model has to guess where the example ends and the review begins. In the good one each part is in its own tag: the instruction separate, the example showing the format (a single label word) and an edge case (mixed sentiment), the data isolated. A prompt like this works reliably across thousands of reviews." },
+    { "type": "heading", "text": "Role: system as a tuning of expertise" },
+    { "type": "text", "md": "The fourth technique is a **role in the system prompt**. \"You are a lawyer specializing in lease agreements\" and \"You are the editor of a children's magazine\" will give strikingly different answers to the same question: the role tunes the vocabulary, priorities, and depth.\n\nHere it's important to lock in the separation from the previous lesson: **the system prompt is the developer's voice, the user message is the user's voice**. In `system` you put the stable stuff: role, rules, format, examples, prohibitions. In `user` — the variable stuff: the question, the document, the data of a specific request. This separation works for caching (the stable part doesn't change from request to request) and for security (user text shouldn't override the rules)." },
+    { "type": "callout", "kind": "docs", "md": "The prompt engineering overview (platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) ranks the techniques by effectiveness: first be clear and direct, then multishot examples, chain-of-thought, XML tags, and role via the system prompt. Best practices separately advise telling the model \"why\" (the motivation for the task) and marking up data with tags so instructions don't mix with content." },
+    { "type": "callout", "kind": "tip", "md": "A production prompt is an artifact you have to test. Gather a set of 20–30 real inputs (including nasty edge cases), run them through the prompt after every change, and compare the results. This is called an eval — you'll see ready-made recipes in the Cookbooks lesson." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Why wrap a user document in XML tags like <document>...</document>?",
+      "options": [
+        "So Claude separates data from instructions and doesn't execute commands found inside the document",
+        "XML tags are required — without them the API returns a validation error",
+        "Tags compress the text and save tokens",
+        "It's only needed for generating XML in the output"
+      ],
+      "correct": [0],
+      "explanation": "Tags mark boundaries: the model understands that what's inside `<document>` is data, not new instructions. The instruction \"answer only based on <document>\" becomes unambiguous, and text like \"ignore the rules\" inside the document stays just text. The API doesn't require tags and they don't save tokens — this is a quality technique, not syntax.",
+      "hint": "Think about what happens if the phrase \"forget all instructions\" ends up inside the user document."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a production prompt for classifying support tickets: instruction → example → data. Drop the blocks that weaken the prompt.",
+      "blocks": [
+        "<instructions>Assign the ticket to a category: delivery / payment / return / other. The answer is a single word.</instructions>",
+        "<example>Ticket: \"Charged twice\" → Answer: payment</example>",
+        "<ticket>I want to return the sneakers, the size didn't fit.</ticket>"
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "You know the drill, just sort the tickets into piles somehow.",
+        "<example>Ticket: \"Charged twice\" → Answer: I think it's something about finances, maybe payment, but I'm not sure</example>"
+      ],
+      "explanation": "The working structure: a clear instruction with a closed list of categories and a format (\"a single word\"), then an example showing that format, then the data in its own tag. The traps: a vague instruction with no categories, and a \"bad example\" — it breaks its own format (not a single word, full of doubt), and the model copies exactly what it sees in the examples."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A prompt for calculating discounts sometimes dumps a wall of reasoning on the user instead of a short answer. Find the line that causes this.",
+      "lang": "markdown",
+      "lines": [
+        "<instructions>",
+        "Calculate the customer's final discount according to the rules in <rules>.",
+        "First reason step by step.",
+        "Return the reasoning and the answer as one continuous block of text.",
+        "</instructions>",
+        "<rules>...loyalty program rules...</rules>"
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Chain-of-thought was requested but not isolated: \"one continuous block of text\" means the reasoning arrives mixed in with the answer, and the app has nothing to show the user. The right way: \"Reason in <thinking>, give the final answer in <answer>\" — then the code extracts the contents of <answer>, and the reasoning stays internal."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of the following should be kept in system rather than in a user message? Choose all that apply.",
+      "options": [
+        "The assistant's role and behavior rules",
+        "A response format that's the same for all requests",
+        "A specific user's question",
+        "A document the user uploaded for analysis"
+      ],
+      "correct": [0, 1],
+      "explanation": "The separation principle: `system` holds the stable developer's voice (role, rules, format), and `user` holds the variable data of a specific request (question, documents). This way the rules are resilient to attempts to override them, and the stable part of the prompt doesn't change between requests — which is also the basis for caching.",
+      "hint": "Separate: what the developer wrote once for everyone, and what comes from the user new every time?"
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Practice setting a CoT task. Ask Claude to solve a logic problem (for example, compare two pricing plans for a customer) and require: reasoning first in a thinking tag, then the answer in an answer tag.",
+      "steps": [
+        {
+          "expect": ["thinking", "answer", "reason", "step", "compare", "plan", "first", "then", "tag"],
+          "minMatches": 3,
+          "claudeReply": "Got it! Solving with your structure:\n\n`<thinking>`\nPlan A: $3/mo + $0.02 per request. At 500 requests: 3 + 10 = $13.\nPlan B: $9/mo, requests included. 9 < 13 — at 500 requests B is cheaper.\nBreak-even point: 3 + 0.02x = 9 → x = 300 requests.\n`</thinking>`\n\n`<answer>`\nAt 500 requests a month, Plan B is cheaper ($9 vs $13). If you make fewer than 300 requests — choose A.\n`</answer>`\n\nNotice: your app will show the user only `<answer>`, while the reasoning stays for logs and debugging.",
+          "failHint": "State the task and explicitly set the structure, for example: \"Compare plans A and B. First reason step by step in a <thinking> tag, then give a short answer in an <answer> tag.\""
+        }
+      ],
+      "successMessage": "You applied chain-of-thought with the reasoning isolated in tags — a technique that boosts accuracy on logic tasks and keeps the answer clean for the user."
+    }
+  ],
+  "reward": { "cardId": "card-api-prompting", "badgeId": null }
+}

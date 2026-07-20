@@ -1,0 +1,111 @@
+{
+  "id": "sk-what-is",
+  "world": "world-3-skills",
+  "order": 1,
+  "title": "What a Skill is",
+  "subtitle": "A folder of instructions that Claude loads on its own — when it's needed",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Using skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512180" },
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" },
+    { "title": "anthropics/skills — the official library", "url": "https://github.com/anthropics/skills" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A familiar problem: you keep explaining the same thing" },
+    { "type": "text", "md": "Picture this: every Monday you ask Claude to put together a report for your manager. And every time you explain it all over again: \"this structure, business tone, numbers in a table, three takeaways at the end.\" A month later you've got a half-page prompt sitting in your notes that you copy and paste. It works, but it's clunky: the prompt is easy to forget, lose, or paste into the wrong chat.\n\nThis is exactly the problem **skills** (Agent Skills) solve. A skill is your instruction, packaged so that Claude finds and applies it on its own, with no copy-pasting. Describe once how to do a task correctly — and from then on you just say \"make the report,\" and Claude already knows all your requirements." },
+    { "type": "heading", "text": "A skill is a folder with a SKILL.md file" },
+    { "type": "text", "md": "Technically, a skill is very simple. It's a **folder** containing a `SKILL.md` file — an ordinary text file with instructions. It has two parts: a short \"header\" (the skill's name and a description of when to apply it) and the instructions themselves — what to do, in what order, what to avoid. Alongside `SKILL.md` you can put extra materials: document templates, examples, scripts, reference sheets.\n\nNo programming required: if you can write a note for a colleague, you can write a skill. We'll dig into the file's anatomy in detail in lesson three, but for now remember the main thing: a skill is knowledge shaped as a folder of instructions." },
+    { "type": "code", "lang": "text", "title": "What a skill looks like from the inside", "code": "weekly-report/\n├── SKILL.md          ← main file: description + instructions\n├── template.md       ← report template (optional)\n└── examples/         ← examples of finished reports (optional)\n    └── good-report.md" },
+    { "type": "heading", "text": "The magic: Claude loads the skill itself" },
+    { "type": "text", "md": "The key difference between a skill and a saved prompt is **automation**. You don't need to remember the skill and paste it into a chat. Claude sees the list of your skills — more precisely, their names and short descriptions — and when your request matches one skill's description, it opens the skill itself and follows the instructions.\n\nThis works like the shelf of reference books a good specialist keeps: they don't reread every book before each task — they glance at the spines and pull out the one they need. A skill's \"spine\" is its description. That's why the description is everything: it's what tells Claude when the skill is needed. There's a whole lesson devoted to this — lesson four.\n\nAn important bonus of this design: skills barely \"eat up\" space in the conversation. As long as a skill isn't needed, Claude keeps only its short description in mind, and reads the full instructions only when it takes on a matching task." },
+    { "type": "heading", "text": "Skill vs prompt vs project" },
+    { "type": "table",
+      "headers": ["Tool", "What it is", "When to use it"],
+      "rows": [
+        ["Prompt", "A one-off message in a chat", "A one-time or rare task: \"translate,\" \"explain,\" \"come up with\""],
+        ["Project", "A space with shared context: instructions + files for one topic", "Long work on one area: a specific product, course, client"],
+        ["Skill", "A folder of instructions on \"how to do a task,\" loaded automatically", "A recurring type of task across any chats: reports, emails, formatting slides"]
+      ]
+    },
+    { "type": "text", "md": "The difference is simpler than it seems. A **prompt** answers \"what to do right now.\" A **project** answers \"what we're working on\": it ties context to a topic, and the project's instructions only apply inside it. A **skill** answers \"how to do this type of task correctly\": it isn't tied to a topic and fires in any chat where a matching task comes up.\n\nThey combine beautifully. For example, you have a project \"Launching an online store\" with files about the products — and a skill \"our email house style.\" You write in the project \"draft an email to the supplier\" — Claude takes context from the project and formats the email using the skill.\n\nAnother advantage of skills is portability. The same skill works everywhere Claude lives: in a chat on claude.ai, in Claude Code in the terminal, in apps built on the API. And you can share a skill: send a colleague a folder — and now they have the same \"superpower.\" That's much harder to pull off with a prompt in your notes, and project instructions never leave the project's boundaries at all." },
+    { "type": "example",
+      "bad": "Pasting into the chat every single time: \"You write posts for our bakery. Warm tone, no corporate speak, up to 400 characters, always one bread emoji, a question to readers at the end, hashtags #bakery #freshbread…\" — and doing that before every post, in every new chat.",
+      "good": "Creating a bakery-posts skill once with those same rules inside SKILL.md. From then on, in any chat it's enough to write: \"Make a post about the new croissants\" — Claude applies all the skill's rules on its own.",
+      "explanation": "The content of the instructions is the same — the difference is in delivery. In the first case the rules live in your clipboard and are easily lost; in the second, in a skill that Claude finds automatically by its description. The more often a task recurs, the more a skill saves you." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Help Center (the \"Using skills\" article) defines skills as folders of instructions, scripts, and resources that Claude loads when they're relevant to the current task. A key detail from the documentation: Claude uses skills **automatically** — it decides which skill to apply based on its description. Skills work in claude.ai, Claude Code, and via the API." },
+    { "type": "callout", "kind": "tip", "md": "A simple \"do I need a skill\" test: caught yourself explaining the same thing to Claude for the third time? That's it. Anything you repeat is a skill candidate: report format, email style, table-formatting rules, a text-review checklist." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is a skill from a technical point of view?",
+      "options": [
+        "A separate neural network trained for a specific task",
+        "A folder with a SKILL.md file — instructions that Claude loads on its own",
+        "A paid plugin from an app store",
+        "A special command you have to enter at the start of every chat"
+      ],
+      "correct": [1],
+      "explanation": "A skill is just a folder containing a SKILL.md file with instructions (plus, optionally, templates and examples). No neural-network training and no commands: Claude finds the skill by its description on its own, when the task matches.",
+      "hint": "Recall the picture of the weekly-report folder structure from the theory."
+    },
+    {
+      "type": "quiz",
+      "question": "How is a skill fundamentally different from a saved prompt that you paste in manually?",
+      "options": [
+        "A skill runs faster because it's written in a programming language",
+        "A skill can contain only code, while a prompt can contain only text",
+        "Claude loads the skill on its own, guided by its description — there's nothing to paste",
+        "There's no difference, they're synonyms"
+      ],
+      "correct": [2],
+      "explanation": "The main difference is automation. A saved prompt has to be remembered, found, and pasted. Claude finds a skill on its own: it sees the names and descriptions of your skills and opens the matching one when a request lines up with the description.",
+      "hint": "Recall the shelf-of-reference-books metaphor: the specialist pulls out the right book by glancing at the spines."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "A colleague asks: \"Prompt, project, skill — what's the difference?\" Assemble an explanation from three blocks in a logical order: from one-off to permanent.",
+      "blocks": [
+        "A prompt is a one-off message: \"what to do right now.\" Good for one-time tasks.",
+        "A project is a space with context around one topic: \"what we're working on.\" Its instructions apply inside it.",
+        "A skill is an instruction for \"how to do this type of task\": it loads on its own in any chat where a matching task comes up."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "A skill is a paid subscription that speeds up Claude's responses.",
+        "A project and a skill can't be used together — you'll have to pick one."
+      ],
+      "explanation": "The order follows the ladder from the lesson: prompt (one-off) → project (topic) → skill (task type, works everywhere). The trap blocks contain factual errors: a skill is not a subscription, and projects and skills combine beautifully — context from the project, rules from the skill."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of these situations are good candidates for creating a skill? (select all that apply)",
+      "options": [
+        "Every Friday you ask Claude to gather the week's results in the same format",
+        "You need to translate one paragraph from English just this once",
+        "You constantly ask it to format sales proposals in your brand style",
+        "You want to find out the capital of Australia just this once"
+      ],
+      "correct": [0, 2],
+      "explanation": "A skill pays off on recurring tasks with stable rules: weekly summaries and branded proposals are perfect candidates. A one-off translation and a question about a capital are ordinary prompts: there are no rules there worth saving.",
+      "hint": "Look for recurrence markers: \"every Friday,\" \"constantly.\""
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "A mini-practice. Imagine you already have a \"weekly-report\" skill connected (a weekly report: 3 blocks — done, problems, plans; business tone; a table with numbers). Write Claude a short request for the report — without restating all the rules, they're already in the skill.",
+      "steps": [
+        {
+          "expect": ["report", "week", "weekly", "results", "summary", "gather", "make", "prepare", "put together"],
+          "minMatches": 2,
+          "claudeReply": "Using the **weekly-report** skill.\n\nHere's the report for the week in our format:\n\n**Done:** closed 4 sprint tasks, updated the documentation.\n\n**Problems:** delayed response from the contractor — risk of a 2-day slip in the timeline.\n\n**Plans:** launch a test of the new form, meeting with the contractor on Wednesday.\n\n| Metric | Before | After |\n|---|---|---|\n| Tasks in progress | 9 | 5 |\n\nNotice: you wrote one line, and the structure, tone, and table came from the skill.",
+          "failHint": "A short request is enough, for example: \"Put together the report for this week.\" The format rules already live in the skill — no need to repeat them."
+        }
+      ],
+      "successMessage": "That's the whole point of skills: a short request — a full result following your rules. All the \"how to do it\" lives in SKILL.md, and Claude loaded it on its own."
+    }
+  ],
+  "reward": { "cardId": "card-sk-what-is", "badgeId": null }
+}

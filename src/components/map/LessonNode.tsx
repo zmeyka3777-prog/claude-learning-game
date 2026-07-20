@@ -7,6 +7,7 @@
  */
 import { motion, useReducedMotion } from 'motion/react';
 import { Check, Crown, Hourglass, Lock } from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 export type NodeStatus = 'locked' | 'available' | 'done' | 'loading' | 'passed';
 
@@ -20,6 +21,7 @@ interface LessonNodeProps {
 
 export function LessonNode({ title, status, isBoss, order, onClick }: LessonNodeProps) {
   const reduced = useReducedMotion();
+  const t = useT();
   const size = isBoss ? 72 : 64;
   const clickable = status === 'available' || status === 'done' || status === 'passed';
 
@@ -80,7 +82,9 @@ export function LessonNode({ title, status, isBoss, order, onClick }: LessonNode
       onClick={clickable ? onClick : undefined}
       disabled={!clickable}
       className="group flex w-40 flex-col items-center gap-2 disabled:cursor-not-allowed"
-      aria-label={`${isBoss ? 'Босс: ' : ''}${title}${status === 'locked' ? ' (заблокирован)' : ''}`}
+      aria-label={`${isBoss ? t('node.aria.boss') : ''}${title}${
+        status === 'locked' ? t('node.aria.locked') : ''
+      }`}
     >
       <motion.span
         className={`grid place-items-center rounded-full ${
@@ -106,12 +110,12 @@ export function LessonNode({ title, status, isBoss, order, onClick }: LessonNode
         {title}
         {status === 'loading' && (
           <span className="block text-[10px]" style={{ color: 'var(--text-muted)' }}>
-            загрузка контента
+            {t('node.loading')}
           </span>
         )}
         {status === 'passed' && (
           <span className="block text-[10px]" style={{ color: 'var(--text-muted)' }}>
-            зачтено испытанием
+            {t('node.passed')}
           </span>
         )}
       </span>

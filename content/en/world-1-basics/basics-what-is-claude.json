@@ -1,0 +1,111 @@
+{
+  "id": "basics-what-is-claude",
+  "world": "world-1-basics",
+  "order": 1,
+  "title": "What is Claude",
+  "subtitle": "Meet the AI assistant: what it is, how it works, and how it differs from a search engine",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "AI Fluency — Anthropic Academy", "url": "https://www.anthropic.com/learn" },
+    { "title": "Getting Started — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Meet Claude" },
+    { "type": "text", "md": "Claude is an AI assistant. Picture a very well-read helper you can talk to in plain language — in English, in Russian, whatever suits you. You write it a message, it replies. There are no special commands or programming languages to learn: if you can text in a messaging app, you already know how to use Claude.\n\nWhat can it do? A great deal of what a person does with text and information: write an email or a post, explain a complex topic in simple words, translate text, plan a trip, break down a contract, help with studying, build a table, write code. Claude is made by **Anthropic** — an American company that does artificial-intelligence research and puts special emphasis on the safety and helpfulness of its models." },
+    { "type": "heading", "text": "What an LLM is — in plain words" },
+    { "type": "text", "md": "Under the hood, Claude is a **large language model** (LLM for short). It sounds intimidating, but the idea is simple.\n\nThe model \"read\" an enormous amount of text: books, articles, websites, documentation. During training, it picked up the patterns of language and knowledge: how sentences are built, how people explain, argue, joke, solve problems. When you write it a message, it draws on those patterns and builds a reply word by word — the reply that best continues your conversation.\n\nAn analogy from life: an experienced editor who has read thousands of articles can continue almost any text in the right style — not because they remember every article by heart, but because they deeply understand \"how it's done.\" An LLM works in a similar way, only the scale of what it has read is incomparably larger.\n\nAn important conclusion follows from this: Claude **does not look up an answer in a database** and does not open the internet by default. It generates the answer based on what it has learned. That's why it's strong at explanations, writing, and reasoning — and that's why its answers sometimes need to be checked (there's a separate lesson on this, \"Trust, but verify\")." },
+    { "type": "text", "md": "To get a feel for the range, here are a few real-life scenarios. **Work:** \"here's the text of my email to a client — make the tone softer, but keep it firm on the deadlines.\" **Studying:** \"explain photosynthesis so a fifth-grader can understand it, then ask me three questions to check.\" **Everyday life:** \"put together a plan for cleaning the apartment over a week, 20 minutes a day.\" In each case, Claude isn't handing you a canned piece from the internet — it's solving your specific task with your specific details.\n\nThere are limitations too, and we'll be honest about them up front: Claude can make factual mistakes, doesn't know about events after a certain date, and can't read your mind — the quality of the answer depends on how you phrased the request. Each of these topics has its own dedicated lesson in this world." },
+    { "type": "heading", "text": "How Claude differs from a search engine" },
+    { "type": "text", "md": "The most common beginner mistake is using Claude like Google: typing in two words and waiting for a list of links. But these are fundamentally different tools. A search engine **finds** pages that someone has already written. Claude **creates** an answer for your specific situation: it takes context into account, responds to follow-ups, and reworks the result at your request.\n\nThere's no point telling a search engine \"make it shorter\" or \"explain this to a child\" — it'll return the same links. Claude, on the other hand, holds a conversation: each next question builds on the previous ones." },
+    { "type": "table", "headers": ["", "Search engine", "Claude"], "rows": [
+      ["What it returns", "A list of links to other people's pages", "A ready answer written for your request"],
+      ["Dialogue", "Every query starts from scratch", "Remembers the conversation context, you can clarify"],
+      ["Personalization", "The same results for everyone", "Takes your situation, style, and level into account"],
+      ["Working with text", "Can't do it", "Writes, translates, condenses, reworks"],
+      ["Fresh news", "A strength", "Needs web search or verification (there's a knowledge cutoff date)"]
+    ] },
+    { "type": "example",
+      "bad": "chicken dinner recipe",
+      "good": "I have chicken fillet, a zucchini, and some sour cream in the fridge. Suggest a simple dinner recipe for two, cooking no longer than 30 minutes. Give me a list of steps.",
+      "explanation": "The first version is a search-engine habit: keywords with no context. Claude will answer, but generically. The second version uses the assistant's strength: you described your real situation (ingredients, time, number of people), and the answer will be usable right away, without digging through links." },
+    { "type": "heading", "text": "The family of models — in brief" },
+    { "type": "text", "md": "\"Claude\" is the umbrella name for a whole family of models. Just as a carmaker has different lineups of cars, Anthropic has models with different characters:\n\n- **Opus** — the most powerful of the classic lineup, for complex tasks;\n- **Sonnet** — a balance of quality and speed, the \"workhorse\";\n- **Haiku** — the fastest and lightest, for simple tasks;\n- **Fable** — the newest, fifth generation of models.\n\nWe'll go through them in detail in the lesson \"Models and modes.\" For now it's enough to remember: in the claude.ai interface you can pick a model, but for your first steps the default one is fine." },
+    { "type": "callout", "kind": "docs", "md": "Based on the **AI Fluency** course from Anthropic (anthropic.com/learn): working effectively with AI is a skill made up of four competencies: delegation (what to hand off to AI), description (how to phrase the task), discernment (how to evaluate the result), and diligence (how to use the result ethically). The whole \"Academy\" is built around these skills." },
+    { "type": "callout", "kind": "tip", "md": "The best way to understand what Claude is, is simply to start talking to it. Go to **claude.ai** and ask about anything you're genuinely curious about: from \"explain how a mortgage works\" to \"help me come up with a birthday message for a colleague.\" The first real \"wow\" usually happens on the second or third message, when you realize you can clarify and ask follow-ups." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is Claude?",
+      "options": [
+        "A search engine that finds links on the internet",
+        "An AI assistant based on a large language model that holds a conversation and creates answers for your request",
+        "A program that stores all the world's knowledge in a database and retrieves it on request",
+        "A voice assistant only for controlling a smart home"
+      ],
+      "correct": [1],
+      "explanation": "Claude is an AI assistant from Anthropic. It doesn't look up ready-made pages or pull answers from a database — it generates an answer for your specific task, drawing on the patterns it absorbed while training on an enormous amount of text.",
+      "hint": "Recall the \"Search engine vs Claude\" table: what exactly does Claude return — links or a ready answer?"
+    },
+    {
+      "type": "quiz",
+      "question": "How does Claude fundamentally differ from a search engine? Select all correct statements.",
+      "options": [
+        "Claude remembers the conversation context — you can clarify and ask it to redo things",
+        "Claude returns a list of links to other people's sites",
+        "Claude creates an answer for your specific situation",
+        "Claude always knows the news from the last hour without any tools"
+      ],
+      "correct": [0, 2],
+      "explanation": "The first and third are correct: Claude holds a conversation and generates a personalized answer. Links are what a search engine is about. And fresh news is exactly the weak spot of a model without web search: it has a knowledge cutoff date, so timeliness needs to be verified.",
+      "hint": "There's more than one correct answer here. Think about what a dialogue can do and what a model without internet access can't."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Let's practice! Ask Claude to explain, in simple words, what a large language model (LLM) is. Phrase the request yourself — the way you'd write it in a real chat.",
+      "steps": [
+        {
+          "expect": ["explain", "tell me", "what is", "simple", "llm", "language model"],
+          "minMatches": 2,
+          "claudeReply": "Of course! Picture autocomplete on your phone, only incredibly advanced. 📱\n\nA **large language model (LLM)** is a program that has \"read\" an enormous amount of text and learned to catch the patterns of language: how explanations, stories, and answers to questions are put together.\n\nWhen you write me a message, I don't look up the answer in a database — I build it word by word, drawing on those patterns. That's why I can tailor the answer to your exact question, your level, and your style.\n\nWant me to give a real-life analogy or explain it even more simply?",
+          "failHint": "Write the request the way you would in a normal chat, for example: \"Explain in simple words what an LLM is\" or \"Tell me what a language model is.\""
+        },
+        {
+          "expect": ["yes", "sure", "simpler", "analogy", "example", "want"],
+          "minMatches": 1,
+          "claudeReply": "Great, here's an analogy! 🎓\n\nPicture an experienced editor who has read thousands of books and articles over a lifetime. Give them the beginning of any text — and they'll continue it in the right style. Not because they remember every book by heart, but because they deeply understand \"how texts are written.\"\n\nAn LLM is the same kind of \"editor,\" only one that has read millions of times more. And notice what just happened: you asked me to continue the explanation, and I understood you without repeating the whole question. That's exactly what a dialogue is — the key difference between an assistant and a search engine.",
+          "failHint": "Claude offered to continue — agree or ask for an example: \"Yes, give me the analogy.\""
+        }
+      ],
+      "successMessage": "Excellent! You just did something no search engine can do: you asked a question, got an answer, and continued the conversation with one short message. That's how talking with Claude works."
+    },
+    {
+      "type": "quiz",
+      "question": "Which company created Claude, and what's important to know about it?",
+      "options": [
+        "Google — Claude is built into Google Search",
+        "Anthropic — a company that researches AI with an emphasis on the safety and helpfulness of its models",
+        "Independent enthusiast developers with no company",
+        "Anthropic — a company that only makes voice assistants"
+      ],
+      "correct": [1],
+      "explanation": "Claude was created by Anthropic. Its distinguishing feature is a focus on AI safety research: the models are trained to be helpful, honest, and harmless. Anthropic has a whole family of models: Opus, Sonnet, Haiku, and the newest generation, Fable.",
+      "hint": "The company's name was mentioned in the very first block of theory — and it's not Google."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Time to really meet Claude!\n\n1. Open **claude.ai** in your browser (if you don't have an account — sign up; we'll cover this in detail in the next lesson).\n2. Write Claude a first question about something you're genuinely interested in. Not a \"test\" question, but a real one: \"explain how a mortgage works,\" \"help me plan a weekend in Kazan,\" \"what should I give my mom for her milestone birthday.\"\n3. Read the answer and ask a **follow-up question** — ask for more detail, something shorter, or examples.\n4. Notice: Claude remembers what you were talking about — you don't need to repeat the question from scratch.",
+      "checklist": [
+        "I opened claude.ai and I can see the message input field",
+        "I asked a real question on a topic I care about",
+        "I got an answer and asked a follow-up question",
+        "Claude understood the follow-up without me repeating the original question"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-what-is-claude", "badgeId": null }
+}

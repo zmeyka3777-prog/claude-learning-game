@@ -5,9 +5,10 @@
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { Award, BookOpenCheck, ClipboardCheck, Compass, Layers, ScrollText, Zap } from 'lucide-react';
-import { BADGES, CARDS } from '../engine/content';
+import { getBadges, getCards } from '../engine/content';
 import { getLevel, useProgressStore, XP_PER_LEVEL } from '../engine/progressStore';
 import { getTrackInfo } from '../lib/tracks';
+import { useLang, useT } from '../i18n/useT';
 import { BadgeHex } from '../components/gamification/BadgeUnlock';
 import { StreakFlame } from '../components/gamification/StreakFlame';
 import { FunctionCardView } from '../components/gamification/FunctionCardView';
@@ -15,6 +16,8 @@ import { FunctionCardView } from '../components/gamification/FunctionCardView';
 export default function ProfilePage() {
   const reduced = useReducedMotion();
   const navigate = useNavigate();
+  const t = useT();
+  const { lang } = useLang();
   const track = useProgressStore((s) => s.track);
   const xp = useProgressStore((s) => s.xp);
   const streak = useProgressStore((s) => s.streak);
@@ -22,6 +25,8 @@ export default function ProfilePage() {
   const earnedCards = useProgressStore((s) => s.cards);
   const completedLessons = useProgressStore((s) => s.completedLessons);
 
+  const badges = getBadges(lang);
+  const cards = getCards(lang);
   const trackInfo = getTrackInfo(track);
   const level = getLevel(xp);
   const xpInLevel = xp % XP_PER_LEVEL;
@@ -36,7 +41,7 @@ export default function ProfilePage() {
   return (
     <div className="space-y-6 py-8">
       <motion.h1 className="font-display text-2xl font-semibold sm:text-3xl" {...fadeUp()}>
-        Профиль <span className="gradient-text">исследователя</span>
+        {t('profile.title.pre')} <span className="gradient-text">{t('profile.title.accent')}</span>
       </motion.h1>
 
       {/* Сводка: уровень, XP, стрик */}
@@ -50,9 +55,9 @@ export default function ProfilePage() {
               {level}
             </span>
             <div>
-              <div className="font-display text-lg font-semibold">Уровень {level}</div>
+              <div className="font-display text-lg font-semibold">{t('profile.level', { n: level })}</div>
               <div className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--accent-amber)' }}>
-                <Zap size={14} /> {xp} XP всего
+                <Zap size={14} /> {t('profile.xpTotal', { n: xp })}
               </div>
             </div>
           </div>
@@ -60,23 +65,23 @@ export default function ProfilePage() {
           <div className="flex items-center gap-3">
             <StreakFlame days={streak.current} size="lg" />
             <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-              <div>дней подряд</div>
+              <div>{t('profile.daysInARow')}</div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                рекорд: {streak.best}
+                {t('profile.record', { n: streak.best })}
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
             <BookOpenCheck size={18} style={{ color: 'var(--accent-cyan)' }} />
-            Пройдено уроков: {Object.keys(completedLessons).length}
+            {t('profile.lessonsCompleted', { n: Object.keys(completedLessons).length })}
           </div>
         </div>
 
         {/* Прогресс к следующему уровню */}
         <div className="mt-5">
           <div className="mb-1.5 flex justify-between text-xs" style={{ color: 'var(--text-muted)' }}>
-            <span>До уровня {level + 1}</span>
+            <span>{t('profile.toNextLevel', { n: level + 1 })}</span>
             <span>
               {xpInLevel} / {XP_PER_LEVEL} XP
             </span>
@@ -106,12 +111,12 @@ export default function ProfilePage() {
             </span>
             <div className="min-w-0">
               <h2 className="font-display text-lg font-semibold">
-                Трек: {trackInfo ? `«${trackInfo.title}»` : 'не выбран'}
+                {trackInfo
+                  ? t('profile.track.selected', { track: t(`track.${trackInfo.id}.title`) })
+                  : t('profile.track.none')}
               </h2>
               <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {trackInfo
-                  ? trackInfo.description
-                  : 'Выбери трек — и на карте появятся рекомендованные сектора'}
+                {trackInfo ? t(`track.${trackInfo.id}.desc`) : t('profile.track.noneDesc')}
               </p>
             </div>
           </div>
@@ -125,10 +130,10 @@ export default function ProfilePage() {
                 border: '1px solid rgba(245, 158, 11, 0.45)',
                 color: 'var(--accent-amber)',
               }}
-              title="Именные сертификаты за пройденные сектора"
+              title={t('profile.certificates.title')}
             >
               <ScrollText size={16} />
-              Сертификаты
+              {t('profile.certificates')}
             </button>
             <button
               type="button"
@@ -139,10 +144,10 @@ export default function ProfilePage() {
                 border: '1px solid rgba(34, 211, 238, 0.45)',
                 color: 'var(--accent-cyan)',
               }}
-              title="16 вопросов — покажут, какие миры можно зачесть испытанием"
+              title={t('profile.placement.title')}
             >
               <ClipboardCheck size={16} />
-              Входной тест
+              {t('profile.placement')}
             </button>
             <button
               type="button"
@@ -155,7 +160,7 @@ export default function ProfilePage() {
               }}
             >
               <Compass size={16} />
-              Сменить трек
+              {t('profile.changeTrack')}
             </button>
           </div>
         </div>
@@ -165,13 +170,13 @@ export default function ProfilePage() {
       <motion.section className="glass-card p-6" {...fadeUp(0.1)}>
         <h2 className="mb-4 flex items-center gap-2 font-display text-lg font-semibold">
           <Award size={20} style={{ color: 'var(--accent-amber)' }} />
-          Бейджи
+          {t('profile.badges')}
           <span className="text-sm font-normal" style={{ color: 'var(--text-muted)' }}>
-            {earnedBadges.length} / {BADGES.length}
+            {earnedBadges.length} / {badges.length}
           </span>
         </h2>
         <div className="grid grid-cols-3 gap-4 sm:grid-cols-6">
-          {BADGES.map((badge) => {
+          {badges.map((badge) => {
             const earned = earnedBadges.includes(badge.id);
             return (
               <div key={badge.id} className="flex flex-col items-center gap-2 text-center">
@@ -197,16 +202,16 @@ export default function ProfilePage() {
       <motion.section className="glass-card p-6" {...fadeUp(0.15)}>
         <h2 className="mb-1 flex items-center gap-2 font-display text-lg font-semibold">
           <Layers size={20} style={{ color: 'var(--accent-cyan)' }} />
-          Альбом карточек
+          {t('profile.album')}
           <span className="text-sm font-normal" style={{ color: 'var(--text-muted)' }}>
-            {earnedCards.length} / {CARDS.length}
+            {earnedCards.length} / {cards.length}
           </span>
         </h2>
         <p className="mb-4 text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Каждая карточка — освоенная функция Claude. Собери весь альбом!
+          {t('profile.album.desc')}
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {CARDS.map((card) => (
+          {cards.map((card) => (
             <FunctionCardView key={card.id} card={card} earned={earnedCards.includes(card.id)} />
           ))}
         </div>

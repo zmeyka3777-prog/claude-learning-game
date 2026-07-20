@@ -10,6 +10,7 @@ import type { World } from '../../engine/types';
 import { getBossLesson, getLesson, hasLessonContent } from '../../engine/content';
 import { useProgressStore } from '../../engine/progressStore';
 import { getAccentColor, getIcon } from '../../lib/icons';
+import { useLang, useT } from '../../i18n/useT';
 import { LessonNode, type NodeStatus } from './LessonNode';
 
 const NODE_SPACING = 132; // расстояние между узлами по вертикали, px
@@ -23,6 +24,7 @@ interface WorldMapProps {
 
 /** Бейдж «Рекомендовано» для миров трека игрока */
 export function RecommendedBadge() {
+  const t = useT();
   return (
     <span
       className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold"
@@ -33,7 +35,7 @@ export function RecommendedBadge() {
       }}
     >
       <Star size={12} />
-      Рекомендовано
+      {t('worldmap.recommended')}
     </span>
   );
 }
@@ -50,6 +52,8 @@ interface MapNode {
 export function WorldMap({ world, recommended = false }: WorldMapProps) {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const completedLessons = useProgressStore((s) => s.completedLessons);
   const passedWorlds = useProgressStore((s) => s.passedWorlds);
   const WorldIcon = getIcon(world.icon);
@@ -58,12 +62,12 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
   // Мир зачтён испытанием босса (или прохождением босс-урока)
   const worldPassed = passedWorlds.includes(world.id);
   // Босс-урок мира; undefined, если контент ещё не написан
-  const bossLesson = getBossLesson(world);
+  const bossLesson = getBossLesson(world, lang);
 
   const nodes = useMemo<MapNode[]>(() => {
     let previousDone = true; // первый урок доступен сразу
     return world.lessons.map((lessonId, i) => {
-      const lesson = getLesson(lessonId);
+      const lesson = getLesson(lessonId, lang);
       const hasContent = hasLessonContent(lessonId);
       const isDone = Boolean(completedLessons[lessonId]);
 
@@ -91,7 +95,7 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
         y: TOP_OFFSET + i * NODE_SPACING,
       };
     });
-  }, [world, completedLessons, worldPassed]);
+  }, [world, completedLessons, worldPassed, lang]);
 
   const height = TOP_OFFSET + Math.max(nodes.length - 1, 0) * NODE_SPACING + 110;
 
@@ -125,7 +129,7 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
         </span>
         <div className="min-w-0 flex-1">
           <div className="text-xs font-semibold tracking-wide uppercase" style={{ color: accent }}>
-            Сектор {world.order}
+            {t('map.sector', { order: world.order })}
           </div>
           <h2 className="font-display text-xl font-semibold sm:text-2xl">
             <span className="gradient-text">{world.title}</span>
@@ -146,7 +150,7 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
               }}
             >
               <Zap size={12} />
-              Мир зачтён
+              {t('worldmap.passed')}
             </span>
           ) : bossLesson ? (
             <button
@@ -159,10 +163,10 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
                 color: 'var(--accent-amber)',
                 boxShadow: '0 0 20px rgba(245, 158, 11, 0.12)',
               }}
-              title="Пройди босса без теории и зачти весь мир"
+              title={t('worldmap.bossChallenge.title')}
             >
               <Zap size={12} />
-              Испытание босса
+              {t('worldmap.bossChallenge')}
             </button>
           ) : (
             <span
@@ -172,10 +176,10 @@ export function WorldMap({ world, recommended = false }: WorldMapProps) {
                 border: '1px solid var(--border-glass)',
                 color: 'var(--text-muted)',
               }}
-              title="Босс-урок мира ещё пишется"
+              title={t('worldmap.bossSoon.title')}
             >
               <Zap size={12} />
-              Испытание — скоро
+              {t('worldmap.challengeSoon')}
             </span>
           )}
         </div>

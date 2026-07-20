@@ -1,0 +1,110 @@
+{
+  "id": "adv-research",
+  "world": "world-2-claude-ai",
+  "order": 4,
+  "title": "Web search and Research",
+  "subtitle": "From a quick internet search to deep research with a report and sources",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features: Deep Research — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why Claude needs the internet" },
+    { "type": "text", "md": "From World 1 you remember the knowledge cutoff date: everything that happened after it, Claude doesn't know \"off the top of its head\". The fix is to give it access to the internet. In claude.ai there are two tools of different caliber for this:\n\n1. **Web search** — Claude quickly searches the internet and answers taking the results into account, providing links.\n2. **Research (deep research)** — Claude works for several minutes: builds a plan, makes dozens of search queries, reads many sources, cross-references them and assembles a structured **report with links**.\n\nThe difference is like the difference between \"Googling on the run\" and \"putting an intern on it for half a day to study a question and write a briefing\"." },
+    { "type": "heading", "text": "Web search: quick, up-to-date answers" },
+    { "type": "text", "md": "A regular web search is good for pinpoint questions where freshness matters:\n\n- \"What's the current exchange rate of the yuan?\"\n- \"What's new in the latest version of this app?\"\n- \"Is this museum open on Mondays?\"\n\nClaude decides on its own when to search the internet, but you can also ask explicitly: \"search the internet\" or \"check against fresh data\". Links to sources will appear in the answer — it's worth clicking through them if the question is important: the \"trust but verify\" skill hasn't been repealed." },
+    { "type": "heading", "text": "Research: an investigation, not an answer" },
+    { "type": "text", "md": "Research is turned on separately — via a toggle in the panel by the input field. Then something happens that a quick search can't deliver:\n\n1. Claude **breaks your question into sub-questions** and plans what to search for;\n2. **runs a series of searches** and reads many sources — not one page of results, but dozens of materials;\n3. **cross-references and re-checks:** where sources agree, where they contradict;\n4. produces a **report**: a structured document with sections, conclusions and links to sources on specific claims.\n\nThis takes noticeable time — minutes, not seconds. But in return you get not a paragraph but material you can take into a meeting or use to make a decision. While Research works, you can calmly get on with your own business.\n\nWhen is it justified? When the cost of a mistake is higher than the cost of waiting: choosing an expensive purchase, comparing universities or employers, analyzing a market before launching your own venture, preparing for important negotiations." },
+    { "type": "table", "headers": ["", "Web search", "Research"], "rows": [
+      ["Time", "Seconds", "Minutes"],
+      ["Sources", "A few", "Dozens, cross-referenced"],
+      ["Result", "An answer in chat with links", "A structured report with links"],
+      ["Good for", "\"How much does X cost now?\"", "\"Compare the options and help me choose\""],
+      ["Example", "Exchange rate, opening hours, news", "Market overview, technology comparison, relocation plan"]
+    ] },
+    { "type": "heading", "text": "How to phrase a research question" },
+    { "type": "text", "md": "Research performs exactly as well as the question is posed. The formula for a strong research request:\n\n- **Goal and decision:** why you need this — \"choosing which activity to enroll my child in\", \"deciding which framework to pick for the project\";\n- **Criteria:** what matters — price, safety, reviews, prospects;\n- **Constraints:** region, budget, period — \"in Kazan\", \"up to 50,000\", \"data for the last 2 years\";\n- **Result format:** \"a comparison table + a recommendation\", \"a report with sections for each option\".\n\nToo broad a question (\"tell me about electric cars\") gives a vague essay. Too narrow, on a single fact (\"how much does a Tesla Model 3 battery weigh\"), doesn't require research — a regular search is enough. The ideal is a question-*decision*: compare, evaluate, choose, plan." },
+    { "type": "example",
+      "bad": "\"Do research on laptops.\"",
+      "good": "\"Help me choose a laptop for video editing: budget up to 150,000, what matters is a screen with accurate color reproduction, 32+ GB of memory and quiet operation. Compare 4–5 current models available in my region, in a table by criteria, note the weak points of each and give a final recommendation with links to reviews.\"",
+      "explanation": "\"About laptops\" isn't a question, it's a topic: Claude doesn't know what matters to you and will write an essay about everything. The second version has a goal (video editing), criteria (screen, memory, noise), constraints (budget, market) and a format (table + recommendation) — the research will focus on your decision." },
+    { "type": "heading", "text": "Reading the report correctly" },
+    { "type": "text", "md": "A Research report isn't gospel truth — it's a very good draft. How to work with it:\n\n- **Check the key links.** Claims that affect your decision (prices, specs, legal details) — open them and verify against the source.\n- **Look at source quality:** an official site and a serious publication carry more weight than a forum.\n- **Ask follow-up questions.** The report lives in the chat: \"expand the second section\", \"and what if the budget grows to 200,000?\" — you can dig further without a new research run." },
+    { "type": "callout", "kind": "docs", "md": "The support.claude.com Help Center (Claude Features section, articles on web search and Deep Research) describes two modes: a quick internet search with sources cited, and a deep research mode in which Claude spends several minutes working through many sources and returns a detailed report with links. Availability of the modes depends on your plan." },
+    { "type": "callout", "kind": "tip", "md": "A pro tip: first discuss the task with Claude in a regular chat — \"I'm choosing an activity for my child, what criteria should I consider?\" Once you have a list of criteria, turn on Research and phrase your request with them already included. Two minutes of prep noticeably raise the quality of the research." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How does Research differ from a regular web search? Select all correct answers.",
+      "options": [
+        "It works longer — minutes instead of seconds",
+        "It works through many sources and cross-references them against each other",
+        "It returns a structured report with links, not a short answer",
+        "It guarantees a hundred-percent accuracy of every claim"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Research is time, many sources and a report. But no tool guarantees absolute accuracy: key facts should still be verified against the attached links.",
+      "hint": "Three differences were in the comparison table. The fourth option contradicts the \"trust but verify\" principle."
+    },
+    {
+      "type": "quiz",
+      "question": "For which task should you turn on Research rather than a regular search?",
+      "options": [
+        "Find out the current dollar exchange rate",
+        "Check whether it will rain tomorrow",
+        "Compare three cities to relocate to by cost of living, jobs and climate and get a recommendation",
+        "Find out when the nearest bank opens"
+      ],
+      "correct": [2],
+      "explanation": "Relocation is a question-decision: many criteria, many sources, a comparative report is needed. Exchange rate, weather and opening hours are pinpoint facts — a quick web search is enough for them.",
+      "hint": "Research is needed where you're \"comparing and choosing\", not \"finding out a single fact\"."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The user is preparing a request for Research. In their plan, one line spoils the request — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Goal: choosing an online English school for an adult at level A2.",
+        "Criteria: price, live teachers, reviews, flexible schedule.",
+        "Constraints: evening classes, budget up to 10,000 per month.",
+        "I'll phrase the question broadly: \"tell me everything about learning English\", so as not to miss anything.",
+        "Format: a comparison table of schools + a final recommendation with links."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The mistake is in line 4: \"tell me everything about...\" turns the research into a vague essay. A broad phrasing doesn't help you \"not miss anything\" — on the contrary, it scatters the search. The right move is to assemble the question from the ready-made goal, criteria, constraints and format in the other lines."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a strong research request for Research in the right order: goal → criteria → constraints → result format.",
+      "blocks": [
+        "Help me choose a fitness band for tracking sleep and running.",
+        "What matters: accuracy of sleep and heart-rate measurement, a week-plus of battery life, and it works with Android.",
+        "Budget up to 12,000, models available in my region, current this year.",
+        "Result: a comparison table of 4–5 models by criteria, pros/cons and a final recommendation with links to sources."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "While you're at it, tell me everything about the history of wearable electronics since the 1970s.",
+        "Answer in one sentence, no links — I'm in a hurry."
+      ],
+      "explanation": "Goal → criteria → constraints → format is the skeleton of a research request. A digression into history scatters the research, and \"one sentence, no links\" kills the main value of Research — a verifiable report with sources."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: conduct a real piece of research.\n\n1. Pick a real decision from your own life: buying a device, choosing a course, a trip, comparing services.\n2. Open **claude.ai**. First, in a regular chat, ask: \"I'm choosing [what]. What criteria should I consider?\" — and pick 3–4 that matter to you.\n3. Turn on research mode (the toggle by the input field) and phrase your request by the formula: goal + criteria + constraints (budget, region) + format (table + recommendation).\n4. Wait for the report — it'll take a few minutes, you can step away.\n5. Read the report and open at least two links to sources: verify the key figures. Ask one follow-up question about the report.",
+      "checklist": [
+        "I chose a real question-decision, not \"tell me about a topic\"",
+        "I first clarified the criteria in a regular chat",
+        "My request contained a goal, criteria, constraints and a format",
+        "I waited for the report and read it in full",
+        "I checked at least two sources via the links and asked a follow-up question"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-research", "badgeId": null }
+}

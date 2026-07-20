@@ -1,0 +1,122 @@
+{
+  "id": "mcp-build-simple",
+  "world": "world-6-mcp-plugins",
+  "order": 4,
+  "title": "Your Own MCP Server: The First Tool",
+  "subtitle": "The Python or TypeScript SDK, a server with one tool, and the mcp-builder skill to help",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "MCP Python SDK", "url": "https://github.com/modelcontextprotocol/python-sdk" },
+    { "title": "MCP TypeScript SDK", "url": "https://github.com/modelcontextprotocol/typescript-sdk" },
+    { "title": "anthropics/skills — the mcp-builder skill", "url": "https://github.com/anthropics/skills" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "From user to author" },
+    { "type": "text", "md": "Ready-made servers cover popular services, but your work reality is unique: the company's internal API, a homegrown customer database, a local script only you know how to run. How do you give Claude access to all of it? Write **your own MCP server**.\n\nIt sounds more serious than it is: a minimal server with one tool is a couple dozen lines. The protocol has official SDKs that take on all the \"plumbing\" — the connection, the message format, the spec-compliant exchange:\n\n- **Python SDK** — github.com/modelcontextprotocol/python-sdk;\n- **TypeScript SDK** — github.com/modelcontextprotocol/typescript-sdk.\n\nAll that's left for you is to describe **what exactly your server can do**. Which language to pick? The one already installed on your machine and known to you (or your team): the protocol and the logic are the same, only the syntax differs. The examples ahead are in Python — in TypeScript it's all the same: you create a server, register tools with descriptions and parameter schemas, and launch the transport." },
+    { "type": "heading", "text": "A minimal server: three steps" },
+    { "type": "text", "md": "The skeleton of any simple server is three steps:\n\n1. **Create the server** and give it a name — the host will see it under that name.\n2. **Register a tool**: an ordinary function with typed parameters and a description. The SDK builds a JSON schema from it that the model will see.\n3. **Launch the transport** — for a local server that's stdio: the client will launch your program and talk to it over standard input/output.\n\nHere's how it looks in the Python SDK (the high-level FastMCP interface; check the exact API details against the SDK docs — they evolve):" },
+    { "type": "code", "lang": "python", "title": "server.py — a server with one tool", "code": "from mcp.server.fastmcp import FastMCP\n\n# Step 1: create the server with a name\nmcp = FastMCP(\"team-glossary\")\n\n# Step 2: register a tool — an ordinary function\n@mcp.tool()\ndef define_term(term: str) -> str:\n    \"\"\"Returns the definition of a term from the team glossary.\n    Use when the user asks the meaning of an internal term.\"\"\"\n    glossary = {\n        \"SLA\": \"Service Level Agreement\",\n        \"MRR\": \"Monthly Recurring Revenue\",\n    }\n    return glossary.get(term, f\"The term \\\"{term}\\\" is not in the glossary\")\n\n# Step 3: launch the stdio transport\nmcp.run()" },
+    { "type": "text", "md": "What happens next? When the host connects to the server, the MCP client asks: \"what tools do you have?\" The SDK answers for you: the name `define_term`, the description from the docstring, the parameter `term` of type string — all of this the model will see and use to decide when to call your tool.\n\nAn important subtlety of stdio servers: **standard output (stdout) is occupied by the protocol** — messages between the client and the server travel through it. If your code prints something of its own there — say, a debug `print(\"started!\")` — those bytes wedge into the message exchange, the client gets garbage, and the connection breaks. For debugging, write to stderr or a log file: the protocol doesn't touch them." },
+    { "type": "code", "lang": "bash", "title": "Connecting your server to Claude Code", "code": "# Add it: after -- comes the launch command for our file\nclaude mcp add team-glossary -- python server.py\n\n# Start a session and check\nclaude\n> /mcp   # the team-glossary server should be connected\n> What is SLA?   # Claude will call define_term itself" },
+    { "type": "heading", "text": "mcp-builder — a helper skill" },
+    { "type": "text", "md": "You don't have to write the server by hand from scratch. Anthropic's official skills library (github.com/anthropics/skills) has **mcp-builder** — a skill that teaches Claude to build high-quality MCP servers: how to design tools, how to write descriptions, how to lay out code in Python (FastMCP) or TypeScript.\n\nThe workflow looks like this: you connect the skill, describe the task to Claude Code — \"make an MCP server for our orders API: get an order by number, list of orders for a day\" — and the agent with the skill generates a server following best practices. Your work shifts from \"writing code\" to \"describing precisely which tools are needed and what they should return.\"" },
+    { "type": "example",
+      "bad": "@mcp.tool()\ndef process(data: str) -> str:\n    \"\"\"Processes data.\"\"\"\n    ...",
+      "good": "@mcp.tool()\ndef get_order_status(order_id: str) -> str:\n    \"\"\"Returns an order's status by its number (for example, WM-1042).\n    Use when the user asks where their order is.\"\"\"\n    ...",
+      "explanation": "The model picks a tool by its name and description — it has nothing else to go on. \"process / processes data\" says nothing about what the function does, when to call it, or what data is. The good version answers all three questions: a concrete action-name, the parameter format with an example, and a clear hint about the situation in which the tool is needed."
+    },
+    { "type": "callout", "kind": "docs", "md": "The official Python SDK's README describes it as a full implementation of the MCP specification: servers can provide tools, resources, and prompts, and the high-level FastMCP interface lets you declare tools with decorators on top of ordinary functions — parameter schemas are inferred from type annotations. The TypeScript SDK is built the same way." },
+    { "type": "callout", "kind": "warning", "md": "Your server is code that will run on every tool call. Don't hard-code secrets into it (read API keys from environment variables), and don't give tools more permissions than the task needs: a \"read an order\" tool shouldn't be able to delete the database." },
+    { "type": "callout", "kind": "tip", "md": "Debug the server in short cycles: change the code → restart the Claude Code session → `/mcp` → ask a question that should call the tool. If the model doesn't call your tool — it's almost always the description: it simply didn't understand that the tool fits the task." }
+  ],
+  "tasks": [
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble, in the right order, the path from an idea to a working MCP server with one tool.",
+      "blocks": [
+        "Create the server through the SDK and give it a name",
+        "Write a tool function with typed parameters and a clear description",
+        "Launch the stdio transport (mcp.run())",
+        "Connect the server: claude mcp add my-server -- python server.py",
+        "Check in a session via /mcp and a test question that triggers the tool"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "Retrain the Claude model on your API's data",
+        "Publish the server in a registry before it has run even once"
+      ],
+      "explanation": "The order repeats the three steps from the lesson plus connecting and checking: server → tool → transport → claude mcp add → test via /mcp. Retraining the model isn't needed at all — the server only describes tools — and publishing before the first run breaks the core principle: test first, then share."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The server is written, but the connection to Claude Code keeps dropping with a protocol error. Find the line that breaks the stdio server.",
+      "lang": "python",
+      "lines": [
+        "from mcp.server.fastmcp import FastMCP",
+        "",
+        "mcp = FastMCP(\"team-glossary\")",
+        "print(\"Server starting up, please wait...\")",
+        "",
+        "@mcp.tool()",
+        "def define_term(term: str) -> str:",
+        "    \"\"\"Returns the definition of a term from the team glossary.\"\"\"",
+        "    return GLOSSARY.get(term, \"Term not found\")",
+        "",
+        "mcp.run()"
+      ],
+      "bugLineIndex": 3,
+      "explanation": "On a stdio server, standard output (stdout) is entirely occupied by MCP protocol messages. The print(...) line wedges extraneous text into that stream — the client gets garbage instead of a valid message, and the connection drops. Write debug messages to stderr or a log file, but not to stdout."
+    },
+    {
+      "type": "quiz",
+      "question": "How does the model learn which tools your server has and when to call them?",
+      "options": [
+        "It reads the entire source of server.py",
+        "The MCP client asks the server for a list of tools: names, descriptions, and parameter schemas",
+        "The tools have to be listed in the system prompt by hand",
+        "The model figures them out by trial and error"
+      ],
+      "correct": [1],
+      "explanation": "On connecting, the client asks the server about its capabilities, and the server returns tool declarations: name, description, JSON schema of parameters (the SDK builds it from type annotations). Those descriptions are the only thing the model sees, so whether a tool gets called appropriately depends on their quality.",
+      "hint": "Recall what happens the moment a server connects — who asks whom, and what."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Your server is ready in the file server.py. Connect it to Claude Code under the name team-glossary (`claude mcp add team-glossary -- python server.py`), start a session (`claude`), and check the connection (/mcp).",
+      "steps": [
+        {
+          "expectPattern": "^claude mcp add team-glossary\\s+--\\s+python\\s+server\\.py$",
+          "output": "Added stdio MCP server team-glossary with command: python server.py to local config",
+          "failHint": "The formula: claude mcp add team-glossary -- python server.py (after -- comes the launch command for your file)."
+        },
+        {
+          "expectPattern": "^claude$",
+          "output": "╭───────────────────────────────╮\n│ Claude Code                   │\n│ Session started. 1 MCP server.│\n╰───────────────────────────────╯\n> _",
+          "failHint": "A session is started with the claude command"
+        },
+        {
+          "expectPattern": "^/mcp$",
+          "output": "MCP Servers:\n\n  ✔ team-glossary — connected\n    Tools: define_term (Returns the definition of a term from the team glossary)\n\n  Total: 1 server, 1 tool.",
+          "failHint": "The status of servers inside a session is shown by the /mcp slash command"
+        }
+      ],
+      "successMessage": "The server is connected and the tool is visible — notice that /mcp shows exactly the description you wrote in the docstring. The model will rely on it when deciding when to call define_term."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: your first own MCP server. **Claude Code and either Python or Node.js must be installed.**\n\n1. Ask Claude Code: \"Create a minimal MCP server in Python (FastMCP from the official SDK) with one tool of my choice\" — for example, a glossary of your work terms or a unit converter. If your skills library has mcp-builder — connect it.\n2. Study the generated code: find all three steps — creating the server, registering the tool, launching the transport.\n3. Connect the server: `claude mcp add my-first -- python server.py` (or the corresponding command for Node).\n4. Restart the session, check `/mcp`, and ask a question the server should answer.\n5. Improve the tool's description and make sure the model starts calling it more confidently.",
+      "checklist": [
+        "The server is created and contains exactly one tool",
+        "I found all three steps in the code: server, tool, transport",
+        "/mcp shows the server in the connected state",
+        "Claude called my tool and returned data from it",
+        "There are no secrets and no stray prints to stdout in the code"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-mcp-build-simple", "badgeId": null }
+}

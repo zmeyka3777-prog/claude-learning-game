@@ -1,0 +1,111 @@
+{
+  "id": "pro-ci",
+  "world": "world-5-claude-code-pro",
+  "order": 6,
+  "title": "Claude Code in CI/CD",
+  "subtitle": "The agent inside GitHub Actions and GitLab: auto-reviewing PRs and auto-fixing tests without your computer",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "GitHub Actions — Claude Code Docs", "url": "https://code.claude.com/docs/en/github-actions" },
+    { "title": "GitLab CI/CD — Claude Code Docs", "url": "https://code.claude.com/docs/en/gitlab-ci-cd" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "An agent that lives in the repository" },
+    { "type": "text", "md": "Everything we've done so far happened on your machine or in your cloud sessions. The next step is to settle the agent right **in the repository**, in the CI/CD pipeline.\n\nCI/CD (continuous integration / continuous delivery) is the automation of platforms like GitHub and GitLab: on repository events (a push, a new pull request, a comment) jobs run on the platform's servers — running tests, building the project. Claude Code plugs into this automation as one more job: an event in the repository → an agent spins up on the server → it reads the code, does the work, and replies right in the PR. Your computer isn't involved at all — everything happens on the platform's side, for any team member, at any hour of the day." },
+    { "type": "heading", "text": "Two main scenarios" },
+    { "type": "text", "md": "**Auto-reviewing PRs.** A pull request opens — the agent automatically reviews the changes and leaves comments: logic errors, missed edge cases, security problems, deviations from the project's rules (yes, it takes CLAUDE.md from the repository into account too). This doesn't replace human review, but the most valuable thing — \"a fresh pair of eyes within a minute of the PR opening\" — is now free and for every PR.\n\n**An agent on call: @claude.** In a comment on a PR or issue you write: \"@claude fix the bug in email validation and add a test\" — the mention launches the agent, it makes the edits and pushes a commit straight into the PR branch. Failed tests get fixed the same way: \"@claude the tests are red, figure it out and fix it.\" The whole cycle — stating the task, doing the work, the result — happens inside the GitHub/GitLab interface, where the team already lives." },
+    { "type": "heading", "text": "How it's set up — conceptually" },
+    { "type": "text", "md": "There are two or three details, and all of them are conceptual:\n\n1. **A workflow file** in the repository (for GitHub — in the `.github/workflows/` folder, for GitLab — the CI configuration). It describes: which events to react to (a PR opening, an @claude mention) and what to run — the ready-made Claude Code action from Anthropic.\n2. **An API key** — so the agent on the platform's server can reach Claude. The key goes into the repository's **secrets** (Secrets) — the platform's special protected storage — and the workflow references it by name, never seeing the value in the code.\n3. **Permissions** — what the agent is allowed to do: read code, comment, push to branches. Permissions are set in the workflow configuration — and, as always, on the principle of the minimum.\n\nThe simplest way to install it for GitHub is to ask the agent itself: the `/install-github-app` command in a local session walks you through connecting the app and setting up the secrets. The exact steps and the current workflow format are on the documentation pages; don't memorize them, just know where to look." },
+    { "type": "code", "lang": "text", "title": "Auto-review workflow sketch (pseudo-config, not exact syntax)", "code": "event: pull request opened or updated\njob:\n  run: Claude Code action (official, from Anthropic)\n  API key: take from the repository secrets (secrets.ANTHROPIC_API_KEY)\n  task for the agent: |\n    Review the changes in this PR:\n    bugs, edge cases, security, project style.\n    Leave your remarks as comments on the lines." },
+    { "type": "example",
+      "bad": "Task for the agent in CI: \"Look at the code and write what you think.\"",
+      "good": "Task for the agent in CI: \"Review the PR changes: 1) logic errors and edge cases, 2) security (secrets, input validation), 3) conformance to the rules in CLAUDE.md. Format: comments on specific lines; if there are no remarks — a one-line approving comment.\"",
+      "explanation": "In CI the agent works without a dialogue: no one will clarify \"what exactly should I look at?\" A vague task produces a vague \"here's what I think\" essay. A good instruction for CI is like a good routine: specific review criteria, a result format, and behavior in the \"all good\" case. Write it once in the workflow — it runs on every PR."
+    },
+    { "type": "table",
+      "headers": ["Question", "Correct answer"],
+      "rows": [
+        ["Where to store the API key?", "Only in the platform's secrets (Secrets), never in repository files"],
+        ["What permissions to give the agent?", "The minimum for the task: review — read and comment; auto-fix — plus push to PR branches"],
+        ["Who checks the agent's work?", "A human: a PR with the agent's edits goes through normal review before merging"],
+        ["What about costs?", "Every run spends tokens — make sure the workflow doesn't run more than needed"]
+      ]
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the GitHub Actions and GitLab CI/CD pages) describes integration with both platforms: the agent runs on repository events or on a mention, can reply in a PR/MR, make edits, and create commits; the API key is stored in secrets, and for GitHub a quick install is available via /install-github-app from a local session." },
+    { "type": "callout", "kind": "warning", "md": "The agent's autonomy in CI takes discipline: don't give the workflow the right to merge PRs without a human or the right to push to main directly. The agent makes mistakes, like a human does — the difference is that its mistake on autopilot will repeat on every PR. The agent's edits go through normal review, keys go only in secrets, permissions stay minimal." },
+    { "type": "callout", "kind": "tip", "md": "Start with a \"gentle\" mode: auto-review only, no edit rights. Watch the quality of the remarks for a couple of weeks, tune the instruction to your project — and only then turn on @claude auto-fix. That way the team gets used to the agent-colleague gradually and without risk." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Where should the API key for the agent in GitHub Actions be stored?",
+      "options": [
+        "In the workflow file — it's simpler that way",
+        "In the repository secrets (Secrets); the workflow references it by name",
+        "In the project's CLAUDE.md",
+        "In a comment on the first PR"
+      ],
+      "correct": [1],
+      "explanation": "Anything that lives in the repository files is visible to everyone with access to the code — and an API key is money and access to your account. Platform secrets exist for exactly this: the value is stored securely, doesn't end up in logs, and the workflow uses it by name. The rule from the CLAUDE.md lesson works everywhere: secrets don't belong in project files.",
+      "hint": "Recall what happens to everything committed to a repository."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A step-by-step plan for setting up auto-review in GitHub Actions. One step is a gross security mistake. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "Create a workflow file at .github/workflows/claude-review.yml.",
+        "Specify the trigger event: pull request opened and updated.",
+        "Plug in the official Claude Code action from Anthropic.",
+        "Write the API key straight into the workflow file, to avoid bothering with secrets.",
+        "Give the agent a specific review instruction: criteria and comment format.",
+        "Give the workflow minimal permissions: read code and comment."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "A key in the workflow file is a key committed to the repository: everyone with access to the code will see it, and in a public repository — the whole internet. A leaked key means other people's requests billed to you. The only correct place is the repository secrets, from which the workflow takes the value by name. The other steps are exemplary, including the minimal permissions."
+    },
+    {
+      "type": "quiz",
+      "question": "What happens if you write \"@claude the tests failed, figure it out and fix it\" in a comment on a PR (integration is set up)?",
+      "options": [
+        "Nothing — the agent only reads code, not comments",
+        "A notification goes to the repository owner, and that's it",
+        "The mention launches the agent on the platform's server: it studies the failure, makes edits, and pushes a commit to the PR branch",
+        "The agent deletes the failing tests so everything goes green"
+      ],
+      "correct": [2],
+      "explanation": "An @claude mention is a way to give the agent a task right from the GitHub/GitLab interface: the workflow spins up the agent on the server, it reads the PR context and the test logs, fixes the cause, and pushes the fix to the same branch. It should not delete tests just to get green — and if the review instruction is written properly, it won't.",
+      "hint": "A mention is an event the workflow is set to trigger on."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble an instruction for the reviewer agent in CI — by the rules of \"working without a dialogue.\" The extra block goes overboard.",
+      "blocks": [
+        "Task: review the changes in this pull request.",
+        "Criteria: logic errors and edge cases; security; conformance to the rules in CLAUDE.md.",
+        "Format: remarks as comments on specific lines, in descending order of importance.",
+        "If there are no remarks — one approving comment, no fluff."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "If anything is unclear — DM me and wait for a reply."
+      ],
+      "explanation": "An instruction in CI runs without a counterpart: \"DM me and wait\" would hang the job forever — there's no one to answer in the pipeline. A working instruction is self-sufficient: the task, specific criteria, a result format, and behavior when \"all good.\" It's the same principle as with routines and subagents — in CI it's strictest of all."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission in real Claude Code. **You need Claude Code installed and a GitHub repository where you can configure Actions — if you don't have that, come back to the mission later.**\n\n1. Open a local `claude` session in the folder of a project linked to a GitHub repository.\n2. Type `/install-github-app` and follow the steps: connecting the app, setting up the key in secrets.\n3. Check in the repository: a workflow has appeared in .github/workflows/, and the key is in Settings → Secrets (not in files!).\n4. Create a test PR with a small change and see how the agent reacts; or write in a comment \"@claude describe what this PR changes.\"\n5. Evaluate the agent's reply and, if you like, tune the review instruction in the workflow to fit your project.",
+      "checklist": [
+        "The integration is installed via /install-github-app",
+        "The API key is in the repository secrets, not in files",
+        "The agent reacted to the PR or to an @claude mention",
+        "The workflow permissions are minimal: no merging PRs and no pushing to main"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-ci", "badgeId": null }
+}

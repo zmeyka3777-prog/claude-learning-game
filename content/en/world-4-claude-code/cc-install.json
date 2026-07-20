@@ -1,0 +1,103 @@
+{
+  "id": "cc-install",
+  "world": "world-4-claude-code",
+  "order": 2,
+  "title": "Installation and Your First Session",
+  "subtitle": "We install Claude Code, launch it in the project folder, and give it a first task",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Quickstart — Claude Code Docs", "url": "https://code.claude.com/docs/en/quickstart" },
+    { "title": "Setup — Claude Code Docs", "url": "https://code.claude.com/docs/en/setup" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "What you'll need" },
+    { "type": "text", "md": "To get started you need three things:\n\n**1. A terminal.** On Mac it's the \"Terminal\" app, on Windows it's PowerShell or Windows Terminal, on Linux you already know. The terminal is just a window where you type text commands. Of all the commands, we'll need literally two: `cd` (go to the right folder) and `claude` (launch the agent). Everything else the agent will do itself.\n\n**2. A Claude account.** A claude.ai subscription (Pro or higher) or an API key will do — on first launch Claude Code will offer to sign in through the browser.\n\n**3. Claude Code itself.** It installs with a single command. The most common way is through npm (the Node.js package manager); the Setup page in the documentation describes other installation options for each system too, including a native installer without Node." },
+    { "type": "code", "lang": "bash", "title": "Installation and first launch", "code": "# Install via npm (requires Node.js)\nnpm install -g @anthropic-ai/claude-code\n\n# Go to your project folder\ncd my-project\n\n# Launch Claude Code\nclaude" },
+    { "type": "heading", "text": "Why the launch folder matters" },
+    { "type": "text", "md": "Remember the main rule: **you launch `claude` inside the project folder**. The folder you're in at the moment of launch becomes the agent's working territory: it's those files it will read and change, and it's there that it will run commands.\n\nLaunch it in a folder with a website — Claude will work with the website. Launch it in a folder with reports — it will work with the reports. But it's not worth launching in the root of the disk or in your home folder with all your documents: the agent has no reason to see everything, and it will be harder for you to control what it does. One folder — one project — one session." },
+    { "type": "heading", "text": "What a session looks like" },
+    { "type": "text", "md": "After the `claude` command, the terminal turns into a dialogue: a greeting and an input line appear. From there everything is like the familiar chat, but with superpowers:\n\n- you write the task in plain language and press Enter;\n- Claude shows what it's doing: which files it reads, which commands it wants to run;\n- before editing files and running commands it **asks permission** — you see exactly what will change and approve or reject it;\n- at the end it reports what was done.\n\nThe whole process is transparent: in real time you see which file the agent opened, which command it ran, and what it returned. This isn't a black box — it's work happening before your eyes, and at any moment you can stop and adjust it with an ordinary phrase.\n\nBesides ordinary messages, a session has utility **slash commands** — they start with a `/`. The first one worth remembering: `/help` — it shows the help and the list of available commands. You can exit a session with the `exit` command without breaking anything: the project stays in the state you left it in, and you can return to the session itself later — exactly how, we'll cover in the lesson on commands." },
+    { "type": "heading", "text": "First task: start with reconnaissance" },
+    { "type": "text", "md": "The best first task is not \"rewrite everything\" but **reconnaissance**. Ask Claude to tell you about the project: \"Explore this project and explain what it does and how it's built.\" This is safe (the agent only reads), useful (you'll see the project through its eyes), and illustrative (you'll understand how the agent works).\n\nAs a second step, give it a small, concrete task with a clear result: \"fix the typo in the heading on the home page\", \"add a section with launch commands to the README\". The principle from the lesson on prompts works here too: a concrete goal + a done criterion. The easier the result is to check, the better the task for a first time.\n\nWhat you shouldn't do in the first session is set a huge, vague task like \"make everything good\". You don't yet know how the agent works, and the agent doesn't yet know your expectations: start small and build up trust gradually." },
+    { "type": "example",
+      "bad": "Make my project better.",
+      "good": "Explore this project and tell me: what it does, what parts it consists of, and how to run it. Don't change anything yet.",
+      "explanation": "\"Make it better\" gives the agent neither a goal nor a done criterion — it will be forced to guess what \"better\" means to you, and may go off redoing the wrong thing. A good first task is reconnaissance: it has a clear goal, a safe nature (read-only), and a result that's easy to evaluate. And the phrase \"don't change anything yet\" explicitly fixes the boundaries." },
+    { "type": "callout", "kind": "docs", "md": "The official Quickstart (code.claude.com/docs/en/quickstart) recommends the same path: install the CLI, go to the project folder, launch `claude`, and start with questions about the codebase — for example, asking it to explain how the project is built — before moving on to changes. Installation and system requirements are described in detail on the Setup page." },
+    { "type": "callout", "kind": "warning", "md": "Don't launch `claude` in your home folder or the root of the disk \"just to try it\". Formally this isn't dangerous — without permission the agent won't change anything — but the working territory would become the entire folder with all your personal files. Set up a separate empty folder for experiments: `mkdir test-claude && cd test-claude`." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in the terminal, in the recipe-site project folder. Launch Claude Code with the `claude` command, then give it a first reconnaissance task: ask it to explore the project and tell you what it does.",
+      "steps": [
+        {
+          "expectPattern": "^claude$",
+          "output": "✻ Welcome to Claude Code!\n\n  Folder: ~/projects/recipe-site\n  Tip: /help — help with commands\n\n> _",
+          "failHint": "Just type the command that launches the agent: claude"
+        },
+        {
+          "expectPattern": "(explore|study|analyz|tell me|explain|describe|look at|figure out|what does|how does|how is|understand)",
+          "output": "Claude reads the project files: package.json, the folder structure, the main pages...\n\n● This is a cooking recipes site. In brief:\n  • A home page with a list of recipes\n  • An individual recipe page with ingredients and steps\n  • Recipe data is stored in the data/ folder in JSON files\n  • Run: npm run dev, tests: npm test\n\nI can tell you more about any part or move on to tasks.",
+          "failHint": "Ask for reconnaissance in your own words, for example: \"Explore this project and tell me what it does\"."
+        }
+      ],
+      "successMessage": "Great! You launched your first session and started with safe reconnaissance — exactly how the official Quickstart recommends starting. Notice: the agent read the files itself, you didn't have to copy anything."
+    },
+    {
+      "type": "quiz",
+      "question": "Why does the `claude` command need to be launched specifically in the project folder?",
+      "options": [
+        "Otherwise Claude Code won't install",
+        "The launch folder becomes the agent's working territory: it reads and changes those files",
+        "It's just a tradition, it doesn't affect the work",
+        "Because the terminal doesn't work in other folders"
+      ],
+      "correct": [1],
+      "explanation": "The current folder at the moment of launch determines the context of the whole session: what the agent sees, what it can change, where it runs commands. Launching in the project folder gives the agent exactly what it needs for the work — no more and no less. That's also why you shouldn't launch it in your home folder with all your documents.",
+      "hint": "Recall the rule: one folder — one project — one session."
+    },
+    {
+      "type": "quiz",
+      "question": "You've launched a session and don't remember which utility commands are available. What do you type?",
+      "options": [
+        "/help",
+        "/commands",
+        "help me",
+        "Ctrl+Alt+Delete"
+      ],
+      "correct": [0],
+      "explanation": "All utility commands in a session start with a \"/\", and /help shows the help and their list. It's the fastest way to recall the capabilities without leaving the session. Slash commands get a separate lesson in this world.",
+      "hint": "Utility commands start with a \"/\"."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A beginner described their plan for a first encounter with Claude Code. One step in the plan is bad — find it.",
+      "lang": "markdown",
+      "lines": [
+        "I'll install Claude Code with the command npm install -g @anthropic-ai/claude-code.",
+        "I'll go to the test project folder: cd test-project.",
+        "I'll launch the agent with the claude command and sign in to my account.",
+        "For my first task I'll write: \"Rewrite the whole project however you see fit, I trust you\".",
+        "I'll look at the result and ask follow-up questions."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The first task should be reconnaissance or a small, concrete change, whereas \"rewrite everything however you see fit\" is the absence of a goal and a done criterion: the agent will guess, and you won't be able to evaluate the result. Better: \"Explore the project and tell me how it's built\" or \"Fix the typo in the heading\". The other steps of the plan are correct."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **If Claude Code isn't installed yet — skip the mission, you'll come back to it later.**\n\n1. Open the terminal and create a test folder: `mkdir test-claude` then `cd test-claude`.\n2. Launch `claude` (on first launch, sign in to your account through the browser).\n3. Type `/help` and look through the list of commands.\n4. Give a first task: \"Create a file hello.txt with a greeting in English\" — and approve the file creation.\n5. End the session with the `exit` command and check that the file appeared in the folder.",
+      "checklist": [
+        "I launched claude in a separate test folder, not in my home folder",
+        "I looked at the help via /help",
+        "I gave a task in plain language and saw a permission request",
+        "The hello.txt file actually appeared in the folder"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-cc-install", "badgeId": null }
+}

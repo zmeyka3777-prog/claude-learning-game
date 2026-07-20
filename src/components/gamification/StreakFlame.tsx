@@ -2,6 +2,7 @@
  * Стрик: пламя (pink→amber градиент) + счётчик дней подряд.
  */
 import { Flame } from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 interface StreakFlameProps {
   days: number;
@@ -10,6 +11,7 @@ interface StreakFlameProps {
 }
 
 export function StreakFlame({ days, size = 'sm' }: StreakFlameProps) {
+  const t = useT();
   const active = days > 0;
   const iconSize = size === 'lg' ? 28 : 15;
 
@@ -25,7 +27,7 @@ export function StreakFlame({ days, size = 'sm' }: StreakFlameProps) {
         border: `1px solid ${active ? 'rgba(236, 72, 153, 0.3)' : 'var(--border-glass)'}`,
         color: active ? 'var(--accent-pink)' : 'var(--text-muted)',
       }}
-      title={active ? `Стрик: ${days} дн. подряд` : 'Начни стрик — пройди урок сегодня'}
+      title={active ? t('streak.active', { days }) : t('streak.start')}
     >
       <span
         style={

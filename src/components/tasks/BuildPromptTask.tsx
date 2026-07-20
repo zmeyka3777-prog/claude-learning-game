@@ -6,6 +6,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { Blocks, RotateCcw, X } from 'lucide-react';
 import type { BuildPromptTask as BuildPromptTaskType } from '../../engine/types';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface PoolItem {
@@ -34,6 +35,7 @@ interface BuildPromptTaskProps {
 }
 
 export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
+  const t = useT();
   const pool = useMemo<PoolItem[]>(() => {
     const items: PoolItem[] = [
       ...task.blocks.map((text, i) => ({ key: `b${i}`, text, isDistractor: false })),
@@ -85,7 +87,7 @@ export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
         <h3 className="font-display text-lg font-semibold">{task.instruction}</h3>
       </div>
       <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-        Нажимай на блоки в правильном порядке. Осторожно: среди них есть лишние.
+        {t('build.hint')}
       </p>
 
       {/* Зона ответа */}
@@ -104,7 +106,7 @@ export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
       >
         {answer.length === 0 ? (
           <p className="p-2 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
-            Твой промпт появится здесь
+            {t('build.placeholder')}
           </p>
         ) : (
           <div className="flex flex-col gap-2">
@@ -160,7 +162,7 @@ export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
             disabled={answer.length === 0}
             onClick={check}
           >
-            Проверить
+            {t('common.check')}
           </button>
           <button
             type="button"
@@ -172,14 +174,14 @@ export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
             }}
           >
             <RotateCcw size={14} />
-            Сбросить
+            {t('common.reset')}
           </button>
         </div>
       )}
 
       {status === 'wrong' && (
         <p className="text-sm" style={{ color: 'var(--error)' }}>
-          Пока не то. Проверь порядок блоков — и не попался ли лишний.
+          {t('build.wrong')}
         </p>
       )}
 
@@ -191,7 +193,7 @@ export function BuildPromptTask({ task, onSolved }: BuildPromptTaskProps) {
           style={{ borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.07)' }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Промпт собран!
+            {t('build.solved')}
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>{task.explanation}</p>
         </motion.div>

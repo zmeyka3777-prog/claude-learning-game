@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { Lightbulb, SquareTerminal } from 'lucide-react';
 import type { TerminalSimTask as TerminalSimTaskType } from '../../engine/types';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface TermLine {
@@ -22,6 +23,7 @@ interface TerminalSimTaskProps {
 }
 
 export function TerminalSimTask({ task, onSolved }: TerminalSimTaskProps) {
+  const t = useT();
   const [lines, setLines] = useState<TermLine[]>([]);
   const [stepIndex, setStepIndex] = useState(0);
   const [input, setInput] = useState('');
@@ -65,10 +67,7 @@ export function TerminalSimTask({ task, onSolved }: TerminalSimTaskProps) {
     } else {
       setMistakes((m) => m + 1);
       setHint(step.failHint);
-      setLines((l) => [
-        ...l,
-        { id: termLineId++, kind: 'err', text: `команда не подошла — попробуй ещё раз` },
-      ]);
+      setLines((l) => [...l, { id: termLineId++, kind: 'err', text: t('term.err') }]);
     }
   };
 
@@ -138,7 +137,7 @@ export function TerminalSimTask({ task, onSolved }: TerminalSimTaskProps) {
                   autoCorrect="off"
                   spellCheck={false}
                   className="w-full bg-transparent font-mono text-sm text-white caret-transparent outline-none"
-                  aria-label="Ввод команды"
+                  aria-label={t('term.input.aria')}
                 />
                 <span
                   className="terminal-cursor pointer-events-none absolute top-0 inline-block"
@@ -175,7 +174,7 @@ export function TerminalSimTask({ task, onSolved }: TerminalSimTaskProps) {
           style={{ borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.07)' }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Команды выполнены!
+            {t('term.solved')}
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>{task.successMessage}</p>
         </motion.div>

@@ -1,0 +1,130 @@
+{
+  "id": "api-boss",
+  "world": "world-7-api-sdk",
+  "order": 12,
+  "title": "BOSS: The Product",
+  "subtitle": "End-to-end build of a mini-app: from key to an agent with structured output",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Anthropic Quickstarts — GitHub", "url": "https://github.com/anthropics/anthropic-quickstarts" },
+    { "title": "Quickstart — Claude Docs", "url": "https://platform.claude.com/docs/en/quickstart" },
+    { "title": "Tool use overview — Claude Docs", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Final challenge: build a product" },
+    { "type": "text", "md": "Eleven lessons — eleven parts: the key, the Messages API, the system prompt, prompt engineering, tools, schemas, vision, thinking, economics, ready-made recipes, and two kinds of agents. The boss tests the developer's core skill: **wiring the parts into a working product**.\n\nThe story: you're building an MVP of an **\"Orders Bot\"** service for an online store. The bot answers customers in chat asking \"where is my order,\" reaching into the order database through a tool, and rolls up every conversation into a strict JSON ticket for the CRM. This is the classic trio of \"conversation + tool use + structured output\" — half of production bots are built on it, and it's exactly what official quickstarts like the customer support agent assemble.\n\nThere will be no hints in the tasks. If you're stuck, treat it as a diagnosis: go back to the corresponding lesson in this world and come back to finish the job." },
+    { "type": "heading", "text": "Architecture of the \"Orders Bot\"" },
+    { "type": "table",
+      "headers": ["Layer", "Solution", "Source lesson"],
+      "rows": [
+        ["Access", "Key in an environment variable, on the server only", "First request"],
+        ["Bot's character", "system: role, rules, prohibitions; conversation history — in messages", "Messages deeper"],
+        ["Prompt reliability", "XML tags for data, few-shot example replies", "Prompt engineering"],
+        ["Order data", "find_order tool: name + description + input_schema; the agent loop", "Tool use"],
+        ["Ticket for CRM", "output_config.format with a JSON schema and enum statuses", "Structured outputs"],
+        ["Economics", "Cache the system prompt, a light model for routine work, usage to logs", "API economics"]
+      ]
+    },
+    { "type": "text", "md": "Let's walk through the joints — the places where the parts connect and where the build breaks most often.\n\n**Key and boundaries.** The key lives in the server's environment. The frontend never talks to the Claude API directly — only through your backend.\n\n**Conversation.** The API is stateless: the server stores each chat's history and sends it in full. Assistant replies are appended to the history — otherwise the bot suffers amnesia. The system prompt is stable and marked with `cache_control`: thousands of conversations a day read it from cache.\n\n**Tool.** `find_order` is described so the model understands when to call it: \"Returns an order's status by its number. Call it when a customer asks about their order.\" The loop handles `stop_reason: \"tool_use\"`, runs the function, returns a `tool_result` with the correct `tool_use_id` — and doesn't forget the error case (`is_error: true` if the order isn't found in the database).\n\n**Ticket.** When the conversation ends, a separate request rolls the dialog up into JSON: `{topic, order_id, resolved, sentiment}`. The format is guaranteed by a schema with `additionalProperties: false`, and `sentiment` is limited by an enum — the CRM won't encounter a category like \"eh, seemed fine.\"" },
+    { "type": "example",
+      "bad": "One request does everything: a giant prompt \"answer the customer, and while you're at it find the order in this database dump (500 rows attached) and append JSON for the CRM at the end.\" The key is in the frontend code, we don't store history.",
+      "good": "Separation of concerns: chat requests with system + history + the find_order tool (the database stays with you, the model gets only the needed order); when it's done — a separate request with a schema for the ticket. Key on the backend, system prompt in cache.",
+      "explanation": "The monolithic request breaks at every seam: a database dump in the prompt means tokens, staleness, and data leakage; \"while you're at it, append JSON\" means a format with no guarantees; the key on the frontend means other people's requests on your dime. A product build is separation: tools give the model exactly the data it needs, a schema guarantees the format, and boundaries keep the key and database on your side." },
+    { "type": "callout", "kind": "docs", "md": "The anthropic-quickstarts repository (github.com/anthropics/anthropic-quickstarts) contains reference builds of exactly this kind — for example, the Customer Support Agent: a conversational interface, a system prompt with a knowledge base, tools for data, and structured responses. Studying its code after beating the boss is the best next step: you'll see the same layers in a full-size application." },
+    { "type": "callout", "kind": "tip", "md": "In the real world, build the product in the same order as the boss tasks: first the bare conversation, then the tool, then the schema, and economics last. Test each layer separately before adding the next: debugging \"everything at once\" takes many times longer than layer by layer." }
+  ],
+  "tasks": [
+    {
+      "type": "build-prompt",
+      "instruction": "Step 1. Design the foundation: assemble the plan for the \"Orders Bot\" chat endpoint in the right order — from secrets to sending the request.",
+      "blocks": [
+        "Key — in the ANTHROPIC_API_KEY environment variable on the backend; the frontend only talks to our server",
+        "System prompt: the support bot's role, rules, a ban on making up order data; marked with cache_control",
+        "Fetch this customer's conversation history and append the new user message at the end",
+        "Send messages.create: model + max_tokens + system + history + tools=[find_order]"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Put the key in the frontend config so the browser calls the Claude API directly without our server",
+        "Instead of a tool, paste the full dump of the orders table into the system prompt"
+      ],
+      "explanation": "The order reflects the layers: security (key on the server) → character (system with cache) → memory (history + new message) → request with the tool. The traps are two deadly sins of production: a key in the frontend pays for other people's requests, and a database dump in the prompt is data leakage, mountains of tokens, and instant staleness. The model should get data precisely, through a tool."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Step 2. The tool is connected, but when asked \"where is my order ORD-482?\" the bot replies \"I can't check the status.\" Find the error in the tool definition.",
+      "lang": "python",
+      "lines": [
+        "tools = [{",
+        "    \"name\": \"find_order\",",
+        "    \"description\": \"Internal function number 7, do not use unless necessary.\",",
+        "    \"input_schema\": {",
+        "        \"type\": \"object\",",
+        "        \"properties\": {",
+        "            \"order_id\": {\"type\": \"string\", \"description\": \"Order number, e.g. ORD-482\"}",
+        "        },",
+        "        \"required\": [\"order_id\"],",
+        "    },",
+        "}]"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The schema and name are fine — the description is broken. Claude decides whether to call a tool by reading its description, and \"internal function number 7, do not use unless necessary\" actively discourages it from calling it. A working description answers \"what it does\" and \"when to call it\": \"Returns the status and delivery date of an order by its number. Call it whenever a customer asks about their order.\" A tool's description is also a prompt."
+    },
+    {
+      "type": "quiz",
+      "question": "Step 3. Claude returned tool_use for find_order, your code queried the database — order ORD-482 wasn't found. What do you send to the API?",
+      "options": [
+        "Nothing — just show the customer an error message on your own behalf",
+        "tool_result with is_error: true and the text \"order ORD-482 not found\" — let Claude reply to the customer properly itself",
+        "An empty tool_result so as not to confuse the model",
+        "Repeat the same request — maybe the order will show up the second time"
+      ],
+      "correct": [1],
+      "explanation": "The loop must finish honestly: `tool_result` with `is_error: true` and clear text. Then Claude will phrase a human reply — re-ask for the number or suggest checking the spelling. Breaking the loop leaves the conversation in an invalid state (the tool_use is unanswered), an empty result misinforms the model, and a blind retry won't change the database contents."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Step 4. Assemble the JSON schema for the CRM ticket: object → fields with an enum for sentiment → required fields → ban on extra fields.",
+      "blocks": [
+        "\"type\": \"object\"",
+        "\"properties\": {\"topic\": {\"type\": \"string\"}, \"order_id\": {\"type\": \"string\"}, \"resolved\": {\"type\": \"boolean\"}, \"sentiment\": {\"type\": \"string\", \"enum\": [\"positive\", \"neutral\", \"negative\"]}}",
+        "\"required\": [\"topic\", \"resolved\", \"sentiment\"]",
+        "\"additionalProperties\": false"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "\"sentiment\": {\"type\": \"string\", \"description\": \"describe the customer's mood in your own words, creatively\"}",
+        "\"additionalProperties\": true — let the model add useful fields to its taste"
+      ],
+      "explanation": "The ticket schema: typed fields, an enum of three sentiment values, required without order_id (the customer might not have named it), and a mandatory additionalProperties: false. The traps hit the same spot — predictability: \"creative\" sentiment gives the CRM \"eh, seemed fine\" instead of three filterable values, and additionalProperties: true lets the model improvise fields your parser doesn't expect."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Step 5. Review with the architect. Explain in words (as in a code review) why in the \"Orders Bot\" order data goes through the find_order tool rather than being baked into the system prompt as a database dump. Give at least two reasons.",
+      "steps": [
+        {
+          "expect": ["token", "up-to-date", "current", "outdated", "stale", "fresh", "secur", "leak", "cheap", "cost", "cache", "only need", "precise", "targeted", "secret", "personal"],
+          "minMatches": 2,
+          "claudeReply": "Review passed — mature reasoning. Let me capture the full list of reasons in the decision:\n\n1. **Freshness.** A dump in the prompt goes stale the moment it's sent; a tool reads the live database at the moment of the question.\n2. **Economics.** The whole database in every request is thousands of input tokens; a tool returns one record of a few dozen tokens. Bonus: the system prompt stays stable — the cache works.\n3. **Security.** In the prompt the whole database is available to the model and potentially \"fishable\" by the customer; a tool returns exactly one order by a specific number — the data stays on your side.\n4. **Scale.** A database of a million orders won't physically fit in a prompt, but for a tool its size is irrelevant.\n\nThis is the main integration pattern: the model decides, the data arrives precisely on request."
+        }
+      ],
+      "successMessage": "The architect approved the decision. You don't just apply tool use — you can justify it in the language of economics, security, and freshness. That's the level of a product developer."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Final mission: build the whole \"Orders Bot.\"** You'll need an API key — created in the Claude platform console.\n\n1. **Foundation.** A script with a client (key from the environment), a support bot's system prompt, a conversation loop that accumulates history.\n2. **Tool.** An \"order database\" — a plain dictionary of 3-4 orders with statuses. Define find_order (name, description, input_schema) and handle the agent loop, including the \"order not found\" case via is_error.\n3. **Ticket.** On the \"end\" command — a separate request: roll the conversation up into JSON per the schema {topic, order_id, resolved, sentiment} via output_config.format.\n4. **Run-through.** Hold a conversation: say hello → ask about an existing order → ask about a nonexistent one → finish and get the ticket.\n5. **Debrief.** Look at the usage of all requests: where the most input tokens are and what you'd cache.",
+      "checklist": [
+        "The conversation holds context: the bot remembers the customer's name and earlier messages",
+        "find_order is called on an order question, and the bot replies with data from your dictionary",
+        "A nonexistent order is handled with a polite reply, not a crash",
+        "The ticket is valid JSON per the schema, sentiment strictly from the enum",
+        "You studied the usage and know what to cache first"
+      ],
+      "xpBonus": 100
+    }
+  ],
+  "reward": { "cardId": "card-api-boss", "badgeId": "badge-world-7" }
+}

@@ -1,0 +1,107 @@
+{
+  "id": "sk-first",
+  "world": "world-3-skills",
+  "order": 5,
+  "title": "Your First Skill",
+  "subtitle": "From idea to a working skill: template, content, test, iteration",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Creating custom skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512198" },
+    { "title": "anthropics/skills — template/", "url": "https://github.com/anthropics/skills" },
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The lesson plan: five steps" },
+    { "type": "text", "md": "You've built up enough theory — time to put together your first skill. The path has five steps:\n\n1. **Pick a task** — what exactly we're automating.\n2. **Take a template** — don't write the structure from scratch.\n3. **Fill in SKILL.md** — description by the formula, instructions to the point.\n4. **Connect and test** — run real requests through it.\n5. **Iterate** — fix whatever didn't work right.\n\nWe'll go through each step on a single end-to-end example: a skill for replying to customer reviews of a small café. Keep your own task in mind — at the end of the lesson you'll repeat this path in real Claude." },
+    { "type": "heading", "text": "Step 1: pick the right task" },
+    { "type": "text", "md": "The ideal task for a first skill passes three filters:\n\n- **It recurs.** You've done it with Claude at least three times. There's no point automating a one-off task.\n- **It has stable rules.** Every time you explain the same thing: the format, the tone, the structure, the checklist.\n- **It fits in your head.** For the first time — a task whose instructions you can explain in a minute. \"Reply to reviews\" — yes. \"Run all of marketing\" — no, that's ten skills, not one.\n\nOur example passes all the filters: reviews come in every week, the reply rules are stable (thank them, respond to the substance, invite them back), the instructions are short." },
+    { "type": "heading", "text": "Steps 2–3: template and content" },
+    { "type": "text", "md": "The anthropics/skills repository has a `template/` folder — a skill starter with a marked-up SKILL.md. Copy it, rename the folder to your future skill's name (remember the rules: lowercase letters, digits, hyphens), and fill in three zones:\n\n- **name** — the same name as the folder: `review-replies`.\n- **description** — by the formula from the previous lesson: what it does + when to apply, with real trigger words.\n- **Instructions** — steps, rules, limits. Write it like a note for a new employee: concrete, itemized, with a \"how it should be\" example.\n\nIf the task has materials — a reply template, a list of typical situations — put them in as files alongside and reference them from the instructions." },
+    { "type": "code", "lang": "markdown", "title": "review-replies/SKILL.md — first draft", "code": "---\nname: review-replies\ndescription: Prepares replies to reviews from guests of the \"Krendel\" café. Use when the user asks to reply to a review, complaint, or guest comment from maps, social media, or review sites.\n---\n\n# Replies to reviews for the \"Krendel\" café\n\n## Order\n1. Determine the review type: positive, neutral, negative\n2. Thank them for the review — always, even a negative one\n3. Respond to the substance: to praise — warmly, to a problem —\n   acknowledge it, apologize, say we'll fix it\n4. Invite them to come again\n\n## Rules\n- Friendly tone, address formally, no corporate speak\n- Length: 2–4 sentences\n- Never argue with the guest or make excuses\n- Signature: \"The Krendel Team\"" },
+    { "type": "heading", "text": "Step 4: connect and test" },
+    { "type": "text", "md": "The finished folder needs to be handed to Claude. In claude.ai, skills are connected in the settings — there's a section for managing capabilities and skills where you upload your skill (a plan with skill support is required). In Claude Code, skills go into the project's skills folder. After connecting comes the most important part — the **test**.\n\nTest with at least three requests:\n\n1. **Direct:** \"Reply to the review: 'Cozy, but we waited 40 minutes for the order'\" — the skill must fire.\n2. **Indirect:** \"We got a complaint on maps, help me out\" — this only fires if the triggers in the description are broad enough.\n3. **Off-topic:** \"Write a post about the new desserts\" — the skill **must not** fire: this isn't a review.\n\nHow do you know the skill was applied? By the result: the reply follows your rules (thanks, response, invitation, signature). Not sure — ask directly: \"Which skill did you use?\"" },
+    { "type": "heading", "text": "Step 5: iteration is the norm" },
+    { "type": "text", "md": "The first draft is almost never perfect, and that's fine: a skill isn't an exam, it's a living document. Typical fixes after testing:\n\n- **Didn't fire on an indirect request** → add trigger words to the description (\"complaint,\" \"maps,\" \"comment\").\n- **Fired, but the result was off** → refine the instructions: replace \"reply warmly\" with a concrete rule or add an example of a finished reply.\n- **Fires on other people's tasks** → narrow the description, add a boundary \"do not use for….\"\n\nThe \"test → fix → test\" loop is the same one as with prompts, except the result accumulates: each fix improves all future replies, not just one." },
+    { "type": "example",
+      "bad": "Writing SKILL.md, saving it, and considering the job done: \"the instructions are correct, so it works.\"",
+      "good": "Writing SKILL.md → running a direct, indirect, and off-topic request → noticing that on \"a complaint from maps\" the skill stays silent → adding triggers to the description → running it again.",
+      "explanation": "A skill without a test is a hypothesis, not a tool. Three test requests take five minutes and expose 90% of problems: invisibility (the description doesn't catch indirect phrasings), imprecision (the instructions are too general), and intrusiveness (the skill barges into other tasks)." },
+    { "type": "callout", "kind": "docs", "md": "The \"Creating custom skills\" article in the Claude Help Center recommends exactly this path: start with one specific task, write a short description of what the skill does and when it applies, provide step-by-step instructions, and then test on real requests and refine gradually. It also states that a plan with skill support is required for custom skills." },
+    { "type": "callout", "kind": "tip", "md": "Make it a habit: after every \"not quite right\" in a skill's behavior, make the fix right away, while you remember the context. Five minutes of fixing today saves explanations in every future chat. And don't be afraid to delete from the instructions anything that doesn't affect the result: a short, precise skill works better than a long, vague one." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Which task is best suited for your first own skill?",
+      "options": [
+        "\"Run all sales, marketing, and customer support\" — automate everything at once",
+        "\"Translate a contract into English just this once\" — needed right now",
+        "\"Write up the minutes of weekly stand-ups using our template\" — I do it every week by the same rules",
+        "\"Have Claude reply more interestingly\" — I've wanted that for a while"
+      ],
+      "correct": [2],
+      "explanation": "Stand-up minutes pass all three filters: the task recurs, the rules are stable, the instructions are short. \"Everything at once\" is a dozen skills, a one-off translation won't pay off a skill, and \"reply more interestingly\" isn't a task type — you can't describe it with triggers.",
+      "hint": "Three filters: it recurs, it has stable rules, it fits in your head."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Restore the correct order for creating a skill — the five steps from the lesson.",
+      "blocks": [
+        "Pick a recurring task with stable rules",
+        "Copy the template/ starter and rename the folder",
+        "Fill in SKILL.md: name, description by the formula, step-by-step instructions",
+        "Connect the skill and run the tests: direct, indirect, and off-topic requests",
+        "Make fixes based on the test and run it again"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "Publish the skill for the whole team right away — colleagues will test it"
+      ],
+      "explanation": "The order is logical: task → starter → content → test → iteration. The trap \"let colleagues test it\" is bad practice: you should share a skill you've already run yourself, otherwise the first mistake in the description multiplies across the whole team."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A skill's author complains: \"On the request 'reply to a guest complaint' the skill stays silent.\" Here's their frontmatter. Find the line that keeps the skill from catching such requests.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: review-replies",
+        "description: Replies to positive five-star reviews from café guests on Yandex Maps.",
+        "---"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The description is too narrow: \"positive five-star\" and \"on Yandex Maps\" cut off complaints, neutral reviews, and other platforms. The request about a complaint doesn't match the description — the skill shouldn't have fired. The cure: broaden it to the task type — \"Replies to reviews, complaints, and comments from café guests on any platform.\"",
+      "hint": "The line format is fine. Compare the request's words (\"complaint\") with the description's words — is there any overlap?"
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulating step 4: the review-replies skill is connected, check it with an \"off-topic\" request. Ask for something NOT about reviews — for example, a post about new desserts — and make sure the skill doesn't step in.",
+      "steps": [
+        {
+          "expect": ["post", "dessert", "write", "social", "announce", "new", "menu"],
+          "minMatches": 2,
+          "claudeReply": "Writing the post — and notice, **without** the review-replies skill: your request isn't about reviews, and the skill's description correctly passed it over.\n\n---\n\nNew at Krendel! A chocolate fondant that flows by all the rules, and a lemon tart for those who like it a bit tart. Come taste them and tell us which is better.\n\n---\n\nThat was the third test — the \"off-topic request.\" The skill passed: it didn't fire where it shouldn't. If the post had suddenly come out signed \"The Krendel Team\" with a review-reply structure — that would be a signal the description is too broad.",
+          "failHint": "Ask for something unrelated to reviews, for example: \"Write a social media post about our new desserts.\""
+        }
+      ],
+      "successMessage": "You checked the skill's boundaries — a sign of a mature approach. A good skill not only fires where needed, but also stays silent where it shouldn't."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Time for real Claude. **A plan with skill support is required** (custom skills aren't available on the free plan).\n\n1. **Pick a task** by the three filters: it recurs, it has stable rules, the instructions fit in your head.\n2. **Create the skill folder** with a SKILL.md file — use the example from the lesson or `template/` from the anthropics/skills repository as a model.\n3. **Fill in the frontmatter:** name (lowercase letters and hyphens, matching the folder name) and description by the formula \"what it does + when to apply\" with real trigger words.\n4. **Write the instructions:** the order of actions, the rules, and if needed — an example of the result.\n5. **Connect the skill** in the claude.ai settings (the skills management section) and **run three tests:** a direct request, an indirect one, an off-topic one.\n6. **Make at least one fix** based on the test — there are no perfect first versions.",
+      "checklist": [
+        "The task passes three filters: it recurs, the rules are stable, the instructions are short",
+        "name — lowercase Latin letters/digits/hyphens, matching the folder name",
+        "description names the result and contains 3+ trigger words from my real requests",
+        "The skill fired on a direct request — the result follows my rules",
+        "The skill did NOT fire on an off-topic request from another area",
+        "After testing I made at least one fix to the description or instructions"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-sk-first", "badgeId": null }
+}

@@ -1,0 +1,108 @@
+{
+  "id": "adv-data-analysis",
+  "world": "world-2-claude-ai",
+  "order": 8,
+  "title": "Data analysis",
+  "subtitle": "Upload a spreadsheet — get summaries, charts and findings you never suspected",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude as your personal analyst" },
+    { "type": "text", "md": "In World 1 you already uploaded spreadsheets and asked Claude to \"read\" them. This lesson is about the next level: **real data analysis**. Upload a CSV or Excel file — and Claude doesn't just retell the contents, it counts, compares, builds charts and finds patterns.\n\nIt's important to understand how this works: for analytical tasks Claude writes and runs **code** (usually Python) right inside its response. This means sums and percentages aren't \"eyeballed\" — they are actually computed, the way an analyst would do it in their own tool. You don't have to read the code, but the fact that it exists is a reason to trust the numbers more than \"off the top of the head\" estimates." },
+    { "type": "heading", "text": "What Claude can do with your spreadsheet" },
+    { "type": "text", "md": "The main categories of tasks:\n\n- **Summaries and aggregates:** totals by category, averages, shares, \"top 10 by revenue\", period comparisons.\n- **Charts:** trends by month, distributions, group comparisons — Claude will pick a suitable chart type itself, or you can ask for a specific one.\n- **Anomaly detection:** outliers, suspicious spikes, duplicates, gaps. \"What's strange in this data?\" is a surprisingly productive question.\n- **Data cleaning:** bring date formats to a single style, remove duplicates, split a \"Full name\" column into parts.\n- **Hypothesis testing:** \"is it true that sales are higher on weekends?\", \"does customer churn depend on region?\"\n\nThe scale of the task can be anything: from a home spending sheet with a hundred rows to a work export with tens of thousands. The principles are the same; the only difference is that on large data a manual check in Excel would take hours, while here the answer arrives in the time it takes to send one message." },
+    { "type": "heading", "text": "How to phrase an analytical question" },
+    { "type": "text", "md": "The classic beginner's mistake is \"analyze this\" with no question. Analysis is always an answer to a question, so the question has to be asked. A good formula:\n\n1. **Data context:** what kind of table this is — \"an export of an online store's orders for the year, one row = one order\";\n2. **Goal:** what you want to understand or decide — \"I want to understand why revenue dropped in March\";\n3. **Specific questions:** 2–4 of them — \"in which categories is the drop the steepest? did the average check change? is there churn among regular customers?\";\n4. **Result format:** \"brief conclusions as a list + a trend chart + a table by category\".\n\nIf you don't have questions yet — ask for reconnaissance: \"describe what's in this data and suggest 5 questions worth asking it\". And then it's a dialogue: each answer gives rise to the next question, \"and what if we break it down by region?\", \"and without the sale?\"" },
+    { "type": "example",
+      "bad": "[attached orders.xlsx] \"Analyze this.\"",
+      "good": "[attached orders.xlsx] \"These are my store's orders for the year: date, product, category, amount, city. I want to understand what caused revenue to drop in March. Compute revenue by month and category, compare March with February, find the categories and cities with the steepest drop. Result: conclusions in 5 bullet points + a chart by month + a table of the top 5 declining categories.\"",
+      "explanation": "In response to \"analyze this\", Claude will give a general description of the table — polite, but useless. The second request has context (what the data is), a goal (the cause of the March drop), specific sub-questions and a format. Such analysis answers your question right away instead of retelling the columns." },
+    { "type": "heading", "text": "Anomalies: let the data surprise you" },
+    { "type": "text", "md": "A separate class of requests is the search for oddities, when you don't know what you're looking for:\n\n- \"Find anomalies and outliers in the data. What stands out from the general patterns?\"\n- \"Are there suspicious records: duplicates, zero amounts, dates from the future?\"\n- \"What three unexpected facts do you see in this data?\"\n\nThis is how you find export errors, double charges, \"dead\" products and sudden sales stars. People miss such things because they aren't looking for them — but Claude can methodically comb through everything." },
+    { "type": "heading", "text": "Honest analysis: two rules" },
+    { "type": "text", "md": "1. **Cross-check the key figures.** Ask Claude to show the intermediate results (\"print the table of revenue by month that the chart was built from\") and check a couple of values against the source. If the base numbers match — you can trust the conclusions more.\n2. **Distinguish fact from interpretation.** \"Revenue in March fell 18%\" is a fact from the data. \"Probably because the season ended\" is a hypothesis the data may not confirm. A good trick is to ask Claude to separate them explicitly: \"facts from the data separately, your assumptions separately\"." },
+    { "type": "callout", "kind": "docs", "md": "The support.claude.com Help Center (Claude Features section) describes working with files and analyzing data: Claude accepts CSV and Excel spreadsheets, can perform calculations with code and create visualizations from uploaded data. Availability of the analysis tools depends on your plan and settings." },
+    { "type": "callout", "kind": "warning", "md": "Before uploading work data, anonymize it: names, phone numbers, account numbers are most often not needed for analysis — you can delete them or replace them with placeholder IDs beforehand. This won't hurt the analysis, but it removes the risk of leaking personal data." },
+    { "type": "callout", "kind": "tip", "md": "The magic phrase after any analysis: \"What other questions are worth asking this data?\" Claude has seen your whole table and often suggests angles you didn't think of. Analysis is a dialogue, not a single request." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Why can Claude's calculations on an uploaded spreadsheet be trusted more than \"eyeballed\" estimates?",
+      "options": [
+        "Claude never makes mistakes",
+        "For calculations Claude writes and runs code — sums and percentages are actually computed, not approximated",
+        "Spreadsheets always contain correct data",
+        "You can never trust anything, ever"
+      ],
+      "correct": [1],
+      "explanation": "Analytics works by executing code — like a real analyst does. This doesn't remove the need to verify key figures (the data could have been misunderstood), but it's fundamentally more reliable than verbal estimates. The extremes \"never makes mistakes\" and \"trust nothing\" are equally wrong.",
+      "hint": "Remember what Claude does \"under the hood\" for analytical tasks."
+    },
+    {
+      "type": "quiz",
+      "question": "What makes up a good analytical request? Select all correct answers.",
+      "options": [
+        "Context: what the data is and what a row of the table means",
+        "Goal: what you want to understand or decide",
+        "Specific questions to the data",
+        "The single word \"analyze\" — that's enough"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Context + goal + questions (+ result format) is the skeleton of an analytical request. \"Analyze\" with no question gives a general description of the table: polite, but off your task.",
+      "hint": "Analysis is always an answer to a question. Which elements help you pose that question?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The user is drawing conclusions from a sales analysis. One step of the reasoning is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Uploaded the year's sales export and explained what each column means.",
+        "2. Asked to compute revenue by month and build a chart.",
+        "3. Cross-checked two figures from Claude's table with the source file — they match.",
+        "4. Claude suggested that the June peak was linked to an advertising campaign.",
+        "5. Wrote in the report for the director: \"the data proves that the June growth was caused by advertising\"."
+      ],
+      "bugLineIndex": 4,
+      "explanation": "Steps 1–4 are exemplary. The mistake is in line 5: Claude's assumption about the cause turned into \"the data proves\". A coincidence in time is not proof of a cause: the peak could have been driven by the season, a holiday or a competitor's actions. In a report, fact and hypothesis must be recorded separately."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you uploaded a CSV of your family's spending for the year (date, category, amount). Ask Claude an analytical question with context and a goal — for example, to figure out where the money is leaking, or to find oddities in the spending.",
+      "steps": [
+        {
+          "expect": ["spend", "expense", "categor", "compute", "how much", "where", "anomal", "strange", "chart", "month"],
+          "minMatches": 2,
+          "claudeReply": "Running the analysis — computing with code across all 1,847 rows. 📊\n\n**Totals by category for the year:**\n\n| Category | Amount | Share |\n|---|---|---|\n| Groceries | 289,000 | 31% |\n| Cafes and delivery | 164,000 | 18% |\n| Transport | 121,000 | 13% |\n| Subscriptions | 47,000 | 5% |\n\n**A curious finding:** \"Cafes and delivery\" grew from 9,000/month in January to 21,000 in December — a 2.3x rise while the other categories stayed stable.\n\nI built a trend chart by month. Want to dig deeper — say, weekdays versus weekends?",
+          "failHint": "Ask a question with a goal: \"Compute spending by category — I want to understand where most of it goes\" or \"Find anomalies in the spending\"."
+        },
+        {
+          "expect": ["yes", "dig", "weekday", "weekend", "why", "subscription", "deeper", "let's", "show", "compare"],
+          "minMatches": 1,
+          "claudeReply": "Digging in. 🔍\n\n**Facts from the data:** 68% of delivery spending falls on weekdays, most often Tuesday–Thursday, and the average order grew from 620 to 940.\n\n**My hypothesis (not a fact!):** this looks like a habit of ordering dinner after work that took hold in the second half of the year.\n\nNotice I'm separating them: the rise in weekday delivery is a **fact from the table**, while its cause is an **assumption** the data can't confirm. What other questions are worth asking this data? I can suggest five.",
+          "failHint": "Agree to dig deeper: \"Yes, compare weekdays and weekends\" or ask \"why did delivery grow?\""
+        }
+      ],
+      "successMessage": "You ran a real mini-analysis: a question with a goal → calculation → finding → digging deeper, and you saw the difference between a fact and a hypothesis."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: analyze your own data.\n\n1. Find a spreadsheet with your own data: a bank statement of expenses (anonymize it!), a workout log, a book catalog — any CSV/Excel with 50+ rows will do. Don't have one — ask Claude to generate a demo table of a year's spending and work with it.\n2. Open **claude.ai**, attach the file and phrase a request by the formula: context (what the data is) + goal + 2–3 specific questions + result format.\n3. Ask for at least one chart.\n4. In a separate message, ask it to find anomalies and oddities.\n5. Cross-check two key figures from the answer with the source file.\n6. Finale: ask \"what other questions are worth asking this data?\" — and ask the most interesting one.",
+      "checklist": [
+        "I prepared a spreadsheet and removed personal data from it",
+        "My request contained context, a goal and specific questions",
+        "I got a summary and at least one chart",
+        "I asked it to find anomalies",
+        "I cross-checked at least two figures with the source",
+        "I asked a follow-up question suggested by Claude"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-data-analysis", "badgeId": null }
+}

@@ -1,0 +1,113 @@
+{
+  "id": "eco-excel",
+  "world": "world-8-ecosystem",
+  "order": 2,
+  "title": "Claude in Excel and Microsoft 365",
+  "subtitle": "Spreadsheets, formulas, and office documents — with an assistant inside your familiar tools",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude in Your Workspace — Claude Help Center", "url": "https://support.claude.com/en/" },
+    { "title": "Claude Features — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why spreadsheets are a special case" },
+    { "type": "text", "md": "In World 2 you already uploaded spreadsheets into claude.ai and got an analysis. But office work has an inconvenient truth: the life of a financier, analyst, or manager happens not in a chat, but **inside** Excel. A hundred-sheet model with linked formulas isn't something you 'upload and forget' — you work with it for weeks: you tweak assumptions, drag formulas, break references, and hunt for where everything came apart.\n\nThat's why Claude has a separate path: to work with a spreadsheet right inside Excel, seeing its structure — sheets, cells, formulas, and the links between them — and not just a 'snapshot' of data copied into a chat." },
+    { "type": "heading", "text": "What Claude can do in Excel" },
+    { "type": "text", "md": "Claude in Excel is an assistant right next to your spreadsheet. Typical tasks:\n\n- **Explain someone else's file.** You opened an inheritance from a colleague who quit — ask: 'explain how this model is built: what's calculated from where, where the inputs are, where the results are'.\n- **Make sense of a formula.** A long nested formula with VLOOKUP and conditions? Claude will break it down step by step in plain language.\n- **Build or extend a model.** 'Add a margin calculation for each product to this sheet' — Claude suggests formulas and structure, drawing on the sheet's real data.\n- **Find a problem.** 'Why doesn't the total in this column match the sum by months?' — a classic of the genre: broken ranges, duplicated rows, manual edits over formulas.\n- **Tidy up data.** Split a full name into columns, bring dates to one format, remove duplicates.\n\nThe main principle doesn't change: Claude proposes, the human checks. For a spreadsheet with money that goes double — we'll talk about checking below." },
+    { "type": "heading", "text": "Wider than Excel: Microsoft 365" },
+    { "type": "text", "md": "Excel is the 'deepest' integration, but the Microsoft 365 ecosystem doesn't end there. Through connectors (remember World 2?) Claude can work with Outlook mail, files in Microsoft's cloud, Word documents, and presentations — searching, reading, answering from the content, and preparing drafts.\n\nA coherent picture of the workday comes together: an email with data arrives in Outlook → the numbers are analyzed in Excel → the conclusions are written up in a Word report → the summary goes to the team in Slack. At every step it's the same assistant, which doesn't need the context of your work explained all over again.\n\nWhich integrations are available depends on the plan and settings — in a company they're usually enabled by an administrator (more on that in the lesson about the organization). If you don't yet have access to Claude inside Excel, this lesson's skills still work: the same task framing applies to spreadsheets uploaded into a regular chat." },
+    { "type": "table", "headers": ["Task", "Bad framing", "Good framing"], "rows": [
+      ["Breaking down someone else's file", "'What's this?'", "'Explain the model's structure: input sheets, calculation sheets, output sheets. What can be changed, what can't?'"],
+      ["Checking", "'Check the spreadsheet'", "'Verify: the totals on the \"Summary\" sheet should equal the sums across the monthly sheets. Show the discrepancies'"],
+      ["Formulas", "'Make a formula'", "'I need a formula: revenue by region from the \"Sales\" sheet, for 2026 only, errors treated as 0'"],
+      ["Cleaning data", "'Clean up the data'", "'The date column mixes formats. Bring it to one form, list the ambiguous rows separately'"]
+    ] },
+    { "type": "heading", "text": "The trust rule for numbers" },
+    { "type": "text", "md": "A spreadsheet is almost always money, reporting, or someone's decisions. That's why for Excel work the 'trust but verify' rule from World 1 becomes a protocol:\n\n1. **Ask it to show its work.** Not 'fix the model', but 'propose an edit and explain exactly what will change and why'.\n2. **Test on a known case.** A new formula should give the correct answer on a row you can recompute by hand or know by heart.\n3. **Keep a copy.** Before major edits, save a version of the file — ordinary hygiene that, with an assistant, becomes mandatory.\n4. **Verify the key figures yourself.** A total that will go to the director or the tax office — recompute it by an independent method: a pivot table, a filter, a calculator." },
+    { "type": "heading", "text": "What not to delegate to a spreadsheet assistant" },
+    { "type": "text", "md": "The zone of responsibility a master keeps for themselves:\n\n- **The choice of assumptions.** What growth rate to build into the model, what discount rate to take — these are business decisions, not formulas. Claude can show options and consequences; choosing is up to you.\n- **The final check before sending.** A file going outside (to a client, a bank, into reporting) passes your personal check: the key totals, the sheet names, the absence of stray data on hidden sheets.\n- **Data that shouldn't be in the file.** Before handing a spreadsheet to the assistant, check whether it has columns with personal data or passwords — more on that in the lesson on security." },
+    { "type": "example",
+      "bad": "'Claude, here's our financial model, optimize it' → accept all changes without looking → send the file to an investor.",
+      "good": "'Explain the model's structure' → 'propose how to add a \"pessimistic\" scenario: which cells and formulas will change' → review the proposed edits → check the scenario's total on a control month → save as a new version → send.",
+      "explanation": "'Optimize' without a goal is an invitation to unpredictable edits, and a file sent to an investor without looking is a career risk. The step-by-step cycle 'understand → propose → check → save a version' turns Claude into an accelerator rather than a source of quiet errors in cell D47."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude in Your Workspace section of the support.claude.com Help Center describes how Claude works inside work tools, including Slack and Microsoft 365: the assistant helps with spreadsheets and documents in the context of the apps themselves, and access to data is configured at connection time. Check the current list of supported apps and availability conditions in the Help Center — it changes faster than any textbook."
+    },
+    { "type": "callout", "kind": "tip", "md": "Start not with 'build me a model', but with a reveal-it task: open the company's scariest file and ask Claude to explain how it's built. This is safe (you change nothing), and the 'wow' effect is maximal." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How is Claude working inside Excel different from uploading a spreadsheet into the claude.ai chat?",
+      "options": [
+        "No difference, it's the same thing",
+        "In Excel Claude works with a live file in the context of the app — the structure of sheets and the formulas — not with a one-off 'snapshot' of data in a chat",
+        "In Excel Claude can only build charts",
+        "You can't upload spreadsheets into a chat at all"
+      ],
+      "correct": [1],
+      "explanation": "Uploading into a chat is good for a one-off analysis. But a model you work with for weeks lives in Excel — and there Claude sees the structure: sheets, formulas, links. Uploading spreadsheets into a chat still works too — these are different tools for different tasks.",
+      "hint": "Recall why a 'hundred-sheet model can't be uploaded and forgotten'."
+    },
+    {
+      "type": "quiz",
+      "question": "Which rules should you follow when Claude edits a spreadsheet with financial data? Select all that apply.",
+      "options": [
+        "Save a copy of the file before major edits",
+        "Test a new formula on a row with a known answer in advance",
+        "Accept all edits at once — the assistant doesn't make mistakes",
+        "Verify the key final figures by an independent method"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "A copy, a control example, and independent verification of the key figures — that's the protocol for working with numbers. 'The assistant doesn't make mistakes' is a dangerous illusion: an error in one cell can quietly distort the whole report.",
+      "hint": "Three points from the 'trust rule for numbers'. One option directly contradicts them."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you opened the Excel file of a colleague who quit — 14 sheets, nothing makes sense. Give Claude the first task about this file.",
+      "steps": [
+        {
+          "expect": ["explain", "structure", "built", "how it works", "figure out", "model", "sheets", "what comes from"],
+          "minMatches": 1,
+          "claudeReply": "Broke down the file. 🗂️\n\n**Input sheets (4):** 'Price list', 'Exchange rates', 'Headcount', 'Rent' — data is entered here by hand.\n**Calculation sheets (8):** monthly sheets that pull data from the input sheets via lookup formulas.\n**Output sheets (2):** 'Summary' and 'For the director' — only references to the calculation sheets.\n\n⚠️ Noticed something odd: on the 'March' sheet, three cells have formulas overwritten by manually entered numbers. Want me to show exactly where?",
+          "failHint": "Ask it to explain the file's structure: which sheets are inputs, which are calculations, what's computed from where."
+        },
+        {
+          "expect": ["show", "yes", "where", "odd", "cell", "march", "go ahead", "figure out"],
+          "minMatches": 1,
+          "claudeReply": "Here they are: 🔍\n\n- **C12** — should be a SUM formula, holds the number 118,500 (the formula would give 112,300).\n- **F7 and F8** — overwritten with zeros, though the formula would pull the exchange rate.\n\nIt looks like the colleague 'tweaked' March by hand. This affects the 'Summary' total by about 6,200.\n\nMy recommendation: save a copy of the file, decide which values are correct (maybe there was a reason for the manual edits — check with the team), and only then restore the formulas.",
+          "failHint": "Agree to look at the oddity: 'Yes, show where the formulas are overwritten'."
+        }
+      ],
+      "successMessage": "The classic Excel-work cycle: understand the structure → find the anomaly → figure out the cause → and only then edit, with a copy and a check with the people involved."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A colleague's notes on working with Claude in Excel. One statement is a dangerous mistake. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Claude can explain the structure of someone else's model: input, calculation, and output sheets.",
+        "2. You can ask it to break a long nested formula down step by step.",
+        "3. Before major edits it's worth saving a copy of the file.",
+        "4. The final figures for the director's report don't need checking — Claude works with formulas directly and therefore doesn't make mistakes.",
+        "5. Through connectors Claude also works with other Microsoft 365 apps, for example mail and documents."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Line 4 is the mistake that gets people fired. Access to formulas doesn't cancel out errors: a misunderstood task, an unhandled edge case, manual edits in cells. Key figures are always verified by an independent method — that's your signature on the report, not Claude's."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**A mission with a real spreadsheet.**\n\n⚠️ Required: Microsoft Excel with Claude connected — or, if there isn't one, plain claude.ai and a spreadsheet file (this option is a bit weaker, but it exercises the same skills).\n\n1. Take a real work or personal spreadsheet (a budget, tracking, a plan) — or download any open dataset.\n2. Ask Claude to explain the spreadsheet's structure: what's where, how the columns are linked.\n3. Ask it to find one data-quality problem: duplicates, mixed formats, suspicious values.\n4. Ask for one new formula or calculation — and check the result on a row you can recompute yourself.\n5. Write down how long this breakdown would have taken by hand.",
+      "checklist": [
+        "Claude explained the structure of a real file",
+        "At least one data-quality problem was found",
+        "The new calculation was checked against a control example by hand"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-eco-excel", "badgeId": null }
+}

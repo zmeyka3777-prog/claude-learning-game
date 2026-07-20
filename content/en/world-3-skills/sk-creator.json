@@ -1,0 +1,110 @@
+{
+  "id": "sk-creator",
+  "world": "world-3-skills",
+  "order": 6,
+  "title": "skill-creator",
+  "subtitle": "The skill that creates skills: you ask, you check, you improve",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "anthropics/skills — skill-creator", "url": "https://github.com/anthropics/skills" },
+    { "title": "Creating custom skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512198" },
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The meta-skill: a tool that makes tools" },
+    { "type": "text", "md": "In the previous lesson you built a skill by hand — and that was important experience: now you understand every line of SKILL.md. But Anthropic's official library has a faster way: **skill-creator** — a skill whose job is to create other skills.\n\nInside skill-creator is packed the very expertise you spent three lessons learning: the format specification, the rules for name, the description formula, the principles of good instructions, the folder structure. When you ask Claude to \"help me create a skill,\" skill-creator loads — and Claude turns into an experienced \"skill engineer\": it asks the right questions and then assembles a finished folder.\n\nThe result is a beautiful recursion: skills are such a universal format that even the ability to make skills is itself a skill." },
+    { "type": "heading", "text": "How to ask: give raw material, not a command" },
+    { "type": "text", "md": "skill-creator doesn't need a perfect phrasing — it needs **raw material**: as many facts about your recurring task as possible. A good request contains:\n\n- **The task:** what you do regularly (\"every month I put together a report on the family's expenses\").\n- **The rules:** how the result should look (\"spending categories, comparison with last month, three takeaways\").\n- **Example phrasings:** how you usually ask for this task — these are the future triggers of the description.\n- **Materials, if any:** a template, an example of a finished result, a reference sheet.\n\nThen a dialogue begins: skill-creator will clarify what's missing — edge cases, tone, what to avoid. Answer honestly and in detail: each of your answers turns into a line of instructions. This is an interview, not an exam — the more you tell it, the more precise the skill." },
+    { "type": "code", "lang": "text", "title": "A good request to skill-creator", "code": "Help me create a skill. Task: every week I write a\nmeal plan for a family of four.\n\nRules: 5 weeknight dinners, my daughter is allergic\nto nuts, my husband doesn't eat fish, budget up to\n$60, a shopping list as one block at the end.\n\nI usually ask for it like this: \"make a menu for the\nweek,\" \"what to cook this week,\" \"a dinner plan.\"" },
+    { "type": "heading", "text": "How to check the result" },
+    { "type": "text", "md": "skill-creator will produce a finished folder with a SKILL.md. Don't accept it blindly — you already know enough to run a review. An acceptance checklist:\n\n1. **The frontmatter is valid:** name in lowercase with hyphens, description in place, both `---` lines present.\n2. **The description catches your phrasings:** compare it with the phrases you actually use to ask for the task. Your \"triggers\" from the request should be inside it.\n3. **The instructions match reality:** read them like an editor. Did the generator add anything extra? Did it lose the nut allergy?\n4. **No fluff:** paragraphs like \"be helpful and friendly\" can be safely deleted — they don't affect the result.\n\nAfter the review comes the familiar loop from the previous lesson: connect it and run three tests (direct, indirect, off-topic request)." },
+    { "type": "heading", "text": "How to improve it: the skill grows with you" },
+    { "type": "text", "md": "The main advantage of the \"you + skill-creator\" combo shows up over time. Noticed the skill makes a mistake? Don't fix it by hand — describe the problem to Claude: \"The menu skill keeps suggesting pasta, I'm tired of it. Add a variety rule: don't repeat the main dish more than once every two weeks.\" skill-creator will make the fix in the right place in the instructions.\n\nNew capabilities are added the same way: \"Add seasonality support to the skill: more vegetables in summer, warming dishes in winter.\" The skill becomes a living document that accumulates your experience: each \"not quite right\" note makes all future results better.\n\nAnd don't forget about other people's skills: skill-creator can not only create but also analyze. Downloaded a colleague's skill or a library example? Ask it to break it down: where the description is strong, what's missing in the instructions, what's worth adapting for you. It's a fast way to learn from finished work." },
+    { "type": "example",
+      "bad": "Make me some kind of useful skill about food.",
+      "good": "Help me create a skill for planning a family menu. Every week I ask for a plan of weeknight dinners: a family of four, my daughter is allergic to nuts, budget up to $60, and I need a shopping list at the end. I usually phrase it like this: \"make a menu for the week,\" \"what to cook this week.\"",
+      "explanation": "The first request forces skill-creator to invent both the task and the rules — you'll get a templated skill about nothing that you'll have to rewrite. The second gives raw material on all four points: task, rules, limits, real trigger phrasings. From such a request a skill is born that fires precisely and accounts for what matters specifically to your family." },
+    { "type": "table",
+      "headers": ["Method", "Pros", "When to choose it"],
+      "rows": [
+        ["By hand from template/", "Full control, deep understanding of every line", "A first learning skill; fine-tuning; simple skills"],
+        ["Via skill-creator", "Fast; knows the spec and best practices; asks questions itself", "Working skills; complex structure with resources; growing existing ones"]
+      ]
+    },
+    { "type": "callout", "kind": "docs", "md": "In the official anthropics/skills library, skill-creator is described as a skill for creating new skills and improving existing ones: it helps you go from an idea to a correct folder structure. That's exactly why it's useful to apply it to other people's skills too: ask it to analyze an existing SKILL.md — you'll get an analysis and improvement suggestions." },
+    { "type": "callout", "kind": "tip", "md": "Even with a generator, the anatomy knowledge from lessons 3–4 hasn't gone stale: it turns you from a consumer into an editor. The difference is like between \"something was generated for me\" and \"I accepted the work by a checklist.\" You always bear the final responsibility for the description and instructions — you're the one who has to live with this skill." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is skill-creator?",
+      "options": [
+        "An online builder on a separate website where skills are assembled with a mouse",
+        "An official skill from Anthropic's library that helps create and improve other skills",
+        "A paid API feature for auto-generating prompts",
+        "A built-in code editor in claude.ai"
+      ],
+      "correct": [1],
+      "explanation": "skill-creator is a meta-skill from the anthropics/skills library: an ordinary folder with a SKILL.md, inside which is the expertise for creating skills. When it loads, it turns Claude into a \"skill engineer\": an interview about the task, then a finished folder with a SKILL.md.",
+      "hint": "Recall the \"beautiful recursion\" from the start of the lesson."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a strong request to skill-creator for a \"job posts for our studio\" skill. Order: task → rules → example phrasings.",
+      "blocks": [
+        "Help me create a skill: I regularly publish job posts for our design studio.",
+        "Rules: a lively tone with no HR clichés, always a salary range, 3 \"selling\" facts about the studio, up to 800 characters.",
+        "I usually ask like this: \"a job post,\" \"we need a junior, write an announcement,\" \"a hiring notice.\""
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "Make something cool for social media, you're smart.",
+        "Just don't ask me any questions, just hand over the finished file."
+      ],
+      "explanation": "The request gives skill-creator all the raw material: the task, the result rules, and real phrasings — the future description triggers. The traps hurt in different ways: \"something cool\" deprives the generator of facts, and banning questions breaks skill-creator's main mechanism — the clarifying interview."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "skill-creator generated the frontmatter for the skill from the previous task (job posts). You accept the work by the checklist. One line needs a fix — find it.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: vacancy-posts",
+        "description: Creates high-quality content to attract the best talent to the organization.",
+        "---"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The line is formally correct, but in substance it's HR-cliché fluff: not a word about \"job,\" \"post,\" or \"announcement,\" which you actually use to ask for the task. The request \"we need a junior, write an announcement\" won't match this description. The fix: \"Writes job posts for a design studio. Use for requests: a job post, a hiring announcement, a notice about looking for an employee.\" Generators make mistakes too — that's why a review is mandatory.",
+      "hint": "Check point 2 of the acceptance checklist: does the description catch your real phrasings?"
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "The menu skill has been working for a week, and you've noticed a problem: every plan starts with pasta. Ask Claude to improve the skill — describe what's wrong and what rule to add.",
+      "steps": [
+        {
+          "expect": ["skill", "menu", "pasta", "repeat", "variety", "add", "rule", "fix", "improve"],
+          "minMatches": 3,
+          "claudeReply": "Got the problem. Connecting **skill-creator** and making a fix in the menu skill — to the \"Rules\" section I'm adding:\n\n```markdown\n- Variety: don't repeat the main dish more often\n  than once every 2 weeks; no more than one\n  pasta dish in a single week\n```\n\nNotice what I did NOT touch: the description (the skill fires correctly — the problem was in the instructions, not the triggers) and the other rules (the nut allergy and budget stayed in place).\n\nCheck it on the next plan: if pasta shows up twice again — we'll come back and tighten the wording.",
+          "failHint": "Describe the problem and the desired rule, for example: \"The menu skill has pasta every time. Add a rule: don't repeat the main dish more than once every two weeks.\""
+        }
+      ],
+      "successMessage": "That's what mature work with skills looks like: noticed a problem → described it → the fix landed exactly in the right section. The skill got better for all future weeks, not for one response."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Put skill-creator to the test on your own task. **A plan with skill support is required.**\n\n1. **Pick a task** — it can be the same one as in the previous lesson (so you can compare the hand-made and generated results), or a new one.\n2. **Write a raw-material request:** task + rules + your real phrasings (the future triggers) + materials, if any. Ask Claude to help create a skill.\n3. **Go through the interview:** answer the clarifying questions in detail — each answer becomes a line of instructions.\n4. **Accept the work by the checklist:** valid frontmatter, a description with your triggers, instructions with no inventions and no fluff.\n5. **Demand at least one fix** — for example, ask it to remove an extra paragraph or add a missing rule. Check that the fix landed where it should.",
+      "checklist": [
+        "The request had raw material: task, rules, and my real phrasings",
+        "I answered the clarifying questions instead of brushing them off",
+        "Checked the frontmatter: name is valid, description contains my trigger words",
+        "Read the instructions in full and found no invented \"facts\" about me",
+        "Requested at least one fix and confirmed it was applied precisely"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-sk-creator", "badgeId": null }
+}

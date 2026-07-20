@@ -1,0 +1,196 @@
+{
+  "questions": [
+    {
+      "id": "pl-w1-1",
+      "worldId": "world-1-basics",
+      "question": "Which request formula gives Claude the best result?",
+      "options": [
+        "Keywords separated by commas, like in a search engine",
+        "Context + a specific task + the desired answer format",
+        "The shortest possible command — the model will figure it out",
+        "Say hello first, then ask a general question"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "pl-w1-2",
+      "worldId": "world-1-basics",
+      "question": "What is a model's \"knowledge cutoff\"?",
+      "options": [
+        "The date your Claude subscription expires",
+        "The maximum age of files you can upload to a chat",
+        "The date after which the model doesn't know about events without web search",
+        "How long chat history is stored on the servers"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "pl-w2-1",
+      "worldId": "world-2-claude-ai",
+      "question": "How does a Project in claude.ai differ from a regular chat?",
+      "options": [
+        "A project runs on a more powerful model",
+        "A project has its own instructions and knowledge base, shared across all chats inside it",
+        "A project is a chat you can share via a link",
+        "A project has no limit on the number of messages"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "pl-w2-2",
+      "worldId": "world-2-claude-ai",
+      "question": "What are Artifacts in claude.ai?",
+      "options": [
+        "An archive of all files uploaded to chats",
+        "A log of past versions of Claude's answers",
+        "Paid add-ons to the Pro subscription",
+        "Interactive documents and mini-apps that Claude creates in a separate panel"
+      ],
+      "correct": 3
+    },
+    {
+      "id": "pl-w3-1",
+      "worldId": "world-3-skills",
+      "question": "Which field in SKILL.md decides whether the skill fires automatically at the right moment?",
+      "options": [
+        "description — Claude uses it to know when to load the skill",
+        "name — the skill is only invoked by its exact name",
+        "version — outdated skills don't run",
+        "license — without a license the skill is ignored"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "pl-w3-2",
+      "worldId": "world-3-skills",
+      "question": "What fundamentally makes a skill different from a regular prompt?",
+      "options": [
+        "A skill is always written in Python, and a prompt in plain text",
+        "A skill is a reusable package of instructions and resources that loads automatically based on the task description",
+        "A skill only works in Claude Code, and a prompt only in the chat",
+        "Nothing: \"skill\" is just a marketing name for a long prompt"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "pl-w4-1",
+      "worldId": "world-4-claude-code",
+      "question": "Why does a repository need a CLAUDE.md file at its root?",
+      "options": [
+        "It's the license agreement for using Claude Code",
+        "It's a template for generating the project README",
+        "It's the project's memory: commands, rules, and conventions that Claude Code reads every session",
+        "It's a log of every change the agent has made"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "pl-w4-2",
+      "worldId": "world-4-claude-code",
+      "question": "What does the /init command do in Claude Code?",
+      "options": [
+        "Creates a new git repository",
+        "Studies the codebase and creates a CLAUDE.md file describing it",
+        "Resets the current session's context",
+        "Installs the project's dependencies"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "pl-w5-1",
+      "worldId": "world-5-claude-code-pro",
+      "question": "What is a PreToolUse hook in Claude Code?",
+      "options": [
+        "A hotkey for quickly invoking a tool",
+        "A plugin that adds new tools to the agent",
+        "A Slack notification before a session starts",
+        "A command that runs automatically before a tool call and can block it"
+      ],
+      "correct": 3
+    },
+    {
+      "id": "pl-w5-2",
+      "worldId": "world-5-claude-code-pro",
+      "question": "The main benefit of subagents in Claude Code is to…",
+      "options": [
+        "delegate subtasks with a separate context and do work in parallel",
+        "speed up the model by caching its answers",
+        "run Claude Code without an internet connection",
+        "automatically fix all compilation errors"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "pl-w6-1",
+      "worldId": "world-6-mcp-plugins",
+      "question": "Which three types of capabilities does an MCP server provide to the client?",
+      "options": [
+        "Models, Chats, and Files",
+        "Tools, Resources, and Prompts",
+        "Commands, Agents, and Hooks",
+        "Skills, Plugins, and Connectors"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "pl-w6-2",
+      "worldId": "world-6-mcp-plugins",
+      "question": "What can a Claude Code plugin be made of?",
+      "options": [
+        "A single skill only",
+        "Only terminal appearance settings",
+        "Commands, agents, hooks, skills, and MCP servers in one package",
+        "A set of ready-made prompts for claude.ai chat"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "pl-w7-1",
+      "worldId": "world-7-api-sdk",
+      "question": "How does the agentic loop work with tool use in the Messages API?",
+      "options": [
+        "The model runs the tools itself on Anthropic's servers and sends back a finished result",
+        "Tools are only available through the Agent SDK; the Messages API doesn't have them",
+        "The client runs all the tools in advance and attaches the results to the first request",
+        "The model returns a tool_use block, your code runs the tool and sends a tool_result back"
+      ],
+      "correct": 3
+    },
+    {
+      "id": "pl-w7-2",
+      "worldId": "world-7-api-sdk",
+      "question": "What does prompt caching give you in the Claude API?",
+      "options": [
+        "The model remembers the user across different applications",
+        "Answers become deterministic — identical on every request",
+        "A significant discount and speedup for the repeated part of the prompt that has already been processed",
+        "Free requests within the first thousand tokens"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "pl-w8-1",
+      "worldId": "world-8-ecosystem",
+      "question": "What is prompt injection?",
+      "options": [
+        "Malicious instructions hidden in data (an email, a page, a file) that the agent reads and may execute",
+        "A way to speed up the answer by inserting the prompt into the system message",
+        "A network error that causes the prompt to be sent twice",
+        "A legitimate prompt-engineering technique for bypassing limits"
+      ],
+      "correct": 0
+    },
+    {
+      "id": "pl-w8-2",
+      "worldId": "world-8-ecosystem",
+      "question": "How should you handle secrets (API keys, passwords) when working with AI agents?",
+      "options": [
+        "Paste them straight into the prompt — the conversation is private anyway",
+        "Keep them in code comments so the agent can see them",
+        "Store them in environment variables or a secret vault and never pass them into prompts",
+        "It's enough to ask the agent to \"forget\" the key after using it"
+      ],
+      "correct": 2
+    }
+  ]
+}

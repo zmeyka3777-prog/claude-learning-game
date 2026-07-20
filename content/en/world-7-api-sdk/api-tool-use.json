@@ -1,0 +1,121 @@
+{
+  "id": "api-tool-use",
+  "world": "world-7-api-sdk",
+  "order": 4,
+  "title": "Tool use",
+  "subtitle": "Giving Claude tools: definition, the agentic loop, tool_result",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Tool use overview — Claude Docs", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview" },
+    { "title": "Build a tool-using agent — Claude Docs", "url": "https://platform.claude.com/docs/en/agents-and-tools/tool-use/build-a-tool-using-agent" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why the model needs tools" },
+    { "type": "text", "md": "On its own, Claude can do only one thing: generate text. It won't go to your database, look up the weather, or send an email. **Tool use** solves this elegantly: you describe the available functions to the model, and when one of them is needed to answer, Claude returns a **request to call a tool** instead of text — which function to call and with what arguments.\n\nA key point that many get wrong: **Claude executes nothing itself**. It only asks: \"call `get_weather` with the city Boston.\" Your code executes the function — and you send the result back, and Claude composes the final answer. The model is the brain, your code is the hands." },
+    { "type": "heading", "text": "Defining a tool" },
+    { "type": "text", "md": "A tool is described by three fields in the `tools` parameter:\n\n- **`name`** — the function name: short, in snake_case, for example `get_weather`.\n- **`description`** — the description: what the tool does and **when to call it**. This is the most important field — it's exactly what Claude uses to decide whether the tool is needed. Write it thoroughly, as if for a new colleague.\n- **`input_schema`** — the JSON Schema of the arguments: type `object`, properties with types and descriptions, a `required` list.\n\nThe better the descriptions, the more accurate the calls. \"Returns the current weather by city name. Call it when the user asks about weather, temperature, or precipitation\" works far better than \"weather.\"" },
+    { "type": "code", "lang": "python", "title": "Defining a tool", "code": "tools = [\n    {\n        \"name\": \"get_weather\",\n        \"description\": (\n            \"Returns the current weather in a city. \"\n            \"Call it when the user asks about weather, temperature, or precipitation.\"\n        ),\n        \"input_schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"city\": {\"type\": \"string\", \"description\": \"City name, for example: Boston\"},\n                \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]},\n            },\n            \"required\": [\"city\"],\n        },\n    }\n]" },
+    { "type": "heading", "text": "The agentic loop: four beats" },
+    { "type": "text", "md": "Working with tools is a loop:\n\n1. **Request.** You send `messages` + `tools`. \n2. **tool_use.** If Claude decides to use a tool, the response comes back with `stop_reason: \"tool_use\"`, and in `content` there's a `tool_use` block: the call `id`, the tool `name`, and `input` — the arguments.\n3. **Execution.** Your code calls the real function with those arguments.\n4. **tool_result.** You send a new request: the previous history + the assistant's response (in full!) + a `user` message with a `tool_result` block, where `tool_use_id` matches the call `id` and `content` is the function's result.\n\nClaude reads the result and either replies with text (`stop_reason: \"end_turn\"` — the loop is over) or asks for the next tool — then the loop repeats. The program spins a `while` until the model finishes. This is the minimal **agent**: the model itself decides which steps to take and in what order." },
+    { "type": "code", "lang": "typescript", "title": "The agentic loop (simplified)", "code": "let messages: Anthropic.MessageParam[] = [\n  { role: \"user\", content: \"What's the weather in Boston?\" },\n];\n\nwhile (true) {\n  const response = await client.messages.create({\n    model: \"claude-opus-4-8\",\n    max_tokens: 1024,\n    tools,\n    messages,\n  });\n\n  if (response.stop_reason !== \"tool_use\") break; // final answer is ready\n\n  messages.push({ role: \"assistant\", content: response.content });\n\n  const results = [];\n  for (const block of response.content) {\n    if (block.type === \"tool_use\") {\n      const result = await runTool(block.name, block.input); // your function\n      results.push({ type: \"tool_result\", tool_use_id: block.id, content: result });\n    }\n  }\n  messages.push({ role: \"user\", content: results });\n}" },
+    { "type": "example",
+      "bad": "\"description\": \"weather\"",
+      "good": "\"description\": \"Returns the current weather in a city (temperature, precipitation, wind). Call it when the user asks about the weather or is planning outdoor activities. Do not call it for historical climate data.\"",
+      "explanation": "The description is the only thing Claude uses to decide whether to call the tool. From the word \"weather\" it's unclear what the function returns or when it's appropriate — the model will either invoke it needlessly or ignore it. A good description answers three questions: what it does, when to call it, when NOT to call it. It's the cheapest way to boost an agent's accuracy." },
+    { "type": "heading", "text": "Errors and parallel calls" },
+    { "type": "text", "md": "Two practical points, without which an agent falls apart in the field:\n\n- **Errors are results too.** If a function fails, don't hide it: return a `tool_result` with `is_error: true` and the error text. Claude knows how to respond — it'll retry with different arguments, try another path, or honestly tell the user the service is unavailable.\n- **Parallel calls.** Claude can request several tools in one response (for example, the weather in three cities at once — three `tool_use` blocks). Execute them all and return **all `tool_result` blocks in one** `user` **message**, each with its own `tool_use_id`.\n\nAnd remember security: the arguments are invented by the model. For irreversible actions (sending money, deleting data) put a human confirmation between `tool_use` and execution." },
+    { "type": "callout", "kind": "docs", "md": "The tool use overview (platform.claude.com/docs/en/agents-and-tools/tool-use/overview) describes the loop's contract: a response with `stop_reason: \"tool_use\"` contains `tool_use` blocks with `id`, `name`, and `input`; the client executes the tools and returns `tool_result` blocks with the matching `tool_use_id` in the next `user`-role message. The build-a-tool-using-agent tutorial assembles a working agent from this step by step." },
+    { "type": "callout", "kind": "tip", "md": "The official SDKs have a tool runner — a helper that spins the loop for you: you hand it functions with descriptions, and it calls them itself and returns the final answer. Convenient for production, but write the loop by hand at least once: understanding the beats \"tool_use → execution → tool_result\" pays off in any agent debugging." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Claude returned a response with stop_reason: \"tool_use\". What does this mean?",
+      "options": [
+        "Claude has already executed the tool and sent back the result",
+        "Claude is asking your code to call the tool with the given arguments and return the result",
+        "An error occurred — the tool wasn't found",
+        "Claude refused to answer without additional tools"
+      ],
+      "correct": [1],
+      "explanation": "The model never executes functions itself — it only forms a call request: in `content` there's a `tool_use` block with the name and arguments. Your code executes the function and returns the result as a `tool_result` block. This separation is the foundation of the architecture: the model decides, your code acts.",
+      "hint": "Recall: in the pairing of \"model + your code,\" which one is the hands?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The agent crashes with a validation error: the API can't match the result to the tool call. Find the line with the error in the definition and handling.",
+      "lang": "python",
+      "lines": [
+        "tools = [{",
+        "    \"name\": \"get_weather\",",
+        "    \"description\": \"Returns the current weather in a city.\",",
+        "    \"input_schema\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\"}}, \"required\": [\"city\"]},",
+        "}]",
+        "# ... got a response with stop_reason == \"tool_use\", block is the tool_use block ...",
+        "result = get_weather(block.input[\"city\"])",
+        "messages.append({\"role\": \"assistant\", \"content\": response.content})",
+        "messages.append({\"role\": \"user\", \"content\": [",
+        "    {\"type\": \"tool_result\", \"tool_use_id\": \"get_weather\", \"content\": result}",
+        "]})"
+      ],
+      "bugLineIndex": 9,
+      "explanation": "The tool name was passed as `tool_use_id`, but what's needed is the unique identifier of the specific call — `block.id` (a string like `toolu_...` from the `tool_use` block). The API uses this id to match the result to the request; the function name won't work here, especially when Claude called one tool twice with different arguments."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble an order-lookup tool definition for a store bot: name → description → argument schema. Discard the unfit blocks.",
+      "blocks": [
+        "\"name\": \"find_order\"",
+        "\"description\": \"Looks up an order by number and returns its delivery status. Call it when the user asks where their order is.\"",
+        "\"input_schema\": {\"type\": \"object\", \"properties\": {\"order_id\": {\"type\": \"string\", \"description\": \"Order number, for example ORD-482\"}}, \"required\": [\"order_id\"]}"
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "\"name\": \"Order Lookup Function #1!\"",
+        "\"description\": \"function\""
+      ],
+      "explanation": "A working definition: a name in snake_case with no spaces or special characters, a description that answers \"what it does\" and \"when to call it,\" and a schema with types, a parameter description, and a required list. The traps: a name with spaces and symbols is invalid, and a one-word description \"function\" gives the model no signal about when the tool is needed."
+    },
+    {
+      "type": "quiz",
+      "question": "A tool's function crashed with an exception (the database is unavailable). What's the right thing to do in the agentic loop?",
+      "options": [
+        "Break the loop and show the user a stack trace",
+        "Return a tool_result with is_error: true and the error text — Claude will respond on its own",
+        "Silently return an empty string so as not to confuse the model",
+        "Retry the function call endlessly until it works"
+      ],
+      "correct": [1],
+      "explanation": "An error is a legitimate result: a `tool_result` with `is_error: true` and a clear description gives Claude a chance to respond sensibly — try different arguments, a workaround, or honestly report the problem to the user. An empty string misinforms the model, and breaking the loop deprives the agent of any chance to recover.",
+      "hint": "The agent needs to learn about the problem in \"its own language\" — through the tool's result."
+    },
+    {
+      "type": "quiz",
+      "question": "Claude returned three tool_use blocks in one response (weather in three cities). How do you return the results?",
+      "options": [
+        "Three separate user messages — one tool_result in each",
+        "One user message with three tool_result blocks, each with its own tool_use_id",
+        "Only the first result — Claude will repeat the others later",
+        "Glue the three results into a single string in one tool_result"
+      ],
+      "correct": [1],
+      "explanation": "Parallel calls are returned as a batch: one `user` message, inside it a `tool_result` block for each `tool_use`, matched by `tool_use_id`. You can't split them into separate messages — the API requires you to answer all the calls at once, and gluing them into one result breaks the matching by id.",
+      "hint": "As many tool_use blocks came in, that many tool_result blocks must go out — and in a single message."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Mission: a calculator agent.** You'll need an API key (created in the Claude platform Console).\n\n1. Define a `calculate` tool with an `expression` parameter (a string with an arithmetic expression) and a clear description.\n2. Write an executor function (in Python you can carefully use `eval` only for digits and signs — filter out the rest).\n3. Assemble the loop: request with tools → if `stop_reason == \"tool_use\"`, execute and return a `tool_result` → repeat until `end_turn`.\n4. Ask: \"What's (37 * 82) + 145, and divide the result by 7?\" — and watch in the logs how Claude calls the tool.",
+      "checklist": [
+        "The tool is defined: name, description, input_schema",
+        "The loop handles stop_reason == \"tool_use\"",
+        "tool_result is returned with the correct tool_use_id",
+        "Claude gave the correct answer, computed by your function"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-tool-use", "badgeId": null }
+}

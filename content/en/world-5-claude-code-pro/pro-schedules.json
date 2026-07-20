@@ -1,0 +1,109 @@
+{
+  "id": "pro-schedules",
+  "world": "world-5-claude-code-pro",
+  "order": 5,
+  "title": "Schedules and Routines",
+  "subtitle": "A morning report at 9:00 and an hourly PR check — without a single action from you",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Scheduled Tasks — Claude Code Docs", "url": "https://code.claude.com/docs/en/scheduled-tasks" },
+    { "title": "Routines — Claude Code Docs", "url": "https://code.claude.com/docs/en/routines" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Time-based automation" },
+    { "type": "text", "md": "The hooks from earlier lessons are tied to **events**: editing a file, ending a session. But a huge amount of routine work isn't tied to events at all — it's tied to **time**: every morning, a project summary; every hour, a look at open PRs; every Friday, a weekly report. Doing this by hand means being an alarm clock for your own agent.\n\nClaude Code can work on a schedule through three related mechanisms: **/loop** (repetition within a session), **scheduled tasks** (jobs that run at an appointed time), and **routines** (recurring cloud-based jobs that live on their own schedule). Let's figure out when to reach for each one." },
+    { "type": "heading", "text": "/loop: repetition within a session" },
+    { "type": "text", "md": "The simplest tool is the `/loop` command: it makes the agent repeat a given action at a set interval, for as long as the current session is running. \"Check the deploy status every 5 minutes and tell me when it finishes,\" \"run the tests every 10 minutes and report back\" — perfect for waiting and watching in real time.\n\nThe limitation follows from how it works: /loop lives inside the session. Close the terminal and the loop is over. It's a \"for today, while I'm here\" tool, not a \"every morning at 9:00\" one." },
+    { "type": "heading", "text": "Scheduled tasks and routines: work that happens without you" },
+    { "type": "text", "md": "For a real schedule there are mechanisms that don't depend on an open terminal. A **scheduled task** is a job with an appointed time: \"tomorrow at 7 a.m., run the full test suite and prepare a summary.\" The time comes, the agent starts and does the work — with you nowhere near.\n\nA **routine** is the same thing, but recurring and living in the cloud: it has a schedule (for example, \"every weekday at 9:00\" or \"every hour\"), the text of the job, and a place to report the result. The classics:\n\n- **Morning report**: every morning, collect the changes from the past day, the test status, and open tasks — and send a summary.\n- **PR auto-check**: every hour, look at open pull requests; if a new one appeared — review it and leave comments.\n- **Sanity sweep**: once a day, check whether dependencies are stale and whether the build is failing.\n\nYou create them by asking in plain language: \"set up a routine: every morning at 9:00, send me a project summary\" — the agent will set up the schedule itself. Management is conversational too: ask it to show the list of routines, change a time, or delete one you don't need." },
+    { "type": "table",
+      "headers": ["Mechanism", "Where it lives", "When to choose it"],
+      "rows": [
+        ["/loop", "Inside the current session", "Watching here and now: waiting for a deploy, running tests while you work"],
+        ["Scheduled task", "Outside the session, a one-time or deferred run", "\"Do this at 7 a.m.\" — a single job by a deadline"],
+        ["Routine", "In the cloud, on a recurring schedule", "Ongoing recurrence: morning reports, hourly checks"]
+      ]
+    },
+    { "type": "heading", "text": "The main rule: a job with no context" },
+    { "type": "text", "md": "A routine runs when you're not around — and most often **from a blank slate**, with no memory of your past conversations. That's why the text of the job must be self-contained, like a task for a subagent, only stricter: what to do, where to get the data, what counts as the result, where and in what form to report.\n\nCompare: \"check the thing we agreed on\" — a dud routine; when it runs, no one remembers what you agreed on. \"Open the shop-api project, run npm test, collect the list of failing tests, and save the summary to reports/daily.md\" — a working routine: every run knows exactly what to do.\n\nA handy check: reread the text of the job through the eyes of an agent that knows nothing about you or about yesterday. Every \"this,\" \"as usual,\" and \"that thing\" is a hole the run will fall into. And don't forget to describe the behavior for an empty result (\"no changes — don't write a report\"), or your inbox will drown in empty summaries." },
+    { "type": "example",
+      "bad": "Routine at 9:00: \"Continue yesterday's work and check everything as usual.\"",
+      "good": "Routine at 9:00 on weekdays: \"In the shop-api project, collect a daily summary: new commits (git log for the last 24 hours), test status (npm test), open PRs. Format it as a short markdown report in reports/morning.md: three sections, most important first.\"",
+      "explanation": "The first text relies on memory of \"yesterday\" and \"as usual\" — but a routine runs from a blank slate and knows none of that: the result will be random. The second is self-contained: it names the data sources, the specific checks, the format, and the location of the result. Any run on any morning will execute it equally well."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Scheduled Tasks and Routines pages) describes running jobs on a schedule without the user present: jobs are created and managed from an ordinary conversation, run at an appointed time, and routines let you lock in recurring automations — with a schedule, the text of the job, and a notification about the results." },
+    { "type": "callout", "kind": "warning", "md": "Every run of a routine is a real agent session that spends tokens and plan limits. An hourly routine is 24 sessions a day, even if there was nothing to check. Set an honest frequency (do you really need a report more than once a day?) and periodically review the list of active routines: a forgotten automation will quietly keep running and burning limits for months." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in a Claude Code session, a deploy to the server is in progress. You want the agent to keep an eye on the status every 5 minutes while you work in this same session. Use the appropriate slash command.",
+      "steps": [
+        {
+          "expectPattern": "^/loop",
+          "output": "● Loop started: I'll check the deploy status every 5 minutes.\n\n  [12:05] Check: build in progress, step 2 of 4...\n  [12:10] Check: build in progress, step 3 of 4...\n  [12:15] Check: ✔ deploy finished successfully!\n\n● Stopping the loop. The app is available, all checks green.\n  Remember: /loop lives inside the session — close the terminal and the loop ends.",
+          "failHint": "Repetition at an interval within the current session is the /loop command (for example: /loop 5m check the deploy status)."
+        }
+      ],
+      "successMessage": "Correct: /loop is a \"here and now\" watching tool. For schedules that work without an open terminal, there are scheduled tasks and routines."
+    },
+    {
+      "type": "quiz",
+      "question": "You need a project report every weekday at 9:00 — even when your laptop is closed. Which mechanism do you choose?",
+      "options": [
+        "/loop with a 24-hour interval",
+        "A cloud routine with the schedule \"weekdays, 9:00\"",
+        "A hook on the Stop event",
+        "Just write your wish into CLAUDE.md"
+      ],
+      "correct": [1],
+      "explanation": "A routine lives in the cloud and runs on its own schedule independently of your terminal — exactly what \"every morning without me\" requires. /loop dies with the closed session, a Stop hook is tied to the end of a session rather than to time, and CLAUDE.md is instructions for sessions that someone still has to launch.",
+      "hint": "Which of these works when you have nothing running at all?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A draft of a \"morning report\" routine's text, line by line. One line will break the automation because it relies on something the routine doesn't have. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "Schedule: every weekday at 9:00.",
+        "Open the shop-api project.",
+        "Collect commits from the last 24 hours via git log.",
+        "Run npm test and record the failing tests.",
+        "Also finish the task we discussed in chat yesterday evening.",
+        "Save the summary to reports/morning.md: commits, tests, open PRs."
+      ],
+      "bugLineIndex": 4,
+      "explanation": "A routine runs from a blank slate: it has no memory of yesterday's chat, and \"the task we discussed\" simply doesn't exist for it. Such an item will at best be ignored, at worst make the agent start guessing. Everything else is self-contained: specific sources (git log, npm test), a specific result, and a place for it."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the text of an \"hourly PR auto-check\" routine — self-contained, as a context-free job should be. Toss the extra block overboard.",
+      "blocks": [
+        "Task: in the shop-api repository, check open pull requests.",
+        "For each new PR: review the changes and leave review comments on bugs and style.",
+        "If there are no new PRs — do nothing and don't write empty reports.",
+        "Result: a brief summary of \"which PRs were checked, what was found\" — in a comment on each PR."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Note: ask me for the review criteria at run time — I'll fill you in."
+      ],
+      "explanation": "A routine works when you're not around: \"ask me at run time\" turns the automation back into a manual process — there's no one to answer at three in the morning. The correct text is self-contained: where to look, what to do with the findings, what to do with an empty result (important — otherwise you'll get 24 empty reports a day), and where to put the result."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to the mission later.**\n\n1. Run `claude` in a project folder and try /loop on something harmless: \"/loop 1m report the current time\" — watch a couple of firings and stop the loop.\n2. Ask the agent: \"Set up a routine: once a day, collect a brief project summary (new commits, test status) and save it to reports/daily.md.\" Make sure the text of the job is self-contained.\n3. Ask it to show the list of active routines and confirm yours appeared.\n4. Important: if the routine was just for practice — immediately ask to delete it, so it doesn't waste limits for nothing.",
+      "checklist": [
+        "/loop fired and was stopped",
+        "The routine was created, its job text is self-contained (no \"as usual\" or \"what we agreed on\")",
+        "I saw my routine in the list of active ones",
+        "The practice routine was deleted — it wastes no limits for nothing"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-schedules", "badgeId": null }
+}

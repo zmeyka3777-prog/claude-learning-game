@@ -6,6 +6,43 @@ import { trackPageview } from './lib/analytics';
 import { StreakFlame } from './components/gamification/StreakFlame';
 import { XPToastHost } from './components/gamification/XPToast';
 import { StarLoader } from './components/common/StarLoader';
+import { LANGUAGES } from './i18n/languages';
+import { useLang, useT } from './i18n/useT';
+
+/** Компактный сегментный тумблер языка (RU/EN), расширяем по списку LANGUAGES */
+function LanguageToggle() {
+  const { lang, setLang } = useLang();
+  const t = useT();
+
+  return (
+    <div
+      className="flex items-center rounded-full p-0.5"
+      style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)' }}
+      role="group"
+      aria-label={t('lang.switch')}
+    >
+      {LANGUAGES.map((l) => {
+        const active = l.code === lang;
+        return (
+          <button
+            key={l.code}
+            type="button"
+            onClick={() => setLang(l.code)}
+            aria-pressed={active}
+            title={l.label}
+            className="rounded-full px-2.5 py-1 text-xs font-semibold transition-colors"
+            style={{
+              background: active ? 'var(--gradient-brand)' : 'transparent',
+              color: active ? '#fff' : 'var(--text-muted)',
+            }}
+          >
+            {l.short}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 // Код-сплиттинг: каждая страница — отдельный чанк
 const MapPage = lazy(() => import('./pages/MapPage'));
@@ -22,6 +59,7 @@ function TopBar() {
   const xp = useProgressStore((s) => s.xp);
   const streak = useProgressStore((s) => s.streak);
   const location = useLocation();
+  const t = useT();
 
   return (
     <header className="sticky top-0 z-40">
@@ -35,7 +73,7 @@ function TopBar() {
         }}
       >
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4">
-          <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="На карту миров">
+          <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label={t('topbar.toMap')}>
             <span
               className="grid h-9 w-9 shrink-0 place-items-center rounded-xl"
               style={{ background: 'var(--gradient-brand)' }}
@@ -43,11 +81,13 @@ function TopBar() {
               <Sparkles size={18} className="text-white" />
             </span>
             <span className="truncate font-display text-sm font-semibold sm:text-base">
-              Академия <span className="gradient-text">Claude</span>
+              {t('brand.academy')} <span className="gradient-text">Claude</span>
             </span>
           </Link>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            <LanguageToggle />
+
             <span
               className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold"
               style={{
@@ -55,7 +95,7 @@ function TopBar() {
                 color: 'var(--accent-amber)',
                 border: '1px solid rgba(245, 158, 11, 0.25)',
               }}
-              title="Опыт"
+              title={t('topbar.xp')}
             >
               <Zap size={15} />
               {xp} XP
@@ -71,8 +111,8 @@ function TopBar() {
                   location.pathname === '/library' ? 'var(--bg-card-hover)' : 'var(--bg-card)',
                 border: '1px solid var(--border-glass)',
               }}
-              aria-label="Библиотека"
-              title="Библиотека"
+              aria-label={t('topbar.library')}
+              title={t('topbar.library')}
             >
               <Library size={17} style={{ color: 'var(--text-secondary)' }} />
             </Link>
@@ -85,7 +125,7 @@ function TopBar() {
                   location.pathname === '/profile' ? 'var(--bg-card-hover)' : 'var(--bg-card)',
                 border: '1px solid var(--border-glass)',
               }}
-              aria-label="Профиль"
+              aria-label={t('topbar.profile')}
             >
               <User size={17} style={{ color: 'var(--text-secondary)' }} />
             </Link>

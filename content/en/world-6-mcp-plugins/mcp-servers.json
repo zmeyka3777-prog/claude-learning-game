@@ -1,0 +1,117 @@
+{
+  "id": "mcp-servers",
+  "world": "world-6-mcp-plugins",
+  "order": 3,
+  "title": "Reference Servers",
+  "subtitle": "The seven reference servers of the MCP project: what each does and what its design teaches",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "modelcontextprotocol/servers — reference servers", "url": "https://github.com/modelcontextprotocol/servers" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A textbook you can run" },
+    { "type": "text", "md": "The MCP project has a repository — **github.com/modelcontextprotocol/servers** — where the **reference servers** live. These are official model implementations: the protocol's authors wrote them to show how to use MCP's capabilities and the SDK correctly.\n\nReference servers are useful twice over. First, as **tools**: each one solves a real task, and you can connect them right now. Second, as a **textbook**: when you sit down to write your own server (lessons 4-5), the best source of examples is the source code of these seven. Each server deliberately demonstrates one idea of the protocol — together they add up to a full course in server design. Here they are:" },
+    { "type": "table",
+      "headers": ["Server", "What it does", "What its design teaches"],
+      "rows": [
+        ["Everything", "An \"all-in-one\" demo server: tools, resources, prompts", "The protocol's full set of primitives in one place"],
+        ["Fetch", "Loads web pages and converts them into a model-friendly form", "Preparing \"raw\" data for an LLM"],
+        ["Filesystem", "Reading and writing files in allowed directories", "Access control: the server limits its own permissions"],
+        ["Git", "Reading, searching, and operations on local git repositories", "A wrapper around a local tool"],
+        ["Memory", "Persistent memory based on a knowledge graph", "Storing state between sessions"],
+        ["Sequential Thinking", "Step-by-step structured reasoning", "A server can provide not data but a way to think"],
+        ["Time", "The current time and time-zone conversion", "A minimal server — the perfect starting point"]
+      ]
+    },
+    { "type": "heading", "text": "Everything and Fetch" },
+    { "type": "text", "md": "**Everything** is the protocol's showcase: it doesn't solve an applied task, but it demonstrates all the primitives at once — tools, resources, prompts — and serves as a test bench for client developers. Want to see \"all of MCP\" in one server — connect Everything and open `/mcp`.\n\n**Fetch** solves the eternal task \"give the model this page.\" It downloads a URL and turns the HTML into compact text that's easy for the model to read. The lesson from its design: a server should not just forward raw data but **prepare it for the model** — strip out the clutter and save context. A 500 KB HTML page turns into a couple of kilobytes of useful text." },
+    { "type": "heading", "text": "Filesystem and Git" },
+    { "type": "text", "md": "**Filesystem** gives tools for working with files: read, write, search, show the directory tree. The key thing in its design is **security through restriction**: at launch it's explicitly given a list of allowed directories, and it won't go outside them no matter what it's asked. This is a model of how the server authors think: not \"what the server can do\" but \"what it should be limited to.\"\n\n**Git** wraps local git: status, log, diff, searching history. Its lesson — a server can be a thin wrapper around a **tool that's already on the machine**, translating its capabilities into tools with clear descriptions." },
+    { "type": "heading", "text": "Memory, Sequential Thinking, and Time" },
+    { "type": "text", "md": "**Memory** stores a knowledge graph: entities (\"Anna is the team lead\"), relations (\"Anna works on project X\"), and observations. What's written survives the end of the session — in a new conversation the model can recall facts. The lesson: an MCP server can be a **source of persistent memory** that the model doesn't have on its own.\n\n**Sequential Thinking** is the most surprising of the seven: its tool doesn't reach any service at all — it helps the model **reason step by step** — record a chain of thoughts, revise it, and branch it. The lesson: MCP's primitives are good not only for accessing data but also for organizing thinking itself.\n\n**Time** is a deliberately tiny server: find out the current time, convert between time zones. If you want to understand how an MCP server is built in ten minutes, read exactly its code: minimum logic, maximum clarity. On top of that it covers a real weakness of the model — an LLM has no built-in clock, and only a tool can give it an accurate \"now.\"" },
+    { "type": "code", "lang": "bash", "title": "Reference servers launch with a single command", "code": "# TypeScript servers — via npx\nclaude mcp add memory -- npx -y @modelcontextprotocol/server-memory\nclaude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/projects\n\n# Python servers — via uvx\nclaude mcp add fetch -- uvx mcp-server-fetch\nclaude mcp add git -- uvx mcp-server-git\nclaude mcp add time -- uvx mcp-server-time" },
+    { "type": "example",
+      "bad": "\"Claude, imagine we had 40 commits in the repository this week, and make up what could have been in them\" — and then manually cross-check the fantasy against reality.",
+      "good": "Connect the Git server and ask: \"Look at the commits from the last week and compile a list of changes by author\" — the model will call the server's tools and answer from the repository's real history.",
+      "explanation": "Without a server the model can only guess — and it'll honestly invent a plausible list. With the Git server it reads the real commit history through tools. The general rule: if the data exists — give access to it via MCP, don't ask the model to imagine it."
+    },
+    { "type": "callout", "kind": "docs", "md": "The modelcontextprotocol/servers repository describes these servers as \"reference implementations\" that demonstrate the capabilities of MCP and the official SDKs (TypeScript and Python). It also gathers a huge list of servers from the community and companies — from databases to cloud platforms." },
+    { "type": "callout", "kind": "tip", "md": "When choosing which server to start reading the code of, go from simple to complex: **Time** (minimal), then **Fetch** (working with the outside world), then **Filesystem** (access control). Save Everything for last — it's a reference, not an intro lesson." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "You need Claude to remember facts about your team between sessions (\"Anna is the team lead,\" \"releases on Thursdays\"). Which reference server fits?",
+      "options": [
+        "Fetch",
+        "Memory",
+        "Time",
+        "Sequential Thinking"
+      ],
+      "correct": [1],
+      "explanation": "Memory stores a knowledge graph — entities, relations, and observations — and that store survives the end of the session. Fetch loads web pages, Time works with time zones, and Sequential Thinking helps reason step by step — none of them keep facts between sessions.",
+      "hint": "The server's name literally means \"memory.\""
+    },
+    {
+      "type": "quiz",
+      "question": "Task: \"take the article at this URL and summarize it.\" Which server gives the model the page's content in a convenient form?",
+      "options": [
+        "Filesystem — the article is stored somewhere after all",
+        "Everything — it can do it all",
+        "Fetch — loads the page and converts it for the model",
+        "Git — the article is surely in a repository"
+      ],
+      "correct": [2],
+      "explanation": "Fetch is made for exactly this: download a URL and turn the HTML into compact text for the model. Filesystem works with local files, Git — with repositories. Everything really does demonstrate all the primitives, but it's a test demo server, not a working tool for the web.",
+      "hint": "What English word means \"to get, to bring\" (including a page from the network)?"
+    },
+    {
+      "type": "quiz",
+      "question": "A developer is writing their own MCP client and wants to test it against all the primitives at once: tools, resources, prompts. Which server is made for this?",
+      "options": [
+        "Time — it's the simplest",
+        "Sequential Thinking",
+        "Memory",
+        "Everything — a demonstration server with all the primitives"
+      ],
+      "correct": [3],
+      "explanation": "Everything is the protocol's showcase and test bench: it deliberately implements all of MCP's primitives in one place so you can test clients and study the protocol on it. The other servers are applied and use only what their task needs.",
+      "hint": "You need a server that has \"everything\" — the hint is right in the name."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A cheat sheet on the reference servers. One statement is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Fetch downloads web pages and prepares their content for the model.",
+        "Filesystem works only in the directories allowed at launch.",
+        "Git sends commits to GitHub through GitHub's cloud API.",
+        "Sequential Thinking helps the model reason step by step.",
+        "Time can convert time between time zones."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The reference Git server is a wrapper around **local** git: it reads history, shows diffs and status in a repository on your machine. GitHub's cloud API is a separate matter — servers and connectors (for example, the GitHub MCP server) that aren't part of the seven reference servers. The other lines are correct."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Connect the Filesystem server with access only to the ~/projects folder: `claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/projects`. Then check the server list with `claude mcp list`.",
+      "steps": [
+        {
+          "expectPattern": "^claude mcp add filesystem\\s+--\\s+npx -y @modelcontextprotocol/server-filesystem\\s+~/projects$",
+          "output": "Added stdio MCP server filesystem with command: npx -y @modelcontextprotocol/server-filesystem ~/projects to local config",
+          "failHint": "The formula: claude mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem ~/projects — the path at the end is the allowed directory."
+        },
+        {
+          "expectPattern": "^claude mcp list$",
+          "output": "Checking MCP server health...\n\nfilesystem: npx -y @modelcontextprotocol/server-filesystem ~/projects — ✔ connected",
+          "failHint": "The list of connected servers from the terminal is shown by claude mcp list"
+        }
+      ],
+      "successMessage": "Done! Note the detail: the ~/projects path in the launch command is the boundary of the server's permissions. Filesystem won't touch files outside this folder, no matter what it's asked."
+    }
+  ],
+  "reward": { "cardId": "card-mcp-servers", "badgeId": null }
+}

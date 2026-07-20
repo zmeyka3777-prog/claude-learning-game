@@ -1,0 +1,121 @@
+{
+  "id": "mcp-what-is",
+  "world": "world-6-mcp-plugins",
+  "order": 1,
+  "title": "What MCP Is",
+  "subtitle": "The universal \"port\" between AI and the outside world: architecture and three primitives",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Model Context Protocol — official site", "url": "https://modelcontextprotocol.io/" },
+    { "title": "MCP Architecture — modelcontextprotocol.io", "url": "https://modelcontextprotocol.io/docs/learn/architecture" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The problem MCP solves" },
+    { "type": "text", "md": "Imagine you want Claude to read your notes, check tasks in your tracker, and pull the weather forecast. Not long ago, every one of these connections had to be programmed separately: custom code for notes, custom code for the tracker, custom code for weather. And if a different AI assistant showed up tomorrow — you'd start over. Engineers call this the \"N×M problem\": N assistants times M services — and every pair needs its own integration.\n\n**MCP (Model Context Protocol)** solves this the same way USB-C solved the charger problem: it's a single universal \"port\" between AI applications and external services. You wrap a service in an **MCP server** once — and it's instantly understood by any application that speaks MCP: Claude, Claude Code, code editors, and dozens of others.\n\nMCP is an **open protocol**: Anthropic introduced it in November 2024 and published the specification under the permissive MIT license. That's why the whole industry picked up the standard — thousands of companies and independent developers write MCP servers and clients." },
+    { "type": "heading", "text": "Architecture: host, client, server" },
+    { "type": "text", "md": "MCP follows the classic client-server design, only with three participants:\n\n- **Host** — the application you work in: claude.ai, Claude Code, an IDE. The host decides which servers to connect and what to allow.\n- **MCP client** — the part of the host that carries on a conversation with one specific server: it opens the connection, asks \"what can you do?\", and passes requests along. One host can hold many clients — one per server.\n- **MCP server** — a small translator program. On one side it speaks MCP; on the other it talks to the real service: a database, the file system, an external API.\n\nImportant: a server doesn't have to live somewhere on the internet. Most often it's a tiny program that runs right on your computer and talks to the client over standard input/output (the **stdio** transport). Remote servers use the **HTTP** transport." },
+    { "type": "table",
+      "headers": ["Participant", "What it is", "Example"],
+      "rows": [
+        ["Host", "The application where the user and model work", "Claude Code, claude.ai, an IDE"],
+        ["MCP client", "A host component, connection to one server", "The client inside Claude Code"],
+        ["MCP server", "A wrapper program around a service or data", "A server for Git, for files, for a weather API"]
+      ]
+    },
+    { "type": "heading", "text": "The three server primitives" },
+    { "type": "text", "md": "Everything an MCP server can offer a host fits into three \"primitives\" — three kinds of capability:\n\n**1. Tools** — actions the **model invokes itself** when it decides they're needed for the task. Each tool is a name, a description, and parameters. Examples: `create_issue` (create a task in a tracker), `send_message` (send a message), `get_forecast` (request a weather forecast). You write \"file a bug about the button\" — and Claude finds the right tool and calls it on its own.\n\n**2. Resources** — read-only data, each with its own URI address. A resource does nothing; it simply returns content: the file `file:///docs/plan.md`, the note `notes://2026/07/summary`, a table schema from a database. It's a way to give the model context without making you copy text into the chat by hand.\n\n**3. Prompts** — ready-made request templates that the **user launches**, usually as slash commands. Example: a code-review server can offer a `review` prompt that expands into a detailed instruction, \"check the changes against this checklist.\" A prompt is a \"do it the way we agreed\" button for recurring scenarios.\n\nAn easy way to remember: think about **who presses the button**: the model chooses tools, the application supplies resources, and a human launches prompts." },
+    { "type": "table",
+      "headers": ["Primitive", "What it is", "Who initiates", "Example"],
+      "rows": [
+        ["Tools", "Actions with parameters", "The model", "create_issue, get_forecast"],
+        ["Resources", "Data by URI, read-only", "Application/host", "file:///docs/plan.md"],
+        ["Prompts", "Request templates", "The user", "slash command /review"]
+      ]
+    },
+    { "type": "text", "md": "How does this look \"under the hood\"? On connecting, the client asks the server for a list of its capabilities, and the server responds with descriptions in JSON. Here's conceptually how a single tool declaration looks — a name, a human-readable description, and a parameter schema:" },
+    { "type": "code", "lang": "json", "title": "Tool declaration (conceptual)", "code": "{\n  \"name\": \"get_forecast\",\n  \"description\": \"Returns a 3-day weather forecast for the given city\",\n  \"inputSchema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"city\": { \"type\": \"string\", \"description\": \"City name\" }\n    },\n    \"required\": [\"city\"]\n  }\n}" },
+    { "type": "example",
+      "bad": "Every Monday, by hand: open the tracker → copy the task list → paste it into the chat → ask Claude to draft a weekly plan → copy the plan back into the tracker.",
+      "good": "Connect the tracker's MCP server once. After that just write: \"Draft a weekly plan from my open tasks and add it to the tracker\" — Claude reads the tasks itself (tools/resources) and creates the plan itself (tools).",
+      "explanation": "Without MCP the human works as a \"data courier\" between the service and the model: copying back and forth and losing time at every step. With MCP the model reads the data and performs the actions directly — and you just state the goal. This shift from copy-paste to direct access is exactly the protocol's core value."
+    },
+    { "type": "callout", "kind": "docs", "md": "The official site modelcontextprotocol.io defines MCP as \"an open protocol that standardizes how applications provide context and tools to LLMs\" and uses the comparison directly: \"think of MCP like a USB-C port for AI applications.\" The specification is open, published under the MIT license, and servers — per the documentation — provide three kinds of capability: tools, resources, and prompts." },
+    { "type": "callout", "kind": "tip", "md": "Don't confuse the levels: a **connector** in claude.ai is a ready-made MCP server you plug in with a couple of clicks; a **skill** is an instruction for the model on how to act; an **MCP server** is a program that gives the model new hands and eyes. In the coming lessons we'll climb the whole ladder: from connecting ready-made servers to writing your own." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is MCP in one sentence?",
+      "options": [
+        "A new Anthropic language model for programming",
+        "An open protocol-\"port\" that standardizes how AI applications connect to external services and data",
+        "A store of paid extensions built into claude.ai",
+        "A file format for storing chat history"
+      ],
+      "correct": [1],
+      "explanation": "MCP is not a model and not a store, but an open protocol (a specification under the MIT license). It solves the \"N×M problem\": you wrap a service in an MCP server once — and any MCP-compatible host understands it: Claude, Claude Code, IDEs, and others.",
+      "hint": "Remember the USB-C comparison: it's not a device but a connection standard."
+    },
+    {
+      "type": "quiz",
+      "question": "A team wants Claude to be able to create tasks in their tracker. Which MCP server primitive is needed for this?",
+      "options": [
+        "Resource — data by URI",
+        "Prompt — a request template",
+        "Tool — an action the model invokes itself",
+        "The stdio transport"
+      ],
+      "correct": [2],
+      "explanation": "Creating a task is an action with parameters (title, description, assignee), and actions in MCP are tools. A resource only returns data for reading, a prompt is a template that a human launches, and stdio is a way to deliver messages, not a server capability.",
+      "hint": "Who \"presses the button\" when a task gets created in the conversation? The model — so it's the model's primitive."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the path of the request \"show my open tasks\" through the MCP architecture: from the user to the external service.",
+      "blocks": [
+        "The user writes a request in the host application (for example, in Claude Code)",
+        "The model decides to call the list_issues tool, and the host's MCP client sends the request to the server",
+        "The MCP server receives the request and calls the task tracker's API",
+        "The service's response comes back down the chain: server → client → model → reply to the user"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "The user manually copies the task list from the tracker into the chat",
+        "The MCP server retrains the model on the tracker's data"
+      ],
+      "explanation": "The chain is always the same: host (and the model inside it) → MCP client → MCP server → external service, and back the same way. Manual copying is exactly what MCP eliminates, and retraining the model has nothing to do with it: the server only passes data and performs actions."
+    },
+    {
+      "type": "quiz",
+      "question": "Choose ALL the primitives an MCP server can provide to a host (multiple answers):",
+      "options": [
+        "Tools — action tools",
+        "Models — its own language models",
+        "Resources — data by URI",
+        "Prompts — request templates",
+        "Chats — conversation history"
+      ],
+      "correct": [0, 2, 3],
+      "explanation": "The MCP specification describes exactly three server primitives: tools (actions the model invokes), resources (read-only data by URI), and prompts (templates the user launches). A server provides no models or chat histories of its own — that's the host's responsibility.",
+      "hint": "There are three correct answers, and all of them appeared capitalized in the \"three server primitives\" section."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A colleague's notes about MCP. One statement is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "MCP is an open protocol with a specification under the MIT license.",
+        "A host can hold several MCP clients — one per server.",
+        "Local servers talk to the client over stdio, remote ones over HTTP.",
+        "Resources let the model perform actions in an external service.",
+        "Prompts are ready-made templates that the user launches themselves."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The primitives are mixed up: actions in an external service are performed by **tools**, while resources are read-only data available by URI (a file, a note, a table schema). The other statements are correct: an open MIT specification, one client per server, stdio for local and HTTP for remote servers."
+    }
+  ],
+  "reward": { "cardId": "card-mcp-what-is", "badgeId": null }
+}

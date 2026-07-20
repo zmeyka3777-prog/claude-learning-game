@@ -1,0 +1,113 @@
+{
+  "id": "pro-hooks",
+  "world": "world-5-claude-code-pro",
+  "order": 2,
+  "title": "Hooks",
+  "subtitle": "Automation that always fires: auto-lint after edits, auto-test, auto-save at the end of a session",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Hooks Guide — Claude Code Docs", "url": "https://code.claude.com/docs/en/hooks-guide" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A request versus a guarantee" },
+    { "type": "text", "md": "In CLAUDE.md you can write \"run the linter after edits\" — and the agent will try. But \"try\" isn't \"always\": an instruction in project memory stays a request the model follows at its discretion, and in a long session it may forget it.\n\n**Hooks** solve this decisively. A hook is an ordinary shell command that Claude Code runs **itself, automatically, when an event occurs**: the agent edited a file — the linter fired; the session ended — the auto-save fired. The model has nothing to do with it: the hook is run not by Claude but by the Claude Code program itself, deterministically and without exceptions. A request has become a rule that's impossible to forget." },
+    { "type": "heading", "text": "Three key events" },
+    { "type": "table",
+      "headers": ["Event", "When it fires", "Typical use"],
+      "rows": [
+        ["PreToolUse", "Before the agent applies a tool (an edit, a command)", "Check and block a dangerous action before it runs"],
+        ["PostToolUse", "Right after a tool is applied", "Auto-lint and auto-format after every file edit; auto-test"],
+        ["Stop", "When the agent has finished replying / the session ends", "Auto-save: commit progress, update a log, notify"]
+      ]
+    },
+    { "type": "text", "md": "The logic of choosing an event is simple. Need to **prevent** something — `PreToolUse`: the hook sees what the agent is about to do and can block it before it runs (for example, forbid edits in the `migrations/` folder). Need to **react** to what was done — `PostToolUse`: the file is already changed, the perfect moment to run a formatter or linter on it. Need to **wrap up** — `Stop`: the work is finished, you can commit the changes or run the full test suite.\n\nThere are more than three events — there's a hook for every message the user sends, or for the start of a session, for instance — but this trio covers most real automation tasks." },
+    { "type": "heading", "text": "Where it's configured" },
+    { "type": "text", "md": "Hooks live in **settings.json** — the Claude Code settings file (covered in detail in the lesson \"Settings and security\"). Project hooks go in `.claude/settings.json`, and then, like Skills, they get committed to Git and work for the whole team.\n\nThe general shape of an entry: **event → which tools it applies to → which command runs**. For PostToolUse you usually add a matcher filter — \"fire only after file edits, not after every action\" — so the linter doesn't run after, say, a simple file read. Don't memorize the exact field format: the Hooks Guide page in the docs is always at hand, and simpler still — just ask the agent: \"set up a hook for me,\" and it will write the configuration correctly." },
+    { "type": "code", "lang": "json", "title": "The idea of the configuration (check the structure against the docs)", "code": "{\n  \"hooks\": {\n    \"PostToolUse\": [\n      {\n        \"matcher\": \"Edit|Write\",\n        \"hooks\": [{ \"type\": \"command\", \"command\": \"npm run lint\" }]\n      }\n    ],\n    \"Stop\": [\n      {\n        \"hooks\": [{ \"type\": \"command\", \"command\": \"bash scripts/save-session.sh\" }]\n      }\n    ]\n  }\n}" },
+    { "type": "text", "md": "Read this config out in words: \"after every file edit or creation, run the linter; when the agent has finished, run the auto-save script.\" The `save-session.sh` script might, for example, update the session log and do a `git commit` — and then no session ends with unsaved progress.\n\nAn important detail: if a hook exits with an error, Claude sees its output and reacts — the linter failed after an edit, the agent reads the messages and fixes the code. So the automation doesn't just check, it closes the loop: edit → check → fix, without your involvement. And a PreToolUse hook can do more — block: return a refusal, and the agent's action won't run at all. That's how you build fireproof bans like \"never write to the migrations/ folder.\"" },
+    { "type": "example",
+      "bad": "In CLAUDE.md: \"Please don't forget to run npm run lint after every file change. It's very important!\"",
+      "good": "In .claude/settings.json: a PostToolUse hook on file edits → the command npm run lint.",
+      "explanation": "The first option depends on the model's \"memory\" and discipline: it usually fires, but there's no guarantee — and \"very important!\" doesn't add one. The second option is run by the Claude Code program itself: the linter runs after every edit, even if the model never thought about it. The rule for splitting them: preferences and style go in CLAUDE.md, mandatory checks go into hooks."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Hooks Guide in the Claude Code docs defines hooks as user-defined shell commands bound to lifecycle events (among them PreToolUse, PostToolUse, Stop). Hooks are configured in settings files, run automatically when an event occurs, and their result can influence the agent's further actions — for example, block a tool or return an error message to the agent." },
+    { "type": "callout", "kind": "warning", "md": "Hooks are executable commands with your user's permissions, and they run without confirmation. Never copy hook configurations from untrusted sources without reading them: a line in someone else's settings.json can do anything — from a harmless linter to shipping your files outside. Read every command and make sure you understand what it does." },
+    { "type": "callout", "kind": "tip", "md": "Start with one hook that pays off instantly: auto-format code on PostToolUse. The effect is visible right away, it's hard to break anything, and the habit \"automation instead of reminders\" takes root. Add auto-tests on every edit more cautiously: if the tests take three minutes, the session turns into a wait." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "You want the linter to run automatically after every file edit. Which event do you choose?",
+      "options": [
+        "PreToolUse — before the edit",
+        "PostToolUse — right after the edit",
+        "Stop — at the end of the session",
+        "Any of them, there's no difference"
+      ],
+      "correct": [1],
+      "explanation": "The linter checks code that's already been changed, so it needs to run after the edit — that's PostToolUse. PreToolUse fires before the action (when there's nothing to check yet, though you can block the action), and Stop fires once at the end, leaving the code unchecked until the session finishes.",
+      "hint": "Pre — before, Post — after, Stop — at the very end."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A fragment of .claude/settings.json with hooks (the structure is simplified). One line is dangerous and could destroy someone else's work — find it.",
+      "lang": "json",
+      "lines": [
+        "\"hooks\": {",
+        "  \"PostToolUse\": [",
+        "    { \"matcher\": \"Edit|Write\",",
+        "      \"hooks\": [{ \"type\": \"command\", \"command\": \"npm run lint\" }] }",
+        "  ],",
+        "  \"Stop\": [",
+        "    { \"hooks\": [{ \"type\": \"command\", \"command\": \"git push --force origin main\" }] }",
+        "  ]",
+        "}"
+      ],
+      "bugLineIndex": 6,
+      "explanation": "git push --force overwrites history on the shared main branch: if a colleague pushed their commits, a force push wipes them out — and the hook would do this automatically at the end of every session, without a single question. An auto-save must be safe: a plain commit and a plain push (better still — to your own branch). The linter on PostToolUse is configured correctly."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the \"auto-test with self-repair\" automation plan — in the order everything happens during a session. Leave the extra block out.",
+      "blocks": [
+        "The agent edits a code file for the user's task",
+        "The PostToolUse hook fires and runs npm test",
+        "The tests failed — Claude reads the error output from the hook",
+        "The agent fixes the code and edits the file again — the loop repeats until the tests go green"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "The user manually reminds the agent to run the tests"
+      ],
+      "explanation": "That's the whole point of hooks: the loop \"edit → check → fix\" closes without a human. The hook runs the tests after every edit by itself, the agent sees the errors and fixes them, and so on until the tests are green. The block with the manual reminder is the extra one: getting rid of it is exactly what hooks are for."
+    },
+    {
+      "type": "quiz",
+      "question": "What is the fundamental difference between a hook and a rule in CLAUDE.md?",
+      "options": [
+        "A hook is written in English, and CLAUDE.md in your own language",
+        "A hook is run by the Claude Code program on an event — always; a rule in CLAUDE.md is executed by the model — at its discretion",
+        "Hooks only work in CI/CD",
+        "There's no difference, they're synonyms"
+      ],
+      "correct": [1],
+      "explanation": "A rule in CLAUDE.md is text the model reads and tries to follow: usually it follows, but it may miss it. A hook is a command run not by the model but by Claude Code itself when an event occurs: deterministically, every time, no exceptions. Preferences go into memory, mandatory checks go into hooks.",
+      "hint": "Who's the executor: a model that \"tries,\" or a program that \"just does\"?"
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to this mission later.**\n\n1. Open a terminal in a test project and run `claude`.\n2. Ask the agent: \"Set up a hook: after every file edit, run the project's formatter (or linter).\" Let it write the configuration into settings.json itself.\n3. Open the settings file and read what appeared: find the event, the matcher, and the command. Make sure you understand every line.\n4. Test it live: give the agent a task to edit any file — and watch how the command fires automatically after the edit.\n5. If something didn't work — ask the agent to look into it: \"the hook didn't run, check the configuration.\"",
+      "checklist": [
+        "The hook is set on the \"after a file edit\" event",
+        "I read the configuration and understand every command in it",
+        "The hook actually fired after an edit — I saw it in the session",
+        "There's nothing destructive or unclear in the hook's commands"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-hooks", "badgeId": null }
+}

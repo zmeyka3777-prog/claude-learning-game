@@ -207,6 +207,9 @@ export interface Lesson {
 
 export type Track = 'novice' | 'user' | 'developer' | 'business';
 
+/** Код языка интерфейса и контента. Расширяется добавлением кода в LANGUAGES. */
+export type LangCode = 'ru' | 'en';
+
 export interface CompletedLesson {
   /** ISO-время завершения */
   completedAt: string;
@@ -244,6 +247,8 @@ export interface Progress {
   playerName: string | null;
   /** Журнал повторений: lessonId → этап и время последнего повторения */
   reviewLog: Record<string, ReviewEntry>;
+  /** Выбранный язык интерфейса и контента (по умолчанию 'ru') */
+  lang: LangCode;
 }
 
 // ---------------------------------------------------------------------------

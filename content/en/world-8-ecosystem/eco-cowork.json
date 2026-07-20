@@ -1,0 +1,119 @@
+{
+  "id": "eco-cowork",
+  "world": "world-8-ecosystem",
+  "order": 4,
+  "title": "Cowork",
+  "subtitle": "Autonomous work on tasks: when you need not a conversation partner, but a doer",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Help Center", "url": "https://support.claude.com/en/" },
+    { "title": "Anthropic Newsroom", "url": "https://www.anthropic.com/news" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A third way to work with Claude" },
+    { "type": "text", "md": "By this lesson you know two modes of working with Claude. **Chat** is a dialogue: question, answer, clarification; you're present at every step. **Claude Code** is an agent for developers: it lives in the terminal and IDE, works with code, and requires technical preparation.\n\nBetween them there was long an empty space: what should someone without a terminal do when their task isn't 'to talk' but 'to get it done'? Sort through a hundred files, assemble a report from a dozen sources, tidy up a folder of documents. In chat this is awkward: every step is your message, every file is a manual upload.\n\nThis gap is filled by **Cowork** — a mode of Claude working autonomously on tasks, designed not for programmers but for everyone." },
+    { "type": "heading", "text": "How Cowork differs from chat" },
+    { "type": "text", "md": "The main difference is **who leads the process**. In chat you lead it: Claude takes exactly one step per message from you. In Cowork you set the whole task, and Claude plans the steps itself, carries them out one after another, and comes back with the result.\n\nThe second difference is **working with files**. Cowork operates in a workspace: you give it access to a folder of files, and it can read them, create new ones, and lay out the results — rather than juggling attachments one by one, as in chat.\n\nThe third is **the scale of tasks**. Chat is good for tasks measured in minutes: an answer, a draft, a breakdown. Cowork is for tasks measured in tens of minutes: 'sort through these 80 invoices and consolidate them into a table', 'read all the reports in the folder and write a summary', 'rename and sort the files by project'." },
+    { "type": "heading", "text": "How Cowork differs from Claude Code" },
+    { "type": "table", "headers": ["", "Cowork", "Claude Code"], "rows": [
+      ["For whom", "For everyone: analysts, managers, lawyers, HR", "For developers"],
+      ["Where it lives", "The Claude app — no terminal", "Terminal, IDE, CI, and other surfaces"],
+      ["Material", "Documents, spreadsheets, files, reports", "Code, repositories, tests, deployment"],
+      ["Typical task", "'Consolidate these reports into one table with conclusions'", "'Fix bug #142 and run the tests'"],
+      ["In common", "Both are agents: they plan steps and work autonomously, both require human oversight", "—"]
+    ] },
+    { "type": "text", "md": "It's easier to remember like this: **Claude Code is an autonomous agent for code, Cowork is an autonomous agent for everything else.** Their philosophy is shared (task → plan → independent execution → result for review); what differs is the material: one has repositories, the other your documents and files." },
+    { "type": "heading", "text": "When Cowork is the right choice" },
+    { "type": "text", "md": "Signs of a task for Cowork:\n\n- **Lots of same-type work.** Not 'reply to this email', but 'sort 200 emails into categories'.\n- **Lots of files.** The task lives in a folder, not in a single attachment.\n- **A clear end result.** 'The output is a table with columns X, Y, Z' — the agent has somewhere to go.\n- **You don't need to be present at every step.** Checking the result is enough.\n\nAnd here's when Cowork isn't needed: a quick question (chat is faster), a task requiring your decisions at every step (a dialogue in chat), work with code (Claude Code). And remember the principle from the lessons about agents: autonomy doesn't cancel verification. The agent came back with a result — the result gets checked, especially before it goes to someone." },
+    { "type": "heading", "text": "The life cycle of a task in Cowork" },
+    { "type": "text", "md": "A typical task passes through four stages, and on two of them you're indispensable:\n\n1. **Framing (you).** The material, the task, the result format, the rules — the same discipline as in the prompts of World 1, only the cost of a mistake is higher: the agent will go off and work with what you wrote.\n2. **Execution (the agent).** Claude plans the steps, reads the files, creates the results. You can look in on the process, but the point of autonomy is that you don't have to.\n3. **Questions (as needed).** On ambiguities a good agent doesn't guess but asks — or sets the contentious item aside if you told it to.\n4. **Acceptance (you).** A report on what was done, the contentious cases, a spot-check against the sources — and only after that does the result move on." },
+    { "type": "example",
+      "bad": "In Cowork: 'tidy up my files' — no specifics, on a folder with all documents from five years, including the only copies of important papers, and then go off to lunch.",
+      "good": "In Cowork: 'The \"Invoices 2026\" folder has invoices and acts mixed together in PDF. Sort them into subfolders \"Invoices\" and \"Acts\", and for each invoice write into a table: number, date, counterparty, amount. Don't delete or rename files. Put contentious ones into \"Sort by hand\"'. Start with a copy of the folder.",
+      "explanation": "'Tidy up' is a task with no definition of tidy: the agent will be forced to decide for itself what matters, on live data. Good framing sets the bounds (one folder), the actions (sorting + a table), the prohibitions (don't delete), a path for doubts ('Sort by hand') — and a safety net in the form of a copy."
+    },
+    { "type": "callout", "kind": "docs", "md": "Cowork is an evolving product: for details on capabilities and availability, see the support.claude.com Help Center and the announcements at anthropic.com/news. The general principle from Anthropic's documentation on agentic products is unchanged: the agent works autonomously in a dedicated workspace, while control over important actions and verification of the result stay with the human." },
+    { "type": "callout", "kind": "warning", "md": "An autonomous agent on your files is a responsibility. The rules are the same as for Claude Code and Chrome: work on a copy of important data, explicitly forbid irreversible actions, and check the result before it moves on. 'The agent did it' does not equal 'done correctly'." },
+    { "type": "callout", "kind": "tip", "md": "A good test for 'a task for Cowork': if, explaining it to an intern colleague, you'd write out instructions and walk away — it's Cowork. If you'd sit down beside them and do it together — it's chat." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What's the main difference between Cowork and a regular chat with Claude?",
+      "options": [
+        "Cowork uses a smarter model",
+        "In Cowork Claude leads the task autonomously: it plans the steps and carries them out itself, rather than taking one step per message from you",
+        "Cowork works only with code",
+        "In Cowork you can't ask questions"
+      ],
+      "correct": [1],
+      "explanation": "The difference is in who leads the process. Chat is a step-by-step dialogue under your control; Cowork is setting the whole task and autonomous execution with the result for review.",
+      "hint": "The question 'who leads the process' — you at every step, or the agent by a plan?"
+    },
+    {
+      "type": "quiz",
+      "question": "How does Cowork differ from Claude Code?",
+      "options": [
+        "Cowork is an agent for working with documents and files for everyone, Claude Code is an agent for code and developers; their autonomy philosophy is shared",
+        "Cowork is paid, and Claude Code is free",
+        "Claude Code is autonomous, and Cowork only answers questions",
+        "It's the same app under different names"
+      ],
+      "correct": [0],
+      "explanation": "Both are autonomous agents with a shared 'task → plan → execution → verification' philosophy. The difference is in the material and audience: Claude Code lives in the terminal and works with repositories, Cowork lives in the Claude app and works with documents and files.",
+      "hint": "Recall the formula: 'an agent for code' versus 'an agent for everything else'."
+    },
+    {
+      "type": "quiz",
+      "question": "Which tasks are good candidates for Cowork? Select all that apply.",
+      "options": [
+        "Sort through a folder of 80 invoices and consolidate the data into a table",
+        "Quickly ask how a word is spelled",
+        "Read all of the quarter's reports in a folder and prepare a summary",
+        "A task where you want to make a decision after every step"
+      ],
+      "correct": [0, 2],
+      "explanation": "Cowork is strong on bulky file tasks with a clear result. A quick question is faster to solve in chat, and a task with decisions at every step is a dialogue, not autonomous work.",
+      "hint": "The signs: lots of files, lots of same-type work, a clear end result, no need to be present at every step."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a Cowork task framing: sorting through a folder of candidate resumes. Order: material → task → result format → safety rules.",
+      "blocks": [
+        "The 'Candidates' folder has about 60 resumes in PDF and DOCX for an analyst role.",
+        "Task: for each candidate extract the name, years of experience, key skills, and last place of work; filter out resumes with no experience working with data.",
+        "Result: a table with all candidates and a 'meets requirements' column + a separate short list of the top 10 with justification.",
+        "Rules: don't delete or rename files; unreadable or contentious resumes go into a 'Review by hand' list, not into the rejects."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Decide yourself who to hire, and send the candidates rejections in my name.",
+        "Delete resumes that seem weak so they don't get in the way."
+      ],
+      "explanation": "The framing for an autonomous agent: material → task → format → rules. Sending rejections is an irreversible action affecting other people, and deleting files 'by eye' is data loss: neither is delegated to the agent. A hiring decision, all the more so, stays with the human."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Cowork simulation: the agent finished sorting through the folder of resumes and came back with the result. Your turn — accept the work correctly.",
+      "steps": [
+        {
+          "expect": ["check", "show", "how", "contentious", "by hand", "short list", "table", "spot", "where from", "criteri"],
+          "minMatches": 1,
+          "claudeReply": "Work report: 📦\n\n- Processed 58 of 61 files; the table with all candidates is ready.\n- Short list: 10 candidates, each with a one-line justification.\n- In 'Review by hand' — 3 files: two wouldn't open, one resume has no dates.\n\nWhere I hesitated most often: 'experience with data' for candidates from adjacent fields (for example, financiers with Excel skills) — I included them in the table with a 'adjacent experience' note. Want to spot-check a couple of table rows against the source resumes?",
+          "failHint": "Accept the work like a manager: ask to show the result, the contentious cases, or the selection criteria."
+        },
+        {
+          "expect": ["yes", "check", "show", "compare", "spot", "row", "resume", "go ahead"],
+          "minMatches": 1,
+          "claudeReply": "Spot-check: 🔎\n\n**Row 12:** Ivanova A. — table: '6 years, SQL, Python'. In the resume: experience since 2020, SQL and Python across three jobs. ✅ Matches.\n\n**Row 34:** Petrov K. — table: 'adjacent experience'. In the resume: financial analyst, advanced Excel, SQL not mentioned. ✅ The note is honest.\n\nRecommendation: review the short list and the three files from 'Review by hand' with your own eyes before handing them to the hiring manager — the final word on people always stays with people.",
+          "failHint": "Agree to a spot-check: 'Yes, compare a couple of rows against the sources'."
+        }
+      ],
+      "successMessage": "You've practiced the main skill of an autonomous-agent owner: not 'thanks, sending it on', but acceptance — the report, the contentious cases, the spot-check, and only then does the result go to people."
+    }
+  ],
+  "reward": { "cardId": "card-eco-cowork", "badgeId": null }
+}

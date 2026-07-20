@@ -1,0 +1,107 @@
+{
+  "id": "basics-models",
+  "world": "world-1-basics",
+  "order": 5,
+  "title": "Models and Modes",
+  "subtitle": "Opus, Sonnet, Haiku, Fable, and extended thinking: when to choose which",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Models overview — Claude Docs", "url": "https://platform.claude.com/docs/en/about-claude/models/overview" },
+    { "title": "Extended thinking — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking" },
+    { "title": "Getting Started — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why there are several models" },
+    { "type": "text", "md": "\"Claude\" is the name of a family, not of a single model. Inside the family are several models with different balances of \"smarts ↔ speed.\" It's like transportation: you don't take a plane to the bakery, and you don't ride a scooter to another city. Tasks vary — and so do models.\n\nWhy does this matter to you? Because the claude.ai interface has a **model selector** (usually near the input field or in the chat menu), and understanding the models' personalities helps you get better answers: a hard task goes to a smart model, an easy one to a fast model." },
+    { "type": "heading", "text": "The models' personalities" },
+    { "type": "text", "md": "Anthropic's classic lineup is named after literary forms — from short to large:\n\n- **Haiku** (a haiku is a three-line poem) — the **fastest and lightest**. It replies almost instantly. Ideal for simple tasks: a quick question, a short translation, checking a wording.\n- **Sonnet** (a sonnet is 14 lines) — the **balance** of quality and speed. The workhorse for everyday tasks: emails, texts, document analysis, code.\n- **Opus** (an opus is a large work) — the **most powerful of the classic lineup**. Deep reasoning, complex analysis, tasks where quality matters more than speed.\n\nAnd the newest, **fifth generation** of Anthropic's models bears the name **Fable**. It's the freshest family — you may have already talked with it if you opened claude.ai recently.\n\nImportant: **any** Claude model can handle ordinary everyday requests. Choosing a model is fine-tuning, not a question of \"will it work or not.\"" },
+    { "type": "table", "headers": ["Model", "Personality", "Typical tasks"], "rows": [
+      ["Haiku", "Maximally fast and light", "Quick questions, short translations, simple edits"],
+      ["Sonnet", "Balance of smarts and speed", "Emails, texts, everyday analysis, code"],
+      ["Opus", "The most powerful of the classic lineup", "Complex analysis, deep reasoning, important documents"],
+      ["Fable", "The newest 5th generation", "Cutting-edge capabilities — the current default choice"]
+    ] },
+    { "type": "heading", "text": "Extended thinking: the \"let me think\" mode" },
+    { "type": "text", "md": "Besides the model choice, Claude has an **extended thinking** mode. Usually Claude answers right away. In extended thinking mode it first **reasons to itself**: it breaks the task into parts, checks options, looks for flaws in its own logic — and only then gives the answer.\n\nAn analogy: ask a person to multiply 17 by 23 \"on the spot\" and they'll most likely get it wrong. Give them a sheet of paper and a minute and they'll get it right. Extended thinking is that very \"sheet of paper.\"\n\nWhen to turn it on:\n\n- complex multi-step tasks: planning, strategy, math;\n- analysis where it's important not to miss anything: reviewing a contract, comparing options;\n- tricky tasks where the first answer that comes to mind is often wrong.\n\nWhen you don't need it: simple questions and routine texts — the mode makes the answer slower with no gain in quality." },
+    { "type": "example",
+      "bad": "Turning on the most powerful mode for everything: \"What time is it in London?\" — with extended thinking on the heaviest model. Or the reverse: trusting the fastest model with the final review of an annual report because \"it's faster.\"",
+      "good": "Matching the tool to the task: a quick everyday question — a light model with no thinking; an important analysis of an investment decision — a powerful model with extended thinking.",
+      "explanation": "The principle is the same as with transportation: fit is what matters. Excess power on a simple task wastes your time (the answer takes longer), and insufficient power on a hard one risks quality where the cost of a mistake is high." },
+    { "type": "heading", "text": "Where all this is chosen" },
+    { "type": "text", "md": "In the claude.ai interface the model switcher sits next to the message input field — usually a dropdown menu with the name of the current model. In the same place, in or near the chat menu, extended thinking is turned on (depending on your plan, the set of available models and modes may differ).\n\nDon't memorize the exact location of the buttons — the interface changes. Remember the essence: **the model and the thinking mode can be changed**, and it takes a couple of clicks right from the chat. A practical habit: started a complex task — glance at which model is selected and turn on thinking if the task is worth it." },
+    { "type": "text", "md": "Two more practical details. First, **you can change the model mid-way**: start sketching ideas on a fast model, then switch to a powerful one for the final polish — right in the same chat or a new one. Second, on paid plans the choice of models and modes is wider and the usage limits are higher; free access usually offers a sensible default. Don't worry if you can't see some model from the table — the \"tool for the task\" principle works with any available set.\n\nAnd remember the previous lessons: no model cancels out the prompt formula and the power of dialogue. A weak request on the most powerful model will lose to a good request on a mid-tier one — the wording affects the result more than the choice of model." },
+    { "type": "callout", "kind": "docs", "md": "The models overview in the official documentation (platform.claude.com, Models overview) describes the lineup exactly this way: Opus is the most capable model for complex tasks, Sonnet is the optimal combination of intelligence and speed, Haiku is the fastest and most compact for near-instant answers. The documentation also notes: each model has a knowledge cutoff date — the point up to which the model \"saw\" information during training." },
+    { "type": "callout", "kind": "tip", "md": "In doubt — don't agonize over the choice: the default model is great for the vast majority of tasks. Return to a deliberate model choice in two cases: the answers seem shallow on a hard task (take a more powerful model and turn on thinking), or you're tired of waiting on simple ones (take a faster one)." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "You need to quickly translate a short phrase for a message to a friend. Which model fits best by the \"tool for the task\" principle?",
+      "options": [
+        "Opus — translating calls for the most powerful",
+        "Haiku — the task is simple, speed matters",
+        "None: Claude doesn't translate",
+        "Definitely turn on extended thinking"
+      ],
+      "correct": [1],
+      "explanation": "A short translation is a typical simple task: any model handles it, so the fastest one — Haiku — wins. A powerful model and the thinking mode would give the same translation, just slower.",
+      "hint": "Recall the transportation analogy: you don't take a plane to the bakery for bread."
+    },
+    {
+      "type": "quiz",
+      "question": "Match the situation with a sensible choice. Which statements are correct? Select all that apply.",
+      "options": [
+        "A deep analysis of a lease agreement to find risks — Opus and extended thinking",
+        "An everyday email to a colleague — Sonnet, the balance is enough",
+        "\"What's 2+2\" — definitely Opus with extended thinking, or it'll get it wrong",
+        "Fable — the newest, fifth generation of Anthropic's models"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "1, 2, and 4 are correct. Complex analysis with a cost of error is a reason to take a powerful model and let it \"think.\" For routine emails a balanced model is enough. And \"2+2\" is calculated instantly by any model — extended thinking is overkill here. Fable really is the newest generation.",
+      "hint": "The false statement is the one where a trivial task demands maximum power."
+    },
+    {
+      "type": "quiz",
+      "question": "What does extended thinking mode do?",
+      "options": [
+        "Connects Claude to the internet to search for fresh information",
+        "Lets Claude \"think to itself\" before answering: break down the task, check options — and only then reply",
+        "Doubles the length of the answer",
+        "Switches the interface to dark theme for concentration"
+      ],
+      "correct": [1],
+      "explanation": "Extended thinking is internal reasoning before the answer, like a \"sheet of paper\" for a human doing a hard calculation. It raises quality on multi-step tasks, but doesn't connect the internet and isn't about the answer's length.",
+      "hint": "Recall the analogy from the theory: what helps a person avoid a mistake when multiplying 17 by 23?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A student put together a cheat sheet on Claude's models. One line has a factual error. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Haiku — the fastest and lightest model for simple tasks.",
+        "2. Sonnet — a balance of quality and speed for everyday work.",
+        "3. Opus — the most powerful model of the classic lineup for complex tasks.",
+        "4. Fable — Anthropic's oldest model, retired from support.",
+        "5. You can choose the model in the claude.ai interface next to the input field."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The error is in line 4: it's the opposite — Fable is not the \"oldest\" but the newest, fifth generation of Anthropic's models. The other lines are correct: Haiku for speed, Sonnet for balance, Opus for the power of the classic lineup, and choosing a model is available right in the chat interface."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: find the model switcher in your Claude.\n\n1. Open **claude.ai** and start a new chat.\n2. Find the **name of the current model** next to the input field (or in the chat menu) — that's the switcher. Click it and see which models are available on your plan.\n3. Ask a simple question — for example, \"Name 5 capitals of Europe.\"\n4. Look in the menu for the **extended thinking** option — just find where it's turned on (on some plans it may not be there — that's normal).\n5. If you found it: with thinking on, give it a harder task, for example: \"A farmer has chickens and rabbits, 35 heads and 94 legs in total. How many chickens?\" — and watch how Claude reasons before answering.",
+      "checklist": [
+        "I found where the model is shown and selected",
+        "I looked at the list of models available to me",
+        "I got an answer to a simple question",
+        "I looked for the extended thinking switch",
+        "(If available) I saw how Claude reasons before answering a task"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-models", "badgeId": null }
+}

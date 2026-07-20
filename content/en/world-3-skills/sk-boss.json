@@ -1,0 +1,130 @@
+{
+  "id": "sk-boss",
+  "world": "world-3-skills",
+  "order": 7,
+  "title": "BOSS: A Skill for Yourself",
+  "subtitle": "An end-to-end scenario: from your own real task to a working skill",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Creating custom skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512198" },
+    { "title": "Using skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512180" },
+    { "title": "anthropics/skills — the library and template/", "url": "https://github.com/anthropics/skills" },
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The world's final challenge" },
+    { "type": "text", "md": "You've come all the way: you know that a skill is a folder with a SKILL.md that Claude loads on its own by the description; you've seen the library of 17 official skills; you've dissected the anatomy of the frontmatter and instructions; you've learned to write trigger descriptions; you've built a skill by hand and via skill-creator.\n\nThis world's boss isn't new material — it's an **end-to-end scenario**: you'll go through the full cycle of creating a skill for a real task, where every step builds on the previous one. Mistakes at early steps are costly here — as in life: a wrongly chosen task devalues a perfect description, and a weak description buries perfect instructions. There will be no hints — only your knowledge." },
+    { "type": "heading", "text": "The scenario: a helper made of flesh and text" },
+    { "type": "text", "md": "Picture the heroine: Anya, a freelance illustrator. Every week she replies to 5–10 emails from potential clients: clarifying the brief, naming a price range, sending a portfolio, indicating timelines. Every time she opens old emails, copies chunks, rewrites them for the client. An hour a week — on repetitive correspondence.\n\nAnya decides to build a `client-inquiries` skill. Her path is the boss's map:\n\n1. **Task** — check it against three filters: it recurs, the rules are stable, it fits in your head.\n2. **Description** — result + trigger words from real requests + boundaries.\n3. **Instructions** — the order of actions, rules, a reply example; materials (price list, portfolio link) as files alongside.\n4. **Test** — direct, indirect, and off-topic requests.\n5. **Iteration** — fixes based on the test, by hand or via skill-creator.\n\nIn the tasks you'll walk these steps for Anya — and in the final mission you'll repeat them for yourself.\n\nNote how her skill is built: the instructions in SKILL.md are short, while everything \"heavy\" — the reply templates and the price list — is moved into separate files `templates.md` and `pricing.md`. Prices changed? Anya edits one file without touching the logic. This is the mark of a mature skill: rules separate, data separate, and each part updated independently." },
+    { "type": "code", "lang": "markdown", "title": "client-inquiries/SKILL.md — where Anya is headed", "code": "---\nname: client-inquiries\ndescription: Prepares replies to emails from potential illustration clients. Use for requests to reply to a client, write to a customer, send terms, prices, or a portfolio.\n---\n\n# Replies to clients\n\n## Order\n1. Determine the stage: first contact, brief clarification,\n   price discussion, decline\n2. Reply using the stage template from the file templates.md\n3. Take prices from pricing.md — never make them up\n4. Always: friendly, address formally, portfolio link at the end\n\n## Boundaries\n- Don't promise timelines shorter than 7 days\n- Don't name a final price before receiving the brief" },
+    { "type": "heading", "text": "The master's checklist — everything you've learned on one screen" },
+    { "type": "table",
+      "headers": ["Step", "Self-check question", "Lesson"],
+      "rows": [
+        ["Task", "Recurs? Rules stable? Fits in your head?", "3.1, 3.5"],
+        ["name", "Lowercase letters/digits/hyphens? Matches the folder?", "3.3"],
+        ["description", "Result named? Triggers from real phrasings? Boundaries?", "3.4"],
+        ["Instructions", "Step by step? Concrete? An example? Resources connected?", "3.3, 3.5"],
+        ["Test", "Direct fired? Indirect fired? Off-topic — did NOT fire?", "3.5"],
+        ["Iteration", "After every \"not quite right\" — a fix? skill-creator for complex fixes?", "3.5, 3.6"]
+      ]
+    },
+    { "type": "example",
+      "bad": "Anya writes a \"freelance helper\" skill: client emails, and social media posts, and contracts, and weekly planning — all in one five-page SKILL.md with the description \"Helps Anya with freelancing.\"",
+      "good": "Anya starts with one skill, client-inquiries, strictly about emails to clients, with the price list and templates in separate files. A month later, once it's dialed in, she sets up a second skill — about posts. Then a third.",
+      "explanation": "A \"combine harvester\" skill fails on every step of the checklist: the task isn't outlined, the description \"helps with freelancing\" either fires on everything or on nothing, the instructions for different tasks get tangled, and testing and fixing such a behemoth is impossible. One skill — one type of task: this rule scales by adding skills, not by inflating one." },
+    { "type": "callout", "kind": "docs", "md": "Claude's documentation converges on this from both ends: the \"Using skills\" article emphasizes that Claude loads skills automatically based on their descriptions, and \"Creating custom skills\" recommends keeping each skill focused on one task and testing it on real requests. The agentskills.io specification adds the formal bounds: name up to 64 characters (lowercase, digits, hyphens), description up to 1024." },
+    { "type": "callout", "kind": "warning", "md": "There are no hints in the boss tasks. If you feel shaky on the anatomy of SKILL.md or the description formula — go back to lessons 3–4 before starting: everything you'll need is there. Failing the boss isn't scary, but passing it on fresh knowledge is more satisfying." },
+    { "type": "heading", "text": "What counts as a win" },
+    { "type": "text", "md": "The boss ends with a real mission: a skill for **your** task, connected and verified in real Claude. A win isn't \"the file is created,\" but the master's checklist completed: the task passed the filters, the frontmatter is valid, the description catches your phrasings, the instructions are concrete, three tests are passed, at least one iteration is made.\n\nSuch a skill isn't a learning artifact but a tool that stays with you after the game and saves time every week. Anya's hour of correspondence turned into ten minutes of reviewing ready drafts — do the math on what your own hour a week turns into over a year. That's exactly what this whole world was for. Go." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Step 1. Anya is choosing what to automate first. Which task passes all three filters (recurs, stable rules, fits in your head)?",
+      "options": [
+        "\"All my communication with the outside world\" — emails, social media, messengers all at once",
+        "\"Replies to emails from potential clients\" — 5–10 emails a week by one scheme",
+        "\"Draft a contract for a big client just this once\" — an important task right now",
+        "\"Become more successful at freelancing\" — the main goal of the year"
+      ],
+      "correct": [1],
+      "explanation": "Emails to clients are the model candidate: weekly recurrence, a stable scheme (brief, prices, portfolio, timelines), a short instruction. \"All communication\" is a combine harvester of many task types, a one-off contract won't pay off a skill, and \"become more successful\" is a goal, not a task type: you can't describe it with triggers."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Step 2. Assemble the description for the client-inquiries skill by the formula: what it does → when to apply (triggers) → boundaries.",
+      "blocks": [
+        "Prepares replies to emails from potential illustration clients.",
+        "Use for requests: reply to a client, write to a customer, send terms, prices, or a portfolio.",
+        "Do not use for emails to current clients on active projects — those have their own correspondence."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "An indispensable tool for a thriving creative business.",
+        "Use for any emails, messages, and communication in general."
+      ],
+      "explanation": "The correct assembly: result (replies to client emails) → trigger words from Anya's real phrasings → boundary (don't touch correspondence on active projects). The traps are two classic description failures: empty praise with no single trigger, and \"use for everything,\" which turns the skill into a show-off."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Step 3. Anya wrote the SKILL.md. One line breaks the format and will keep the skill from loading. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: Client_Inquiries",
+        "description: Prepares replies to emails from potential illustration clients. Use for requests to reply to a client, write to a customer, send prices or a portfolio.",
+        "---",
+        "# Replies to clients",
+        "1. Determine the stage: first contact, brief, price, decline",
+        "2. Take prices from pricing.md — never make them up"
+      ],
+      "bugLineIndex": 1,
+      "explanation": "In name there are uppercase letters and an underscore, but only lowercase Latin letters, digits, and hyphens are allowed. Correct: `name: client-inquiries` (and the folder must be named the same). The rest is fine: a description with triggers and a boundary, concrete instructions, a reference to the pricing.md resource in place."
+    },
+    {
+      "type": "quiz",
+      "question": "Step 4. Anya tests the skill. The direct request \"reply to this client\" — works. The request \"write a post about my new drawing\" — the skill stays silent. And on \"a request came in from a client, what do I answer?\" — it stays silent too. What do you fix?",
+      "options": [
+        "The instructions: rewrite the order of actions in more detail",
+        "The description: add triggers like \"a request from a client,\" \"what to answer\" — the indirect phrasings aren't covered",
+        "Nothing: two tests out of three is already good",
+        "The name: rename the skill to something shorter"
+      ],
+      "correct": [1],
+      "explanation": "The diagnosis reads off the test picture: the off-topic request was correctly passed over, the direct one works — so the instructions and name are fine. The indirect request failed: the phrasing \"a request came in from a client, what do I answer\" didn't match the description. It's cured by adding those triggers to the description. Fixing the instructions is pointless — it never even got to them."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Step 5. A month later Anya decides to add a rule to the skill: for emails with a budget below the minimum, decline politely with a reference to the price list. Assemble her iteration request via skill-creator: what we're improving → what rule → where to put it.",
+      "blocks": [
+        "Improve my client-inquiries skill.",
+        "Add a rule: if the budget in the email is below the minimum in pricing.md — a polite decline with a reference to the price list and wishes of luck on the project.",
+        "Put this in the \"Order\" section as a new stage, don't touch the description — the skill fires correctly."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "Delete the skill and create it again from scratch — that's more reliable.",
+        "While you're at it, rewrite the description to be more modern, add some words about innovation."
+      ],
+      "explanation": "A mature iteration is targeted: name the skill, formulate a concrete rule, indicate the place, and explicitly protect what works (the description). The traps are typical mistakes: recreating a dialed-in skill from scratch means losing a month of accumulated fixes, and touching a working description \"for looks\" risks the triggers for no benefit at all."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "WORLD FINALE: a skill for yourself. Walk Anya's path with your own real task. **A plan with skill support is required.**\n\n1. **Task.** Pick your recurring task and run it through three filters: it recurs, the rules are stable, it fits in your head.\n2. **Draft.** Create the skill any way you've mastered: by hand from `template/` in anthropics/skills (lesson 3.5) or via skill-creator (lesson 3.6) — in the second case, prepare a raw-material request: task + rules + your real phrasings.\n3. **Review.** Check it against the master's checklist: name is valid, description contains the result, triggers, and boundaries, instructions are concrete, materials in separate files.\n4. **Connection and test.** Connect the skill in the claude.ai settings (the skills management section) and run three tests: direct, indirect, off-topic request.\n5. **Iteration.** Make at least one fix based on the test and run the tests again.\n6. **The control shot.** Open a new chat and ask for the task in the most natural phrase for you — the way you'd ask a colleague. The skill should fire on its own.",
+      "checklist": [
+        "The task passed three filters: recurrence, stable rules, compactness",
+        "name — lowercase letters/digits/hyphens, matching the folder name",
+        "description: result + at least 3 triggers from my real phrasings + a boundary",
+        "Instructions are step by step and concrete, no \"do it well\"; materials in separate files",
+        "Tests: direct fired, indirect fired, off-topic — did not fire",
+        "At least one iteration made, and in a new chat the skill fired on a natural phrase"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-sk-boss", "badgeId": "badge-world-3" }
+}

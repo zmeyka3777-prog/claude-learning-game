@@ -1,0 +1,106 @@
+{
+  "id": "adv-artifacts",
+  "world": "world-2-claude-ai",
+  "order": 2,
+  "title": "Artifacts",
+  "subtitle": "Not just an answer in the chat, but a ready-made document, page, or mini-app",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features: Artifacts — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "When an answer in the chat is inconvenient" },
+    { "type": "text", "md": "Ask Claude to write a long article, a workout table, or a simple game — and picture the result as an ordinary message in the chat. Long text drowns in the conversation, after a couple of edits three versions appear in a row, and it's no longer clear which one is final. And you can't run the game's code in a chat at all — only read it.\n\nFor results like these — \"works of output\" — claude.ai has **Artifacts** — a separate window next to the chat where the document, page, or app you're creating lives." },
+    { "type": "heading", "text": "What an artifact is" },
+    { "type": "text", "md": "An **artifact** is a self-contained piece of work that Claude moves out of the chat feed into a separate panel. On the left you keep talking, on the right — you see and use the product itself. An artifact can be:\n\n- **A document** — an article, a guide, a plan, or notes that are convenient to read and edit as a single whole;\n- **A web page** — for example, a landing page or a nicely formatted cheat sheet that you see right away in finished form;\n- **An interactive mini-app** — a calculator, a quiz, a timer, flashcards for memorizing words: a working thing whose buttons you can press right in the browser;\n- **A diagram or visualization** — a process chart, a graph, an interactive dashboard;\n- **Code** — a program you see in full, with syntax highlighting.\n\nThe key difference from an answer in the chat: an artifact is an *object*, not a message. It has versions, and it can be opened, copied, downloaded, and published.\n\nFeel the difference with an example. \"Tell me about the benefits of morning exercise\" — an answer in the chat: you read it and move on. \"Make an interactive morning exercise routine with a timer for each movement\" — that's already an artifact: a page you'll open tomorrow morning and work out to. An answer informs, an artifact *works*." },
+    { "type": "heading", "text": "When Claude creates an artifact" },
+    { "type": "text", "md": "Claude decides on its own to move a result into an artifact when the result is \"self-contained and substantial\": a long document, code, a page, something interactive. But you don't have to rely on the automatics — it's more reliable to ask explicitly:\n\n- \"Make an **interactive** quiz of 10 questions on this topic\";\n- \"Format this as a **separate document**\";\n- \"Create a **calculator page** where I enter an amount and see the result.\"\n\nThe words \"interactive,\" \"app,\" \"page,\" \"separate document\" are a sure signal that you need an artifact, not a paragraph of text in the chat.\n\nAnd vice versa: if what you need is precisely a conversation — an explanation, advice, a discussion — an artifact isn't needed, and you shouldn't ask for one. The rule is simple: a result that will be *used* or *read as a document* is an artifact; an answer to a question is a regular message." },
+    { "type": "heading", "text": "Iteration: \"change this here\"" },
+    { "type": "text", "md": "The main power of artifacts is **refinement without recreating**. An artifact isn't carved in stone: you look at the result and tell Claude what to change — it updates the same artifact, creating a new version:\n\n- \"Make the heading bigger and the background dark blue\";\n- \"Add a timer for each question in the quiz\";\n- \"Cut the second section in half and format the examples as a table.\"\n\nYou can point right at what you see: \"move this button down here,\" \"rewrite this paragraph more simply.\" You can usually switch between the artifact's versions — if you don't like an edit, go back to the previous one. It's the same \"a dialogue, not a request\" principle from World 1, only now the iterations apply to a living product right in front of you." },
+    { "type": "example",
+      "bad": "\"Write me something about healthy eating.\"",
+      "good": "\"Create an interactive healthy-eating cheat sheet: a separate page, at the top — the 5 main principles as cards, below — a daily calorie calculator where I enter weight, height, and age. Calm, green colors.\"",
+      "explanation": "The first request gives a paragraph of text in the chat — read and forgotten. The second explicitly asks for an interactive page with a concrete structure — Claude will create an app artifact you can actually use, and then refine: \"make the cards brighter,\" \"add a mode for athletes.\"" },
+    { "type": "heading", "text": "Publishing and sharing" },
+    { "type": "text", "md": "A finished artifact doesn't have to stay inside your chat. You can **publish** it — get a link that opens the artifact for anyone in a browser, with no software to install. That's how a teacher shares a multiplication-table trainer with the class, and how you send a friend an interactive plan for a trip together.\n\nTwo things are important to remember:\n\n1. Publishing means sharing: don't publish artifacts with personal data or work information not meant for others' eyes.\n2. You can take a copy or export of the artifact for yourself — copy the text, download the result, and use it outside claude.ai.\n\nTypical publishing scenarios: an interactive cheat sheet for colleagues, a trainer for students, a calculator for clients, a quiz for a party. In every case the recipient simply opens the link — they don't need a claude.ai account and can't see your conversation, only the artifact itself." },
+    { "type": "callout", "kind": "docs", "md": "The help center at support.claude.com (the Claude Features section, articles on Artifacts) describes artifacts as a separate window next to the chat for self-contained content — documents, code, diagrams, web pages, and simple interactive apps — which can be refined as the dialogue goes on and published via a link." },
+    { "type": "callout", "kind": "tip", "md": "Artifacts and projects get along great: in the \"Studies\" project, ask \"make interactive flashcards from the terms in my notes\" — Claude will take the terms from the project's knowledge base and build a trainer artifact. One request — a ready learning tool." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How does an artifact differ from an ordinary answer in the chat? Select all correct options.",
+      "options": [
+        "It lives in a separate panel next to the chat, not in the message feed",
+        "It can be refined — Claude updates the same artifact with new versions",
+        "It can be interactive: buttons, calculators, and quizzes work right in the browser",
+        "It's always automatically visible to all claude.ai users"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "An artifact is an object in a separate panel, with versions and possible interactivity. But there's no automatic publicity: an artifact becomes available to others only if you publish it yourself and share the link.",
+      "hint": "The first three statements are described in the theory. Think about what happens to an artifact until you yourself press \"publish.\""
+    },
+    {
+      "type": "quiz",
+      "question": "Which request will almost certainly lead to an artifact being created?",
+      "options": [
+        "\"How many calories are in a banana?\"",
+        "\"Make an interactive quiz of 10 questions on film history with score tracking\"",
+        "\"Translate the phrase 'good afternoon' into Spanish\"",
+        "\"What's the capital of Kazakhstan today?\""
+      ],
+      "correct": [1],
+      "explanation": "A quiz with score tracking is a self-contained interactive product, and the word \"interactive\" signals it directly: an artifact is needed. Short factual questions get an ordinary answer in the chat — an artifact is pointless for them.",
+      "hint": "Look for the request whose result is \"a thing that gets used,\" not a line of text."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: ask Claude to create an artifact — a habit tracker (a page or mini-app where you can mark habits by day). Then refine it with one edit.",
+      "steps": [
+        {
+          "expect": ["tracker", "habit", "create", "make", "app", "page", "interactive"],
+          "minMatches": 2,
+          "claudeReply": "Creating an artifact! 🎯 A panel has opened to the right of the chat: **\"Habit Tracker\"** — a weekly table, rows are habits (exercise, reading, water), columns are days. Clicking a cell places a check mark, and the completion percentage for the week is counted at the bottom.\n\nIt's an interactive app: the cells are clickable right in the browser. What should I refine? You can add your own habits, change colors, or add monthly statistics.",
+          "failHint": "Ask to create a concrete thing, for example: \"Make an interactive habit tracker — a page where I mark habits by day of the week.\""
+        },
+        {
+          "expect": ["add", "change", "make", "swap", "color", "button", "remove", "habit", "statistic"],
+          "minMatches": 1,
+          "claudeReply": "Done — I updated the artifact, this is already **version 2**. Notice how it works: I didn't recreate the tracker from scratch, I changed the existing one. You look at the result and say what to fix — that's how, over a few iterations, a draft becomes a tool built for you. And if an edit doesn't land — you can go back to the previous version.",
+          "failHint": "Name a concrete edit: \"Add a 'meditation' habit and make completed cells green.\""
+        }
+      ],
+      "successMessage": "You've gone through the full artifact cycle: creation via an explicit request → refinement via \"change this here.\" That's exactly how documents and mini-apps are built in the real claude.ai."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Notes about artifacts. One statement is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. An artifact opens in a separate panel next to the chat.",
+        "2. An artifact can be a document, a page, code, or a mini-app.",
+        "3. To change an artifact, you have to delete it and start the chat over.",
+        "4. A published artifact can be shared via a link.",
+        "5. The words \"interactive,\" \"separate document\" in a request increase the chance of getting an artifact."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The error is in line 3: nothing needs to be recreated. The main power of artifacts is iteration: you write \"change this here\" in the same chat, and Claude updates the artifact, keeping the version history. The other statements are correct."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: create and refine your own artifact.\n\n1. Open **claude.ai** and start a new chat.\n2. Ask for an interactive thing for your life, for example: \"Create interactive flashcards for memorizing 10 B1-level English words\" or \"Make a tip calculator page with a percentage slider.\"\n3. Wait for the artifact to appear in the panel next to the chat. Click around on it — make sure it works.\n4. Make at least two edits in turn: first a substantive one (\"add 5 more words\"), then a visual one (\"make the cards bigger, background dark\").\n5. If you like the result and there's no personal data in it — find the publishing option in the artifact panel, get a link, and open it in another browser tab.",
+      "checklist": [
+        "I explicitly asked for an interactive artifact, not just text",
+        "The artifact appeared in a separate panel and works when clicked",
+        "I made a substantive edit, and the artifact updated",
+        "I made a visual edit in a separate message",
+        "I published the artifact (or deliberately chose not to) and understand that the link makes it available to others"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-artifacts", "badgeId": null }
+}

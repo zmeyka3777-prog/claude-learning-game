@@ -1,0 +1,113 @@
+{
+  "id": "adv-projects",
+  "world": "world-2-claude-ai",
+  "order": 1,
+  "title": "Projects",
+  "subtitle": "A permanent workspace: instructions + knowledge base instead of \"explaining it all over again in every chat\"",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features: Projects — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The problem: every new chat starts from scratch" },
+    { "type": "text", "md": "You already know how to have a conversation with Claude. But have you noticed the inconvenience? Every new chat is a blank slate. Claude doesn't remember that yesterday you discussed your blog with it, what your writing style is, or what rules you asked it to follow. Every time you have to explain all over again: \"I run a travel blog, write in a friendly tone, no bureaucratic jargon, keep paragraphs short…\"\n\nIf you keep coming back to the same topic again and again — work, studies, a personal project — this repetition eats up your time and energy. That's exactly what **Projects** were made for." },
+    { "type": "heading", "text": "What a project is" },
+    { "type": "text", "md": "A **project** is a permanent workspace inside claude.ai that brings together three things:\n\n1. **Chats on one topic.** All the conversations inside a project live in one place — no need to hunt for \"that chat about my thesis\" among a hundred others.\n2. **Project instructions.** Text you write once, and Claude takes it into account in *every* chat of that project. For example: \"You're the editor of my travel blog. Write lively, address me informally, no clichés.\"\n3. **Knowledge base.** Files and documents you upload to the project once — and Claude can see them in all the project's chats. No need to attach the same contract, brand book, or lecture notes to every conversation.\n\nYou can create a project from the claude.ai sidebar: give it a name, optionally a description — and then fill it with instructions and files in the project settings." },
+    { "type": "table", "headers": ["", "A single chat", "A project"], "rows": [
+      ["Context", "Only what you wrote in this chat", "Instructions + files available in all project chats"],
+      ["Repeat tasks", "You explain from scratch every time", "Explained once — works forever"],
+      ["Organization", "Chats jumbled together in shared history", "All conversations on the topic gathered together"],
+      ["When it's handy", "A one-off question, a quick task", "Long-running work on a single topic"]
+    ] },
+    { "type": "heading", "text": "Project instructions: write them like onboarding for a new employee" },
+    { "type": "text", "md": "Project instructions are like a briefing for a new employee: who you are, what the project is, what the rules are, what matters. Good instructions usually contain:\n\n- **Role:** \"You're my assistant for preparing for my biology exam.\"\n- **Context:** \"I'm a 2nd-year student, the exam is in June, the professor loves questions about cellular processes.\"\n- **Rules and style:** \"Explain in simple words, then give the strict definition. Answer in English.\"\n- **Default format:** \"If I ask for notes — make a bulleted list with terms in bold.\"\n\nDon't try to cram everything under the sun into the instructions. Only what holds true for *every* conversation in the project goes there. One-off clarifications (\"make it longer today\") are still written right in the chat." },
+    { "type": "example",
+      "bad": "Instructions for the \"My Blog\" project: \"Help me with my blog.\"",
+      "good": "Instructions for the \"My Blog\" project: \"You're the editor of my blog about independent travel across Asia. The audience is beginners aged 25–35. Tone: friendly, informal, with humor, no bureaucratic jargon. Post structure: a catchy 2–3 sentence intro, subheadings, practical tips as a list, and a question to readers at the end. Give prices in dollars. Drafts — up to 800 words.\"",
+      "explanation": "The first version tells Claude nothing: \"helping with a blog\" can be done a thousand ways. The second sets the topic, audience, tone, structure, and constraints — and now every chat in the project immediately produces drafts in the right style, with no repeated explanations." },
+    { "type": "heading", "text": "Knowledge base: files that are always at hand" },
+    { "type": "text", "md": "It's worth uploading documents you turn to constantly into the project's knowledge base:\n\n- **\"My Blog\" project:** 3–4 of your best posts as a style sample, a list of topics, a description of the audience.\n- **\"Studies\" project:** lecture notes, the course syllabus, a list of exam questions. You ask \"explain topic 7 from the syllabus\" — and Claude answers based on *your* syllabus, not an abstract one.\n- **\"Reports\" project:** the company's report template, an example of a good past report, a glossary of internal terms. Every month: \"here are the fresh numbers, put together a report using our template\" — and the format is already correct.\n\nIt's important to understand: the knowledge base is *reference material* that Claude uses when answering. Update a file — and the project's \"knowledge\" is updated in all future chats." },
+    { "type": "callout", "kind": "docs", "md": "The help center at support.claude.com (the Claude Features section, articles on Projects) describes projects as a way to organize your work with Claude: a project holds related chats, its own instructions, and uploaded knowledge documents that Claude takes into account across all conversations inside the project. On team plans, projects can be shared with colleagues." },
+    { "type": "callout", "kind": "tip", "md": "Rule of thumb: a task repeats or stretches over time → set up a project. A one-off question (\"how do I cook rice\") → a regular chat. A good sign that it's time to create a project: you're copying the same explanation about yourself and your task into a new chat for the third time." },
+    { "type": "callout", "kind": "warning", "md": "Files in a project's knowledge base are visible to every chat of that project, and on team plans — to the members the project is shared with. Don't upload documents you don't have the right to share, and check your company policy regarding corporate data." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What does a project in claude.ai bring together? Select all correct options.",
+      "options": [
+        "Chats on one topic, gathered in one place",
+        "Instructions that Claude takes into account in every chat of the project",
+        "A knowledge base of uploaded files, available in all the project's chats",
+        "A separate neural network trained only on your data"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Project = chats + instructions + knowledge base. A project doesn't create any \"separate neural network\": it's the same Claude, just with permanent context you set once.",
+      "hint": "The theory listed exactly three components of a project — recall the table and the list."
+    },
+    {
+      "type": "quiz",
+      "question": "In which case does it make more sense to create a project rather than use a regular chat?",
+      "options": [
+        "You want to quickly translate one phrase into English",
+        "Every week you prepare the same kind of reports using one template",
+        "You have a one-off question about how to cook carbonara pasta",
+        "You want to find out the capital of Australia"
+      ],
+      "correct": [1],
+      "explanation": "A project wins where the task repeats: you upload the template and rules once — and every new report starts not with explanations, but straight with the work. One-off questions are faster to solve in a regular chat.",
+      "hint": "The key sign is repeatability: which of the options will you do again and again?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble good instructions for the \"Studies: History\" project — in a logical order: role, context, style rules, default format.",
+      "blocks": [
+        "Role: you're my tutor for Russian history.",
+        "Context: I'm preparing for a university exam, the session is a month away, and I have a list of exam questions in the knowledge base.",
+        "Style: explain first in simple words and images, then give exact dates and terms. Answer in English.",
+        "Default format: when I ask \"break down question N,\" give the answer structure as a list + 3 facts that will impress the professor."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Break down question #12 about Peter I's reforms today.",
+        "Remind me tomorrow at 9 a.m. to review the dates."
+      ],
+      "explanation": "Project instructions include only what holds true for every chat: role, context, style, format. \"Break down question #12 today\" is a one-off task — its place is in a specific chat. And scheduled reminders aren't a job for project instructions at all."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you're in the \"Reports\" project, and its knowledge base already holds your company's monthly report template. Ask Claude to put together the report for June using this template (you can make up any numbers — for example, sales grew by 12%).",
+      "steps": [
+        {
+          "expect": ["report", "template", "june", "put together", "assemble", "make", "prepare"],
+          "minMatches": 2,
+          "claudeReply": "Taking the template from the project knowledge base and putting together the June report. 📊\n\n### Monthly report — June\n\n**1. Key results:** sales grew by 12% versus May.\n**2. Breakdown:** — section filled in per the template structure.\n**3. Problem areas:** — waiting on your input.\n**4. Plans for July:** — a draft based on trends.\n\nNotice: I didn't ask what the report structure is — it's already in the project knowledge base. Want to flesh out the \"Problem areas\" section?",
+          "failHint": "Reference the template and name the period, for example: \"Put together the June report using our template, sales grew by 12%.\""
+        },
+        {
+          "expect": ["yes", "sure", "flesh", "add", "problem", "supplies", "change", "want"],
+          "minMatches": 1,
+          "claudeReply": "Great, making edits to the section. Here's the power of a project: next month you'll just write \"the report for July, here are the numbers\" — and again get a document in the right structure. The instructions and template are explained once, but work forever.",
+          "failHint": "Respond to Claude's offer — for example: \"Yes, add supply delays to the problem areas.\""
+        }
+      ],
+      "successMessage": "You've seen the main benefit of a project: the context (template, rules) is set once, while every new chat immediately starts with useful work."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: create your first project.\n\n1. Open **claude.ai** and find the projects section in the sidebar. Create a new project — name it after a real recurring task: \"My Blog,\" \"Studies,\" \"Reports,\" \"Job Search\" — whatever's relevant to you.\n2. In the project settings, fill in the instructions using the formula from the lesson: role → context → style → default format. 4–6 sentences is enough.\n3. Upload 1–2 non-confidential files to the project's knowledge base: a writing sample, a course syllabus, a document template.\n4. Start a new chat in the project and give it a task without explaining the context — for example: \"Suggest 5 topics for the next post\" or \"Break down the first question from the list.\"\n5. Check the answer: did Claude take the instructions and files into account? If not — refine the project instructions and try again.",
+      "checklist": [
+        "I created a project with a meaningful name",
+        "I wrote instructions: role, context, style, format",
+        "I uploaded at least one non-confidential file to the knowledge base",
+        "I started a chat in the project and gave a task without re-explaining the context",
+        "I confirmed the answer takes my instructions and files into account"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-projects", "badgeId": null }
+}

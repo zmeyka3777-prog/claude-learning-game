@@ -1,0 +1,118 @@
+{
+  "id": "mcp-build-deep",
+  "world": "world-6-mcp-plugins",
+  "order": 5,
+  "title": "Your Server, Deeper",
+  "subtitle": "Resources, prompts, error handling, and descriptions that decide everything",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Model Context Protocol — specification and server concepts", "url": "https://modelcontextprotocol.io/" },
+    { "title": "MCP Python SDK", "url": "https://github.com/modelcontextprotocol/python-sdk" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A tool isn't the only primitive" },
+    { "type": "text", "md": "In the last lesson your server could do one thing: a tool. But recall the first lesson of this world — a server has three primitives, and the remaining two make a server truly useful.\n\n**Resources** — read-only data by URI. If a tool is \"do this,\" then a resource is \"here, read this.\" Resources are good for context that doesn't require actions: a document, a configuration, a fresh report. A resource has an address — for example, `glossary://all` or `report://2026-07` — and content the server returns on request. The address can be a template with parameters: one template `report://{month}` covers all months at once.\n\n**Prompts** — request templates the user invokes themselves (in Claude Code they appear as slash commands). A prompt turns a \"signature\" use case of your server into a button: for example, the `weekly-report` prompt expands into a detailed instruction, \"gather data with these tools and format the report by this template.\"" },
+    { "type": "code", "lang": "python", "title": "Resource and prompt in the Python SDK (structurally)", "code": "# Resource: data by URI; a template with a parameter\n@mcp.resource(\"report://{month}\")\ndef monthly_report(month: str) -> str:\n    \"\"\"Monthly sales report in Markdown format.\"\"\"\n    return load_report(month)\n\n# Prompt: a template the user invokes themselves\n@mcp.prompt()\ndef weekly_report() -> str:\n    \"\"\"Assemble the weekly report by the team template.\"\"\"\n    return (\n        \"Assemble the weekly report: take the data with the \"\n        \"get_sales tool, group by region, and format it as a table \"\n        \"with columns: region, sales, change vs. last week.\"\n    )" },
+    { "type": "table",
+      "headers": ["Primitive", "Who initiates", "When to choose", "Example"],
+      "rows": [
+        ["Tool", "The model", "You need an action or a computation", "create_issue, get_sales"],
+        ["Resource", "Application/host", "You need to hand over read-only data", "report://2026-07"],
+        ["Prompt", "The user", "A recurring \"by template\" scenario", "/weekly-report"]
+      ]
+    },
+    { "type": "heading", "text": "Descriptions decide everything" },
+    { "type": "text", "md": "You already saw this in the world of skills: a skill's `description` quality determines whether it fires at the right time. With MCP tools it's the same physics. The model doesn't see your code; all it has is the name, the description, and the parameter schema. A poor description means the tool either isn't called or is called at the wrong moment.\n\nA good tool description answers four questions:\n\n1. **What it does** — in one precise sentence.\n2. **When to use it** — in what situation the model should choose it.\n3. **What parameters** — the format and example values (\"an order number like WM-1042\").\n4. **What it returns** — and what an empty result or an error means.\n\nThe same rule works for resources and prompts: they too are chosen by their description." },
+    { "type": "example",
+      "bad": "def search(q: str) -> str:\n    \"\"\"Search.\"\"\"",
+      "good": "def search_contracts(query: str) -> str:\n    \"\"\"Searches contracts by text in the company database.\n    Use when asked about terms, amounts, or deadlines of contracts.\n    query — keywords in English (for example, \\\"office lease 2026\\\").\n    Returns up to 5 contracts: number, counterparty, short excerpt.\n    If nothing is found — returns an empty list: tell the user so,\n    don't invent contracts.\"\"\"",
+      "explanation": "\"Search\" — search for what, where, in what query language? The model will guess and miss. The expanded description covers all four questions: what it does, when to call it, the parameter format, what comes back — and even instructs how to behave with an empty result. Such a tool works predictably."
+    },
+    { "type": "heading", "text": "Error handling: report, don't crash" },
+    { "type": "text", "md": "An MCP server has a special consumer of errors — **the model**. If a tool crashes silently, the connection drops and the task fails. But if the tool returns a clear error message, the model reads it and can recover: re-ask the user, change the parameters, choose another path.\n\nThe rules of a reliable tool:\n\n- **Validate the input** and explain what's wrong: \"month must be in the format 2026-07, got: July.\"\n- **Catch exceptions** and turn them into text useful to the model: not a 40-line trace, but \"the database is unavailable, retry in a minute.\"\n- **Suggest the next step**: the best error is one that makes clear how to fix it.\n- **Don't leak internals**: the error text must contain no secrets, keys, or paths to private files — the model may retell it to the user verbatim." },
+    { "type": "code", "lang": "python", "title": "An error as a useful result", "code": "@mcp.tool()\ndef get_sales(month: str) -> str:\n    \"\"\"Sales for a month. month — in YYYY-MM format, for example 2026-07.\"\"\"\n    if not re.fullmatch(r\"\\d{4}-\\d{2}\", month):\n        return f\"Error: month must be in YYYY-MM format (got: {month}). Rephrase the request.\"\n    try:\n        return fetch_sales(month)\n    except ConnectionError:\n        return \"Error: the database is unavailable. Tell the user and offer to retry later.\"" },
+    { "type": "callout", "kind": "docs", "md": "The MCP documentation separates the primitives by who controls them: tools are model-controlled (the model decides when to call), resources are application-controlled (the host decides which context to supply), prompts are user-controlled (a human launches them explicitly). Keep this frame in mind when designing: it hints which primitive to use for each server capability." },
+    { "type": "callout", "kind": "warning", "md": "The text your tool returns goes straight into the model's context. If the server relays external data (emails, tickets, web pages) — a prompt injection may be hiding in it. As much as possible, clean and constrain the returned content, and give tools with irreversible actions (delete, send) the narrowest possible permissions." },
+    { "type": "callout", "kind": "tip", "md": "Test descriptions \"on a live model\": ask Claude to solve a task and watch which tool it chose and with what parameters. If it chooses the wrong one — fix the description, not the model's behavior. One cycle of \"asked → watched → refined the description\" gives more than an hour of theorizing." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "The team needs a \"signature\" scenario: the user launches the weekly report build by template themselves. Which primitive should this be?",
+      "options": [
+        "Tool — the model will decide when to build the report",
+        "Resource — a report is data, after all",
+        "Prompt — a template the user invokes explicitly, like a slash command",
+        "A separate \"reports\" MCP server"
+      ],
+      "correct": [2],
+      "explanation": "The key words are \"the user launches it themselves\" and \"by template\": that's exactly the definition of a prompt (a user-controlled primitive). A tool would be called by the model at its own discretion, a resource only returns ready data, and spawning a separate server for one scenario is pointless.",
+      "hint": "Recall the \"who initiates\" table: who presses the button in this scenario?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The tool handles errors, but one line creates a leak. Find it.",
+      "lang": "python",
+      "lines": [
+        "@mcp.tool()",
+        "def get_customer(customer_id: str) -> str:",
+        "    \"\"\"Returns a customer card by ID (format: C-1234).\"\"\"",
+        "    if not customer_id.startswith(\"C-\"):",
+        "        return f\"Error: ID must start with C- (got: {customer_id})\"",
+        "    try:",
+        "        return crm_api.fetch(customer_id)",
+        "    except AuthError:",
+        "        return f\"Authorization error: key {CRM_API_KEY} rejected, check it\"",
+        "    except ConnectionError:",
+        "        return \"Error: CRM unavailable, retry the request later\""
+      ],
+      "bugLineIndex": 8,
+      "explanation": "The line inserts a secret — the CRM API key — right into the error text. This text goes into the model's context, and the model may show it to the user verbatim or paraphrase it in a reply. The right way: \"Authorization error: access to CRM was rejected, notify the administrator\" — without the key value. The other branches are exemplary: validation with an explanation and a clear connection error."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a good description of the search_contracts tool in the right order: what it does → when to use → parameters → what it returns.",
+      "blocks": [
+        "Searches contracts by text in the company database.",
+        "Use when asked about terms, amounts, or deadlines of contracts.",
+        "The query parameter — keywords in English, for example \"office lease 2026\".",
+        "Returns up to 5 contracts (number, counterparty, excerpt); an empty list — if nothing is found."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "A revolutionary next-generation tool for working with documents!",
+        "The function's source code: 120 lines of Python, readable in 10 minutes."
+      ],
+      "explanation": "The four questions of a good description go in their natural order: what it does → when to call it → parameter format → result format. Marketing fluff gives the model nothing to base its choice on, and it doesn't see the source code anyway — the description is no place for it."
+    },
+    {
+      "type": "quiz",
+      "question": "A tool hit an unavailable database. How should the server handle it correctly?",
+      "options": [
+        "Let the exception crash the process — it's more honest to show the real failure",
+        "Return the full stack trace with all internal paths and connection parameters",
+        "Return clear text: \"the database is unavailable, tell the user and offer to retry later\"",
+        "Return an empty string so the model isn't distracted by errors"
+      ],
+      "correct": [2],
+      "explanation": "The consumer of the error is the model: given a clear message, it will explain the situation to the user or try another path. A crash breaks the connection and buries the task, a stack trace exposes internals (sometimes with secrets), and an empty string is the worst option: the model may take it as \"no data\" and confidently answer something false.",
+      "hint": "Who will read the error text, and what should they be able to do afterward?"
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: level up the server from the last lesson. **Requires Claude Code and the server created in the lesson \"Your Own MCP Server: The First Tool.\"**\n\n1. Add a **resource** — read-only data by URI (for example, `glossary://all`, returning the whole glossary at once).\n2. Add a **prompt** — a template for a recurring scenario (for example, \"explain a term in plain words with an example from our practice\").\n3. Rewrite your tool's description using the lesson's scheme: what it does → when to use → parameters → what it returns.\n4. Add error handling: input validation with a clear message + try/except that returns text without secrets.\n5. Reconnect the server, check `/mcp`, and test all three primitives.",
+      "checklist": [
+        "The server has all three primitives: tool, resource, prompt",
+        "The tool's description answers the four questions from the lesson",
+        "Invalid input returns a clear error rather than crashing the server",
+        "The error texts contain no keys, passwords, or stack traces",
+        "All three primitives were verified in a real session"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-mcp-build-deep", "badgeId": null }
+}

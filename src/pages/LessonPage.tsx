@@ -26,6 +26,7 @@ import {
   type ChallengeResult,
   type LessonCompletionResult,
 } from '../engine/progressStore';
+import { useLang, useT } from '../i18n/useT';
 import type { Lesson } from '../engine/types';
 import { TheoryBlocks } from '../components/theory/TheoryBlocks';
 import { TaskView } from '../components/tasks/TaskView';
@@ -71,7 +72,9 @@ function ChallengeFailOverlay({
   onRetry: () => void;
   onStudy: () => void;
 }) {
-  const worldTitle = getWorld(lesson.world)?.title ?? lesson.world;
+  const t = useT();
+  const { lang } = useLang();
+  const worldTitle = getWorld(lesson.world, lang)?.title ?? lesson.world;
 
   return (
     <motion.div
@@ -95,10 +98,9 @@ function ChallengeFailOverlay({
         >
           <ShieldAlert size={32} style={{ color: 'var(--error)' }} />
         </span>
-        <h2 className="font-display text-xl font-semibold sm:text-2xl">Испытание не пройдено</h2>
+        <h2 className="font-display text-xl font-semibold sm:text-2xl">{t('challenge.fail.title')}</h2>
         <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Больше одной ошибки — босс сектора «{worldTitle}» устоял. Ничего страшного: попробуй ещё
-          раз или пройди уроки мира по порядку.
+          {t('challenge.fail.body', { world: worldTitle })}
         </p>
         <div className="mt-6 flex flex-col gap-3">
           <button
@@ -107,7 +109,7 @@ function ChallengeFailOverlay({
             className="btn-gradient flex items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
           >
             <RotateCcw size={16} />
-            Попробовать ещё раз
+            {t('challenge.retry')}
           </button>
           <button
             type="button"
@@ -115,7 +117,7 @@ function ChallengeFailOverlay({
             className="btn-glass flex items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
           >
             <BookOpen size={16} />
-            Учиться по порядку
+            {t('challenge.study')}
           </button>
         </div>
       </motion.div>
@@ -133,8 +135,10 @@ function ChallengeSuccessOverlay({
   result: ChallengeResult;
   onContinue: () => void;
 }) {
-  const worldTitle = getWorld(lesson.world)?.title ?? lesson.world;
-  const badge = result.newBadgeId ? getBadge(result.newBadgeId) : undefined;
+  const t = useT();
+  const { lang } = useLang();
+  const worldTitle = getWorld(lesson.world, lang)?.title ?? lesson.world;
+  const badge = result.newBadgeId ? getBadge(result.newBadgeId, lang) : undefined;
 
   return (
     <motion.div
@@ -153,10 +157,9 @@ function ChallengeSuccessOverlay({
         <div className="mb-3 text-4xl" aria-hidden="true">
           ⚡
         </div>
-        <h2 className="font-display text-xl font-semibold sm:text-2xl">Испытание пройдено!</h2>
+        <h2 className="font-display text-xl font-semibold sm:text-2xl">{t('challenge.success.title')}</h2>
         <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Мир «{worldTitle}» зачтён. Уроки мира остаются открытыми — вернись за карточками функций
-          и дополнительным XP.
+          {t('challenge.success.body', { world: worldTitle })}
         </p>
         <motion.div
           className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full px-5 py-2 font-display text-lg font-semibold"
@@ -170,7 +173,9 @@ function ChallengeSuccessOverlay({
           transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 18 }}
         >
           <Zap size={20} />
-          {result.alreadyPassed ? 'Мир уже был зачтён' : `+${result.xpGained} XP`}
+          {result.alreadyPassed
+            ? t('challenge.alreadyPassed')
+            : t('complete.xp', { n: result.xpGained })}
         </motion.div>
         {badge && (
           <div className="mt-5 flex justify-center">
@@ -185,7 +190,7 @@ function ChallengeSuccessOverlay({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
         >
-          На карту галактики
+          {t('nav.toGalaxy')}
         </motion.button>
       </motion.div>
     </motion.div>
@@ -197,11 +202,13 @@ export default function LessonPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const completeLesson = useProgressStore((s) => s.completeLesson);
   const passWorldChallenge = useProgressStore((s) => s.passWorldChallenge);
   const addXp = useProgressStore((s) => s.addXp);
 
-  const lesson = lessonId ? getLesson(lessonId) : undefined;
+  const lesson = lessonId ? getLesson(lessonId, lang) : undefined;
 
   // Режим испытания: только босс-уроки с заданиями, ?challenge=1
   const isChallenge =
@@ -287,13 +294,13 @@ export default function LessonPage() {
       <div className="flex min-h-[60vh] items-center justify-center py-10">
         <div className="glass-card max-w-md p-8 text-center">
           <Hourglass size={40} className="mx-auto mb-4" style={{ color: 'var(--accent-cyan)' }} />
-          <h1 className="font-display text-xl font-semibold">Контент загружается</h1>
+          <h1 className="font-display text-xl font-semibold">{t('lesson.notWritten.title')}</h1>
           <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Этот урок ещё пишется. Экспедиция скоро продолжится — загляни позже!
+            {t('lesson.notWritten.body')}
           </p>
           <Link to="/" className="btn-gradient mt-6 inline-flex items-center gap-2 px-6 py-3 text-sm">
             <ArrowLeft size={16} />
-            На карту миров
+            {t('common.toMap')}
           </Link>
         </div>
       </div>
@@ -307,7 +314,7 @@ export default function LessonPage() {
         <Link
           to="/"
           className="btn-glass grid h-10 w-10 shrink-0 place-items-center"
-          aria-label="Назад на карту"
+          aria-label={t('lesson.back.aria')}
         >
           <ArrowLeft size={17} />
         </Link>
@@ -323,11 +330,11 @@ export default function LessonPage() {
           <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
             {isChallenge ? (
               <span className="font-semibold" style={{ color: 'var(--accent-amber)' }}>
-                Испытание босса: без теории, максимум 1 ошибка
+                {t('lesson.challengeInfo')}
               </span>
             ) : (
               <span className="flex items-center gap-1">
-                <Clock size={11} /> {lesson.durationMin} мин
+                <Clock size={11} /> {t('lesson.min', { n: lesson.durationMin })}
               </span>
             )}
             <span className="flex items-center gap-1" style={{ color: 'var(--accent-amber)' }}>
@@ -365,7 +372,7 @@ export default function LessonPage() {
           ) : currentTask ? (
             <div className="glass-card p-5 sm:p-6">
               <div className="mb-3 text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--text-muted)' }}>
-                Задание {step} из {lesson.tasks.length}
+                {t('lesson.taskOf', { n: step, total: lesson.tasks.length })}
               </div>
               <TaskView task={currentTask} onSolved={handleSolved} />
             </div>
@@ -383,13 +390,13 @@ export default function LessonPage() {
         >
           {step === 0
             ? lesson.tasks.length > 0
-              ? 'К заданиям'
-              : 'Завершить'
+              ? t('lesson.toTasks')
+              : t('lesson.finish')
             : step < totalSteps - 1
-              ? 'Продолжить'
+              ? t('common.continue')
               : isChallenge
-                ? 'Завершить испытание'
-                : 'Завершить урок'}
+                ? t('lesson.finishChallenge')
+                : t('lesson.finishLesson')}
           <ArrowRight size={17} />
         </button>
       </div>
@@ -405,7 +412,7 @@ export default function LessonPage() {
             style={{ color: 'var(--text-muted)' }}
           >
             <BookOpen size={13} />
-            Читать оригинал
+            {t('lesson.readOriginal')}
           </div>
           <ul className="space-y-1.5">
             {lesson.sources.map((src, i) => (
@@ -424,7 +431,7 @@ export default function LessonPage() {
             ))}
           </ul>
           <p className="mt-2 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-            Проверено: {lesson.verifiedAt}
+            {t('lesson.verified', { date: lesson.verifiedAt })}
           </p>
         </div>
       )}
@@ -441,7 +448,7 @@ export default function LessonPage() {
             className="underline-offset-2 hover:underline"
             style={{ color: 'var(--text-muted)' }}
           >
-            ⚑ Нашёл ошибку в уроке?
+            {t('lesson.foundBug')}
           </a>{' '}
           <span aria-hidden="true">·</span>{' '}
           <a
@@ -451,7 +458,7 @@ export default function LessonPage() {
             className="underline-offset-2 hover:underline"
             style={{ color: 'var(--text-muted)' }}
           >
-            или напиши на почту
+            {t('lesson.orEmail')}
           </a>
         </p>
       )}

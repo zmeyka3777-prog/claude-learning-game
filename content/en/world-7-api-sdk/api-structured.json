@@ -1,0 +1,124 @@
+{
+  "id": "api-structured",
+  "world": "world-7-api-sdk",
+  "order": 5,
+  "title": "Structured outputs",
+  "subtitle": "Guaranteed JSON by schema instead of \"ask and pray\"",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Structured outputs — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/structured-outputs" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The problem: JSON \"on good faith\"" },
+    { "type": "text", "md": "A typical integration task: Claude extracts data from text, and your code writes it to a database. Your code needs **strict JSON** — with specific fields and types. The classic solution is to ask for it in the prompt: \"return JSON with fields name, email, plan.\"\n\nMost of the time this works. But \"most of the time\" is a bad phrase for production. Sometimes the model adds a polite \"Here's your JSON:\" before the object. Sometimes it wraps it in a markdown block with ```json. Sometimes it renames a field or returns a number as a string. Over a thousand requests, even a 2% defect rate is twenty broken parses and 2 a.m. alerts.\n\nYou can pile on defenses: strip the text around the curly braces, validate, re-request on error. Or you can ask the platform to **guarantee** the format." },
+    { "type": "heading", "text": "Structured outputs: format as a contract" },
+    { "type": "text", "md": "**Structured outputs** is a Messages API mechanism that forces the response to conform to your **JSON Schema** at generation time. You pass the schema in the `output_config.format` parameter, and the API simply won't let the model generate an invalid token: the output always parses and always contains the required fields of the required types.\n\nThe schema is standard JSON Schema: `type: object`, properties with types (`string`, `integer`, `boolean`, arrays, `enum`), a `required` list, and `additionalProperties: false` (mandatory — it forbids the model from inventing extra fields).\n\nThis isn't magic quality: the correctness of the **values** still depends on the model and the prompt. Shape is guaranteed, not truth. But a whole class of errors disappears — \"the response didn't parse.\"" },
+    { "type": "code", "lang": "python", "title": "Guaranteed JSON by schema", "code": "schema = {\n    \"type\": \"object\",\n    \"properties\": {\n        \"name\": {\"type\": \"string\"},\n        \"email\": {\"type\": \"string\"},\n        \"plan\": {\"type\": \"string\", \"enum\": [\"free\", \"pro\", \"enterprise\"]},\n        \"demo_requested\": {\"type\": \"boolean\"},\n    },\n    \"required\": [\"name\", \"email\", \"plan\", \"demo_requested\"],\n    \"additionalProperties\": False,\n}\n\nmessage = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=1024,\n    output_config={\"format\": {\"type\": \"json_schema\", \"schema\": schema}},\n    messages=[{\n        \"role\": \"user\",\n        \"content\": \"Lead: Anna Kim (anna@corp.com) wants the Pro plan and is asking for a demo.\",\n    }],\n)\n\nimport json\ndata = json.loads(message.content[0].text)  # always parses\nprint(data[\"plan\"])  # \"pro\"" },
+    { "type": "code", "lang": "typescript", "title": "TypeScript: schema from Zod", "code": "import { z } from \"zod\";\nimport { zodOutputFormat } from \"@anthropic-ai/sdk/helpers/zod\";\n\nconst Lead = z.object({\n  name: z.string(),\n  email: z.string(),\n  plan: z.enum([\"free\", \"pro\", \"enterprise\"]),\n  demo_requested: z.boolean(),\n});\n\nconst response = await client.messages.parse({\n  model: \"claude-opus-4-8\",\n  max_tokens: 1024,\n  output_config: { format: zodOutputFormat(Lead) },\n  messages: [{ role: \"user\", content: \"Lead: Anna Kim (anna@corp.com), Pro plan, asking for a demo.\" }],\n});\n\nconsole.log(response.parsed_output?.plan); // typed: \"free\" | \"pro\" | \"enterprise\"" },
+    { "type": "heading", "text": "When schema, when prompt" },
+    { "type": "table",
+      "headers": ["Situation", "What to choose", "Why"],
+      "rows": [
+        ["A program reads the response: parsing, writing to a DB, calling an API", "Structured outputs", "One format failure breaks the pipeline — you need a guarantee"],
+        ["Extracting fields from documents at scale", "Structured outputs + enum for categories", "The schema cuts out both extra fields and invented categories"],
+        ["A human reads the response, structure is \"roughly right\"", "A prompt is enough", "Flexibility matters more than a guarantee; a schema would constrain the model for nothing"],
+        ["Quick prototype, format still changing", "Prompt; add a schema before production", "Don't spend time on a schema until the format settles"]
+      ]
+    },
+    { "type": "example",
+      "bad": "messages=[{\"role\": \"user\", \"content\": \"Extract the customer data and return JSON. Please, JSON only, I'm begging you, no extra text!!!\"}]",
+      "good": "output_config={\"format\": {\"type\": \"json_schema\", \"schema\": lead_schema}},\nmessages=[{\"role\": \"user\", \"content\": \"Extract the customer data from the lead: ...\"}]",
+      "explanation": "Pleading in the prompt (\"I'm begging you, JSON only\") is probabilistic hope: it works 98% of the time, and the remaining 2% crashes the parser in production. A schema in `output_config.format` moves the format from the realm of requests into the realm of a contract: invalid output is impossible by construction. And the prompt is then freed up for the main thing — what exactly to extract." },
+    { "type": "heading", "text": "Bonus: strict mode for tools" },
+    { "type": "text", "md": "The same idea works in tool use: the **`strict: true`** parameter in a tool definition guarantees that the call arguments (`tool_use.input`) strictly conform to the `input_schema` — no missing required fields or strings instead of numbers. The requirements are the same: `additionalProperties: false` and an explicit `required`.\n\nIt's worth knowing the limitations of structured outputs in advance: recursive schemas and numeric constraints like `minimum`/`maximum` aren't supported (the Python and TypeScript SDKs validate such things on the client). A new schema is compiled on first use — the first request is a bit slower, then the cache kicks in. And most importantly: if the model refused to answer for safety reasons (`stop_reason: \"refusal\"`), the output may not conform to the schema — handle this case separately." },
+    { "type": "callout", "kind": "docs", "md": "The Structured outputs docs (platform.claude.com/docs/en/build-with-claude/structured-outputs) describe both mechanisms: `output_config.format` with a JSON Schema guarantees the response format, and `strict: true` on a tool guarantees the validity of its arguments. Schema requirements: `additionalProperties: false` for all objects, support for `enum`, `anyOf`, `$ref`; recursive schemas and numeric constraints aren't supported." },
+    { "type": "callout", "kind": "tip", "md": "Keep the schema minimal: every extra field is both tokens and extra work for the model. If a set of categories is finite — always use `enum` instead of a free-form string: \"the model invented a new category\" is the second most common data-extraction bug after a broken format." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What exactly do structured outputs guarantee?",
+      "options": [
+        "That the response will be factually correct",
+        "That the response will be valid JSON conforming to the schema you passed",
+        "That the response will be shorter and cheaper",
+        "That the model won't be able to refuse to answer"
+      ],
+      "correct": [1],
+      "explanation": "Shape is guaranteed: the response always parses and conforms to the schema — fields, types, enum values. The correctness of the content still depends on the model and the prompt: a schema won't make an invented email real. And on a safety refusal (stop_reason: refusal) the output may not conform to the schema — that's a separate case.",
+      "hint": "Separate two ideas: the shape of the response and the truth of its content."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A developer wrote a schema to extract meeting data, but the API rejects it. Find the line with the error.",
+      "lang": "json",
+      "lines": [
+        "{",
+        "  \"type\": \"object\",",
+        "  \"properties\": {",
+        "    \"title\": {\"type\": \"string\"},",
+        "    \"date\": {\"type\": \"string\", \"format\": \"date\"},",
+        "    \"attendees\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},",
+        "    \"duration_minutes\": {\"type\": \"integer\"}",
+        "  },",
+        "  \"required\": [\"title\", \"date\"],",
+        "  \"additionalProperties\": true",
+        "}"
+      ],
+      "bugLineIndex": 9,
+      "explanation": "Structured outputs require `additionalProperties: false` for every object in the schema — this forbids the model from adding fields that aren't in the description. With the value `true` (or without this key), the schema fails validation. Everything else is correct: types, array of strings, date format, and the required list."
+    },
+    {
+      "type": "quiz",
+      "question": "When should you use structured outputs instead of \"ask for JSON in the prompt\"? Select all correct answers.",
+      "options": [
+        "A program parses the response and writes the data to a database",
+        "A user reads the response as free-form text",
+        "Extracting a category from a fixed list at scale across thousands of documents",
+        "A quick one-off experiment in a notebook"
+      ],
+      "correct": [0, 2],
+      "explanation": "A schema is needed where the consumer of the response is code: any format failure breaks the pipeline, and an enum cuts out invented categories. For \"for-the-eyes\" responses and one-off experiments a guarantee gives no benefit — an ordinary prompt is enough, and a schema is worth adding once the format settles and heads to production.",
+      "hint": "Ask yourself: who reads the response — a human or a parser?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a schema to extract job-posting data: object type → fields → required → forbid extra fields. Discard the trap blocks.",
+      "blocks": [
+        "\"type\": \"object\"",
+        "\"properties\": {\"title\": {\"type\": \"string\"}, \"salary_from\": {\"type\": \"integer\"}, \"remote\": {\"type\": \"boolean\"}}",
+        "\"required\": [\"title\", \"remote\"]",
+        "\"additionalProperties\": false"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "\"salary_from\": {\"type\": \"integer\", \"minimum\": 0, \"maximum\": 10000000}",
+        "\"instructions\": \"please return nice JSON\""
+      ],
+      "explanation": "A valid schema: object, properties with types, required, and the mandatory `additionalProperties: false`. The traps: numeric constraints `minimum`/`maximum` aren't supported by structured outputs (they're validated on the client), and an \"instructions\" field with a request mixes the schema with the prompt: instructions live in messages, the schema describes only the shape."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "You're building a resume-parsing pipeline. Describe to Claude what JSON schema you'll define: which fields to extract (at least three), which of them are required, and where an enum would help.",
+      "steps": [
+        {
+          "expect": ["field", "name", "experience", "skill", "email", "mandatory", "enum", "string", "type", "level", "required"],
+          "minMatches": 3,
+          "claudeReply": "Good set! Here's the schema based on your description:\n\n```json\n{\n  \"type\": \"object\",\n  \"properties\": {\n    \"name\": {\"type\": \"string\"},\n    \"email\": {\"type\": \"string\"},\n    \"years_of_experience\": {\"type\": \"integer\"},\n    \"skills\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}},\n    \"level\": {\"type\": \"string\", \"enum\": [\"junior\", \"middle\", \"senior\"]}\n  },\n  \"required\": [\"name\", \"level\"],\n  \"additionalProperties\": false\n}\n```\n\nNotice `level`: without an enum the model would write \"senior\", \"Senior+\", \"experienced\" — and your filtering by level would fall apart. With an enum there are exactly three options. What happens if a resume has no email?",
+          "failHint": "List the fields to extract from a resume (for example: name, email, experience, skills, level), mark the required ones, and suggest where an enum is needed (for example, for level: junior/middle/senior)."
+        },
+        {
+          "expect": ["null", "not required", "required", "omit", "empty", "optional", "missing", "no"],
+          "minMatches": 1,
+          "claudeReply": "Right thinking! The `email` field isn't in `required`, so the model can omit it when there's no data — and that's more honest than forcing it to invent an address. The general principle: `required` holds only what's guaranteed to be in any resume; the rest is optional. The schema is production-ready: shape guaranteed, no invented categories, missing data handled explicitly.",
+          "failHint": "Think: since email isn't in the required list, what will the model do if there's no address in the resume? Answer, for example: \"the field will be left out, it's optional.\""
+        }
+      ],
+      "successMessage": "You designed the extraction schema like an engineer: types, an enum against invented categories, and a deliberate choice of required fields."
+    }
+  ],
+  "reward": { "cardId": "card-api-structured", "badgeId": null }
+}

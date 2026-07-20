@@ -1,0 +1,114 @@
+{
+  "id": "pro-settings",
+  "world": "world-5-claude-code-pro",
+  "order": 7,
+  "title": "Settings and Security",
+  "subtitle": "settings.json, the permissions allowlist, and the sandbox: how to give the agent freedom without handing over the keys to the house",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Settings — Claude Code Docs", "url": "https://code.claude.com/docs/en/settings" },
+    { "title": "Sandbox Environments — Claude Code Docs", "url": "https://code.claude.com/docs/en/sandbox-environments" },
+    { "title": "Security — Claude Code Docs", "url": "https://code.claude.com/docs/en/security" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "One file that controls everything" },
+    { "type": "text", "md": "Hooks, permissions, environment variables — all of it lives in **settings.json**, the main configuration file of Claude Code. You already met it in the lesson on hooks; now it's time to get to know it systematically.\n\nThere are several settings files, and they form **levels**:\n\n- **User**: `~/.claude/settings.json` in your home folder — your settings across all projects.\n- **Project**: `.claude/settings.json` in the repository — project settings, committed to Git, shared by the team.\n- **Local project**: `.claude/settings.local.json` — your personal settings for this project, not committed to Git (for experiments and personal permissions).\n\nThe levels stack, and on a conflict the more specific one wins: local over project, project over user. It's the same logic as with Skills and CLAUDE.md: personal goes in the home folder, team-wide goes in the repository." },
+    { "type": "heading", "text": "Permissions: an allowlist instead of a thousand questions" },
+    { "type": "text", "md": "You remember from World 4: before editing files and running commands, the agent asks for permission. Saying \"yes\" to the same thing a hundred times gets old — and for that there are **permission rules** in settings.json: lists of `allow` (permitted without asking), `deny` (always forbidden), and `ask` (ask first).\n\nA rule describes a tool and a pattern: for example, allow `Bash(npm test)` — the `npm test` command no longer needs confirmation; deny `Read(.env)` — the agent can't read the secrets file, even by accident. The approach is called an **allowlist**: by default everything requires confirmation, and you selectively permit what you trust. This is the principle of least privilege: freedom is granted little by little and deliberately, not stripped away piece by piece after an incident." },
+    { "type": "code", "lang": "json", "title": ".claude/settings.json — example permission rules", "code": "{\n  \"permissions\": {\n    \"allow\": [\n      \"Bash(npm test)\",\n      \"Bash(npm run lint)\",\n      \"Bash(git status)\"\n    ],\n    \"deny\": [\n      \"Read(.env)\",\n      \"Read(secrets/**)\"\n    ]\n  }\n}" },
+    { "type": "text", "md": "Read the config out loud: \"run tests, the linter, and git status without asking; never read the .env file or the secrets/ folder.\" Notice how narrowly allow is written: **specific commands** are permitted, not \"all of Bash.\" A rule like `Bash(*)` — any command with no confirmation — turns confirmations into a fiction: everything is approved in advance, including things you've never seen. `deny` beats `allow`: if a rule ends up in both lists, the denial wins.\n\nYou can manage the rules without editing by hand, too: the `/permissions` command in a session shows the current rules and lets you change them. And when the agent asks for permission, the \"allow and don't ask again\" option adds a rule to your settings by itself." },
+    { "type": "heading", "text": "The sandbox and the main threats" },
+    { "type": "text", "md": "One more layer of protection is the **sandbox**: an isolated environment where the agent's commands run with limited access to the file system and the network. Inside the sandbox the agent can work more freely (fewer questions), because the walls are solid: it can't step outside the working area, and it can't reach arbitrary addresses on the network. Cloud sessions of Claude Code run in such isolated environments by default.\n\nHere's what the Security page in the docs warns about: the main threat to agents is **prompt injection**, an attempt to hide instructions for the agent inside the data it processes (a web page, someone else's code, the text of an issue). The defense is layered: action confirmations, deny lists, the sandbox — but your own head is part of it too: be careful with \"don't ask anything\" modes, especially when the agent is working with untrusted content from the internet." },
+    { "type": "example",
+      "bad": "\"The agent's been pestering me with questions — I'll just allow everything: allow: [\"Bash(*)\"], and we'll live happily ever after.\"",
+      "good": "\"Let me see what the agent asks about most often: npm test, npm run lint, git status — I'll add those to allow. Let it ask about the rest, and I'll add .env to deny.\"",
+      "explanation": "The first path removes not the questions but the protection: \"everything is allowed\" means the agent will silently run a dangerous command too — deleting files, sending data out. The second path removes 90% of the questions without touching the safety net: frequent harmless commands run without confirmation, rare and dangerous ones go through you, and the secrets are locked away by a permanent denial."
+    },
+    { "type": "table",
+      "headers": ["File", "For whom", "In Git?"],
+      "rows": [
+        ["~/.claude/settings.json", "You, across all projects", "No — it's the home folder"],
+        [".claude/settings.json", "The whole project team", "Yes, committed"],
+        [".claude/settings.local.json", "Only you, in this project", "No, excluded from Git"]
+      ]
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Settings page) describes the hierarchy of settings files — user, project, and local project, with the more specific level taking priority — and the permissions rules with allow/deny/ask lists based on tool patterns. The Sandbox Environments and Security pages round out the picture: isolated execution environments and recommendations for defending against prompt injection." },
+    { "type": "callout", "kind": "warning", "md": "Remember that a project's .claude/settings.json is committed to Git and takes effect for the whole team. Before you add a permission there, think: are you ready to grant it to every colleague and every agent in this repository? Keep personal experiments in settings.local.json — that's exactly why it's kept out of Git." },
+    { "type": "callout", "kind": "tip", "md": "Every couple of weeks, take a look at your allow lists — they have a way of growing \"just because.\" The rule is simple: every permission should answer the question \"why do I have it.\" Can't answer — delete it: adding it back when needed takes a second." }
+  ],
+  "tasks": [
+    {
+      "type": "find-bug",
+      "instruction": "In front of you is a project's .claude/settings.json (committed to Git!). One line opens a dangerous security hole — find it.",
+      "lang": "json",
+      "lines": [
+        "{",
+        "  \"permissions\": {",
+        "    \"allow\": [",
+        "      \"Bash(npm test)\",",
+        "      \"Bash(rm -rf *)\",",
+        "      \"Bash(git status)\"",
+        "    ],",
+        "    \"deny\": [\"Read(.env)\"]",
+        "  }",
+        "}"
+      ],
+      "bugLineIndex": 4,
+      "explanation": "Bash(rm -rf *) in allow means: the command to recursively delete everything runs without confirmation — for you and for every colleague, since the project settings.json travels with the whole repository. One mistake by the agent in picking the folder, and files are wiped out silently. Destructive commands never belong in the allowlist: let them ask. npm test, git status, and the ban on reading .env are exemplary rules."
+    },
+    {
+      "type": "quiz",
+      "question": "Where do you add a permission rule so it takes effect for the whole project team?",
+      "options": [
+        "~/.claude/settings.json",
+        ".claude/settings.json in the project repository",
+        ".claude/settings.local.json",
+        "Any of the three — they're all the same"
+      ],
+      "correct": [1],
+      "explanation": "The team level is .claude/settings.json: the file lives in the repository, is committed to Git, and travels to every participant along with the code. The user file in the home folder takes effect only for you (but across all projects), and settings.local.json applies only to you and only here, and never lands in Git.",
+      "hint": "What's shared with the team is what gets committed to the repository."
+    },
+    {
+      "type": "quiz",
+      "question": "A command ended up in both allow and deny. What happens?",
+      "options": [
+        "allow wins — permissions come first",
+        "deny wins — a ban is always stronger than a permission",
+        "Claude Code refuses to start because of the conflict",
+        "The rule written lower in the file wins"
+      ],
+      "correct": [1],
+      "explanation": "The ban is stronger: if a rule is in both lists, deny takes effect. This is a deliberate security principle — doubt is resolved in favor of protection. That's why deny is handy as a fireproof safeguard: whatever shows up in allow today or a year from now, .env cannot be read.",
+      "hint": "In security, doubt is always resolved in the same direction."
+    },
+    {
+      "type": "quiz",
+      "question": "What does the sandbox give you when the agent runs commands?",
+      "options": [
+        "It speeds up command execution",
+        "It isolates execution: limited access to files and the network, no stepping outside the walls — which is why you can give the agent more freedom inside",
+        "It disables all permissions forever",
+        "It's just a folder with tests"
+      ],
+      "correct": [1],
+      "explanation": "The sandbox is an isolated environment: commands don't reach files outside the working area or arbitrary addresses on the network. A mistake or a malicious instruction hits a wall, not your system — which is why inside the sandbox you can let the agent work more freely, with fewer confirmations. Cloud sessions use this isolation by default.",
+      "hint": "The name is a hint: you can play freely, as long as you stay inside the edges."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to the mission later.**\n\n1. Run `claude` in the project folder and type `/permissions` — study the current rules: what's already allowed, what's forbidden.\n2. Recall two or three harmless commands the agent asks you about most often (for example, npm test or git status), and add them to allow — via /permissions or by asking the agent.\n3. Add reading the secrets file to deny: `Read(.env)`.\n4. Test the ban in the field: ask the agent to \"read the .env file\" — and confirm the rule kept it out.\n5. Check which file the rules landed in: personal — in settings.local.json, team — in .claude/settings.json. Deliberately decide what goes where.",
+      "checklist": [
+        "I looked at the current rules via /permissions",
+        "allow has only specific harmless commands, no Bash(*)",
+        "Read(.env) is in deny, and the ban actually worked",
+        "I understand which rules landed in Git and which stayed personal"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-settings", "badgeId": null }
+}

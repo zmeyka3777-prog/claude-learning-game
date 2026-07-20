@@ -1,0 +1,115 @@
+{
+  "id": "eco-slack",
+  "world": "world-8-ecosystem",
+  "order": 1,
+  "title": "Claude in Slack",
+  "subtitle": "Claude Tag: an assistant right inside your team's channels and direct messages",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "What is Claude Tag — Claude Help Center", "url": "https://support.claude.com/en/articles/15594475-what-is-claude-tag" },
+    { "title": "Claude in Slack — Claude Help Center", "url": "https://support.claude.com/en/articles/11506255" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude comes to where you work" },
+    { "type": "text", "md": "Up until this world, you went to Claude yourself: you opened claude.ai, wrote a prompt, took the result. World 8 flips the model — now Claude is embedded into the tools where your team already spends the day: Slack, Excel, the browser. We'll start with Slack, because that's where the main raw material for an assistant lives — work discussions.\n\nThink about how much value sinks into a messenger: decisions get made in fifty-message threads, answers to newcomers' eternal questions are scattered across channels, and 'does anyone remember what we decided back in March?' is a routine phrase. Claude in Slack turns this mountain of correspondence from a problem into a source of answers." },
+    { "type": "heading", "text": "What Claude Tag is" },
+    { "type": "text", "md": "**Claude Tag** is Claude inside Slack. Once a workspace administrator connects it, team members can reach Claude in two main ways:\n\n- **A mention in a channel or thread.** You write a message mentioning Claude — just as you'd call over a colleague — and it replies right in the thread, seeing the context of the discussion. This is the key superpower: you don't need to copy the conversation into a separate chat, Claude is already 'standing right there' reading the same thread.\n- **Direct messages.** You can chat with Claude one on one, like with a regular team member: drafts, questions, breakdowns — anything you'd rather not bring into a shared channel.\n\nIt's important to understand the access model: Claude doesn't eavesdrop on all of Slack. It works with the context it was invited into — within the permissions configured at connection time. Invited into a thread — it sees the thread. Not invited — it doesn't take part." },
+    { "type": "heading", "text": "Scenarios for a team" },
+    { "type": "table", "headers": ["Scenario", "What it looks like", "What it saves"], "rows": [
+      ["Summarizing a thread", "In a 60-message thread you mention Claude: 'give me a recap: what we decided, who's doing what'", "20 minutes of reading for everyone who joins late"],
+      ["Answers from documents", "'What does our policy say about unpaid leave?' — Claude answers from the connected materials", "A trip to HR and a search through the wiki"],
+      ["Draft reply", "'Draft a polite reply to the client: the deadline slips by a week, the reason is their own extra edits'", "Half an hour of agonizing over the wording"],
+      ["Handling a newcomer's question", "A newcomer asks a question in the channel — Claude gives the first answer, the team fills in the rest", "Senior engineers' time on repetitive questions"],
+      ["Brainstorming", "In the marketing channel: 'suggest 10 name options for the newsletter, tone — friendly'", "A blank page and silence in the channel"]
+    ] },
+    { "type": "heading", "text": "How to phrase requests in threads" },
+    { "type": "text", "md": "Everything you learned about prompts in World 1 works here too — with one adjustment: **Claude already sees the thread's context**, so don't retell the conversation. Instead, tell it what to do with it: 'pull out the decisions and open questions', 'phrase a summary for the director in three points', 'suggest a compromise between Sasha's and Lena's options'.\n\nAnd remember that this happens in a team space: Claude's reply in a channel is seen by everyone in it. Contentious drafts and personal questions are better worked out in direct messages with Claude, bringing only the finished result into the channel." },
+    { "type": "heading", "text": "How to help Claude take root in a team" },
+    { "type": "text", "md": "Technically, connecting is the administrator's job, but culturally Claude takes root through habits, and anyone can play the pioneer's role here. What works in practice:\n\n- **Start with yourself and visible wins.** A couple of public summaries of long threads — and colleagues will ask you 'how did you do that?' themselves.\n- **Agree on rituals.** For example: every thread longer than twenty messages is closed with a Claude summary; every newcomer's question first gets a Claude answer, then a clarification from the seniors.\n- **Define the boundaries.** Teams with sensitive data should talk through in advance which channels and topics are off-limits for the assistant: this dispels skeptics' anxiety faster than any persuasion.\n- **Don't replace people where a person is needed.** Conflict, feedback on work, personal matters — Claude can help with the wording in DMs, but the person should do the talking." },
+    { "type": "example",
+      "bad": "In a thread: '@Claude help'. Claude asks what exactly, the thread grows by another ten messages, colleagues watching.",
+      "good": "In a thread: '@Claude, summarize the discussion: 1) what we decided about the release date, 2) which risks were named, 3) who took which tasks. Format — a short list, so I can paste it into the final message'.",
+      "explanation": "Claude sees the thread but not your goal. 'Help' makes it guess in front of the whole team. A precise task with a format gives a ready result on the first reply — and looks professional in a shared channel."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Help Center (articles about Claude Tag in the Claude in Your Workspace section) describes Claude in Slack like this: you can interact with it through mentions in channels and threads and through direct messages; it helps summarize discussions, answer questions, and prepare drafts. Connecting is done by the workspace administrator, and Claude's access to data is defined by the connection settings." },
+    { "type": "callout", "kind": "warning", "md": "Slack is a shared space. Before asking Claude to break down a thread with sensitive data (salaries, clients' personal data, conflicts), remember: both your request and the reply will stay in the channel in plain view of everyone. For anything delicate — direct messages, and better yet, check against company policy." },
+    { "type": "callout", "kind": "tip", "md": "The best first habit: end long thread discussions with a request to Claude for a wrap-up — 'what we decided, who's doing it, by when'. In a month the team will have an archive of decisions instead of an archive of chatter." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is Claude Tag?",
+      "options": [
+        "A separate messenger app from Anthropic that replaces Slack",
+        "Claude inside Slack: you can mention it in channels and threads and write to it in direct messages",
+        "A tag in HTML markup for inserting Claude's answers into a website",
+        "A paid feature for exporting conversations from Slack into claude.ai"
+      ],
+      "correct": [1],
+      "explanation": "Claude Tag is Claude embedded into Slack. It answers where it's invited: in a thread by mention or in a direct message. Nothing needs to be replaced or exported anywhere.",
+      "hint": "Recall the two ways to reach Claude in Slack from the theory."
+    },
+    {
+      "type": "quiz",
+      "question": "You mentioned Claude in a thread in a work channel. What's important to remember about context and visibility? Select all that apply.",
+      "options": [
+        "Claude sees the context of the thread it was invited into — there's no need to retell the conversation",
+        "Claude's reply in the channel is seen by everyone in it",
+        "By default Claude reads absolutely all Slack channels, even private ones",
+        "For delicate questions it's better to use direct messages with Claude"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "Claude works within the context it was invited into and the configured permissions — it doesn't 'eavesdrop on all of Slack'. But everything it replies in a channel is public to the members: anything delicate goes in DMs.",
+      "hint": "One option contradicts the access model 'invited — sees it, not invited — doesn't take part'."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Slack simulation: a 47-message thread — the team argued about postponing the release. Mention Claude and give it a task about this thread.",
+      "steps": [
+        {
+          "expect": ["summar", "recap", "wrap", "decided", "brief", "digest", "tldr", "sum up"],
+          "minMatches": 1,
+          "claudeReply": "Thread recap: 📋\n\n**Decided:** the release moves from the 12th to the 19th — because of an unclosed bug in payments.\n\n**Open questions:** who tells the clients (candidates — Marina or the account managers); whether a hotfix is needed for the current version.\n\n**Tasks:** Dima — fix the bug by the 15th, Olya — regression test on the 16th–17th.\n\nI can format this as an announcement for the general channel — want me to?",
+          "failHint": "Ask Claude for a recap of the thread: what was decided, which questions remain, who's doing what."
+        },
+        {
+          "expect": ["yes", "format", "announc", "go ahead", "write", "channel", "do it", "sure"],
+          "minMatches": 1,
+          "claudeReply": "Draft announcement: 📣\n\n> **The release is being postponed: 12th → 19th.**\n> Reason: we're finishing work on payments (a bug was found in testing).\n> Plan: fix by the 15th (Dima), regression on the 16th–17th (Olya), release on the 19th.\n> Question for @Marina: are you taking the client communication?\n\nCheck the names and dates before publishing — then it's ready to send.",
+          "failHint": "Agree: 'Yes, format the announcement for the channel'."
+        }
+      ],
+      "successMessage": "You've gone through the classic Claude-in-Slack cycle: thread → recap → a ready artifact for the team. Notice: the final word (checking and publishing) stays with the human."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "A client in a shared channel is unhappy about the schedule slipping. Assemble a request to Claude for a draft reply — in the order: context → task → tone → format.",
+      "blocks": [
+        "Context: the client is upset about the project delivery slipping by a week; the reason for the delay is their own extra edits, but that can't be said bluntly.",
+        "Task: draft a reply to the client acknowledging the inconvenience, explaining the reason, and giving the new date.",
+        "Tone: calm, respectful, without excuses or bureaucratic jargon.",
+        "Format: 4–6 sentences, ending with a concrete next step for the client."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Tell the client it's their own fault the schedule slipped.",
+        "Make the reply longer and weightier, about two pages."
+      ],
+      "explanation": "The formula from World 1 works in Slack too: context → task → tone → format. Blaming the client will kill the relationship, and 'weightier, two pages' is a sure way to make sure nobody reads the letter to the end."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**A mission in real Slack.**\n\n⚠️ Required: a Slack workspace where an administrator has connected Claude (Claude Tag). If there isn't one — suggest the administrator read the 'What is Claude Tag' article from the lesson's sources, and do this mission later.\n\n1. Find a thread with a discussion of 15+ messages (or a DM conversation with a large volume).\n2. Mention Claude in the thread and ask for a recap: decisions, open questions, tasks.\n3. Check the recap against the thread itself: is everything correct, is anything made up?\n4. Separately, message Claude in direct messages and ask for a draft of any work message (an announcement, a reply to a colleague, a reminder).\n5. Edit the draft to fit yourself before sending.",
+      "checklist": [
+        "Claude replied in the thread on mention",
+        "The recap was checked against the real content of the thread",
+        "The draft from direct messages was edited, not sent blindly"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-eco-slack", "badgeId": null }
+}

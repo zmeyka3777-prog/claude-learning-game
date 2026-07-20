@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Bug } from 'lucide-react';
 import type { FindBugTask as FindBugTaskType } from '../../engine/types';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface FindBugTaskProps {
@@ -13,6 +14,7 @@ interface FindBugTaskProps {
 }
 
 export function FindBugTask({ task, onSolved }: FindBugTaskProps) {
+  const t = useT();
   const [wrongPicks, setWrongPicks] = useState<number[]>([]);
   const [solved, setSolved] = useState(false);
   const [mistakes, setMistakes] = useState(0);
@@ -40,7 +42,7 @@ export function FindBugTask({ task, onSolved }: FindBugTaskProps) {
         <h3 className="font-display text-lg font-semibold">{task.instruction}</h3>
       </div>
       <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-        Нажми на строку, в которой спряталась ошибка.
+        {t('findbug.hint')}
       </p>
 
       <div
@@ -96,7 +98,7 @@ export function FindBugTask({ task, onSolved }: FindBugTaskProps) {
 
       {wrongPicks.length > 0 && !solved && (
         <p className="text-sm" style={{ color: 'var(--error)' }}>
-          В этой строке всё в порядке. Ищи дальше!
+          {t('findbug.wrong')}
         </p>
       )}
 
@@ -108,7 +110,7 @@ export function FindBugTask({ task, onSolved }: FindBugTaskProps) {
           style={{ borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.07)' }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Ошибка найдена!
+            {t('findbug.solved')}
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>{task.explanation}</p>
         </motion.div>

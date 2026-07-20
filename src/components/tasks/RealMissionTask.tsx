@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Check, ChevronDown, Compass, Copy, Zap } from 'lucide-react';
 import type { RealMissionTask as RealMissionTaskType } from '../../engine/types';
 import { renderMarkdown } from '../../lib/markdown';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface RealMissionTaskProps {
@@ -40,6 +41,7 @@ async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
+  const t = useT();
   const [checked, setChecked] = useState<boolean[]>(() => task.checklist.map(() => false));
   const [solved, setSolved] = useState(false);
   const [mentorOpen, setMentorOpen] = useState(false);
@@ -69,10 +71,10 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
     const text = [
       task.instruction,
       '',
-      'Чек-лист:',
+      t('mission.copyBlock.checklist'),
       ...task.checklist.map((item) => `- ${item}`),
       '',
-      'Проверь миссию из Академии Claude по этому чек-листу',
+      t('mission.copyBlock.footer'),
     ].join('\n');
     const ok = await copyToClipboard(text);
     if (ok) {
@@ -89,9 +91,9 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
       <div className="flex items-start gap-2.5">
         <Compass size={22} className="mt-0.5 shrink-0" style={{ color: 'var(--accent-amber)' }} />
         <div>
-          <h3 className="font-display text-lg font-semibold">Реальная миссия</h3>
+          <h3 className="font-display text-lg font-semibold">{t('mission.title')}</h3>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-            Задание в настоящем Claude — самый ценный опыт и бонусный XP.
+            {t('mission.subtitle')}
           </p>
         </div>
       </div>
@@ -110,7 +112,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
       {/* Чек-лист самопроверки */}
       <div className="space-y-2">
         <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-          Проверь себя:
+          {t('mission.checkYourself')}
         </div>
         {task.checklist.map((item, i) => (
           <button
@@ -152,7 +154,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
           className="flex w-full items-center justify-between gap-3 p-3.5 text-left text-sm"
           style={{ color: 'var(--text-secondary)' }}
         >
-          <span>🧑‍🚀 Хочешь настоящую проверку?</span>
+          <span>{t('mission.mentor.toggle')}</span>
           <ChevronDown
             size={16}
             className="shrink-0 transition-transform"
@@ -164,10 +166,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
         </button>
         {mentorOpen && (
           <div className="space-y-3 px-3.5 pb-3.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            <p>
-              Установи скилл «Наставник Академии» (раздел Библиотека) — и настоящий Claude проверит
-              твою миссию по этому чек-листу.
-            </p>
+            <p>{t('mission.mentor.body')}</p>
             <div className="relative inline-block">
               <button
                 type="button"
@@ -180,7 +179,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
                 }}
               >
                 <Copy size={14} style={{ color: 'var(--accent-cyan)' }} />
-                Скопировать миссию для наставника
+                {t('mission.mentor.copy')}
               </button>
               <AnimatePresence>
                 {copiedToast && (
@@ -195,7 +194,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
                       color: 'var(--success)',
                     }}
                   >
-                    Скопировано
+                    {t('common.copied')}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -212,7 +211,7 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
           className="btn-gradient flex items-center gap-2 px-6 py-3 text-sm"
         >
           <Check size={16} />
-          Выполнил
+          {t('mission.done')}
           <span
             className="ml-1 flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold"
             style={{ background: 'rgba(0,0,0,0.25)' }}
@@ -228,11 +227,9 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
           style={{ borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.07)' }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Миссия выполнена! +{task.xpBonus} бонусного XP
+            {t('mission.done.title', { n: task.xpBonus })}
           </div>
-          <p style={{ color: 'var(--text-secondary)' }}>
-            Реальная практика — лучший способ закрепить навык. Так держать!
-          </p>
+          <p style={{ color: 'var(--text-secondary)' }}>{t('mission.done.body')}</p>
         </motion.div>
       )}
     </div>

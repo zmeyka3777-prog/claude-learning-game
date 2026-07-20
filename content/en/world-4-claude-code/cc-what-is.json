@@ -1,0 +1,98 @@
+{
+  "id": "cc-what-is",
+  "world": "world-4-claude-code",
+  "order": 1,
+  "title": "What Claude Code Is",
+  "subtitle": "An agent that works inside your project, not just one that replies in a chat",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Code overview — Claude Code Docs", "url": "https://code.claude.com/docs/en/overview" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A chat is a conversation. Claude Code is work" },
+    { "type": "text", "md": "You already know how to talk to Claude in a chat: you ask a question, you get an answer. But chat has a built-in limitation: everything Claude suggests, **you** apply yourself. It wrote code — you copy it into a file. It suggested a command — you type it into the terminal. It made a mistake — you go back, paste in the error text, wait for a new version, and copy again. The courier between the chat and the project is you.\n\n**Claude Code** removes the courier. It is the same Claude, but launched right inside your project — most often in the terminal, that black window with a command line. You describe the task in plain English (\"add a feedback button to the site\", \"figure out why the tests aren't passing\"), and Claude Code opens the files it needs, makes the edits, runs the commands, and checks the result — all on its own. You go from courier to client: you set the task and accept the work." },
+    { "type": "heading", "text": "What \"agent\" means" },
+    { "type": "text", "md": "Claude Code is called an **agent**, and that is not a marketing word but a precise description of how it behaves. An agent differs from a chatbot in three ways:\n\n**1. It gathers information itself.** You don't need to copy code into a message — the agent will find and read the project files it needs on its own. Ask it \"what does this project do?\" and it will explore the folder structure, look into the key files, and answer to the point.\n\n**2. It acts itself.** The agent doesn't just advise, it does: it edits files, creates new ones, runs tests and builds, executes terminal commands. Every serious action happens with your permission — there's a whole lesson about that.\n\n**3. It iterates itself.** This is the main thing. The agent works in a loop: did it → checked it → saw an error → fixed it → checked again. If the tests fail after an edit, it will read the error message and try a different approach — without you. In a chat, each such round would require you to copy things back and forth.\n\nAn everyday analogy: a chat is a consultant on the phone who explains how to fix a faucet. An agent is the plumber who showed up with tools, inspected everything, fixed it, and checked that the water no longer drips." },
+    { "type": "heading", "text": "Seven surfaces: not just the terminal" },
+    { "type": "text", "md": "The terminal is Claude Code's home, but far from the only one. The same agent is available on seven \"surfaces\" — pick the one you're most comfortable with:" },
+    { "type": "table",
+      "headers": ["Surface", "What it is", "Who it suits"],
+      "rows": [
+        ["CLI (terminal)", "The `claude` command in the command line", "The main way, with the most capabilities"],
+        ["Web — claude.ai/code", "Claude Code in the browser, projects in the cloud", "Working with GitHub repositories without installing anything"],
+        ["Desktop app", "A standalone Claude app on your computer", "Parallel sessions without the terminal"],
+        ["VS Code", "An extension for the VS Code editor", "Those who already work in VS Code"],
+        ["JetBrains", "A plugin for IntelliJ, PyCharm, WebStorm, and others", "Users of JetBrains IDEs"],
+        ["Mobile app", "Launch tasks from your phone", "Check or kick off a task on the go"],
+        ["Slack", "The agent right inside your work messenger", "Set a task without leaving the conversation"]
+      ]
+    },
+    { "type": "text", "md": "The important thing to understand: these are not seven different products, but seven doors into the same tool. The skills you pick up in this world using the terminal work everywhere: framing tasks, permissions, project memory, working with Git." },
+    { "type": "heading", "text": "Who needs this besides programmers" },
+    { "type": "text", "md": "The name \"Code\" is misleading: it seems like a tool only for developers. In reality Claude Code is useful for anyone whose work involves files and data:\n\n- **An analyst** — \"take this 50,000-row CSV, calculate revenue by region, and build a chart\";\n- **A marketer** — \"rename 300 product photos using the pattern sku-color\";\n- **A manager** — \"combine these ten reports into one summary table\";\n- **The owner of a small website** — \"change the prices on the services page and add a new section\";\n- **Anyone** — \"tidy up the Downloads folder: sort the files by type\".\n\nAll of these are \"files and commands\" tasks, and the agent solves them just as readily as it writes code. The only barrier to entry is not being afraid of the terminal, and the next lesson will show there's nothing to fear." },
+    { "type": "example",
+      "bad": "(in a chat) Here's my file, I'm pasting 200 lines of code... Look at where the error is. Now I'll copy your version, check it, and come back with a new error.",
+      "good": "(in Claude Code) My npm test command is failing. Find the cause, fix it, and run the tests again to make sure everything passes.",
+      "explanation": "In a chat you carry code and errors back and forth by hand — each round takes minutes and loses context. For the agent it's enough to set the goal: it will read the files itself, run the tests itself, see the error itself, and drive it to a green result itself. The difference isn't in the quality of the model — it's that the agent closes the \"did-checked-fixed\" loop without you." },
+    { "type": "callout", "kind": "docs", "md": "The official documentation (code.claude.com/docs, the Overview page) describes Claude Code as an agentic tool for the terminal that \"turns a task description into real changes\": the agent reads the codebase, edits files, runs commands, and creates commits — while important actions require your explicit approval. It also lists all the surfaces: CLI, web, desktop, VS Code, JetBrains, mobile app, and Slack." },
+    { "type": "callout", "kind": "tip", "md": "If the word \"terminal\" gives you a chill — take a breath. To work with Claude Code, all you need is to be able to open the terminal and go to your project folder. Everything else is an ordinary conversation in plain language, just like the chat you're already used to." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is the main difference between Claude Code and Claude in a chat?",
+      "options": [
+        "Claude Code uses a smarter model than the chat",
+        "Claude Code reads files, makes edits, and runs commands in your project itself, whereas in a chat you apply the advice by hand",
+        "Claude Code works without an internet connection",
+        "Claude Code only understands English"
+      ],
+      "correct": [1],
+      "explanation": "The model is the same — what differs is the way it works. In a chat Claude only answers, and you apply everything. Claude Code is an agent: it acts right in the project — reads files, edits them, runs commands, and checks the result. It understands plain language perfectly, and both need the internet.",
+      "hint": "Recall the analogy: a consultant on the phone versus a plumber who showed up with tools."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of these can the Claude Code agent do on its own? Choose all that apply.",
+      "options": [
+        "Read project files without waiting for you to copy them",
+        "Run commands: tests, builds, scripts",
+        "Fix its own error after a failed attempt and try again",
+        "Change anything on the system without the user's knowledge"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "The first three points are exactly the essence of an agent: it gathers information itself, acts itself, and iterates itself through the \"did-checked-fixed\" loop. The fourth point is wrong: serious actions — file edits, commands — Claude Code only performs with your permission. The permission system is the topic of a separate lesson.",
+      "hint": "Three points describe the agent's autonomy, and one violates the principle \"important actions only with approval\"."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A colleague is retelling you what Claude Code is. One of his statements is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Claude Code is an agent: it reads project files itself and makes edits.",
+        "You can work with it in plain language, with ordinary phrases.",
+        "It's available only in the terminal — there's nowhere else to launch it.",
+        "It's useful not only to programmers: it can also analyze data or rename a hundred files."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The terminal is the main surface, but not the only one. Claude Code is available seven ways: CLI, web (claude.ai/code), desktop app, VS Code, JetBrains, mobile app, and Slack. The rest of the statements are correct: it's an agent, it understands plain language, and it solves more than just \"programmer\" tasks."
+    },
+    {
+      "type": "quiz",
+      "question": "A marketer with no programming experience asks why they'd need Claude Code. Which answer is the most accurate?",
+      "options": [
+        "No reason — the tool is strictly for developers",
+        "To learn to program from scratch — there are no other uses",
+        "The agent solves any \"files and commands\" task: analyze a table of data, mass-rename files, assemble a summary report",
+        "Only to ask questions, like in an ordinary chat"
+      ],
+      "correct": [2],
+      "explanation": "Claude Code works with files and commands — and such tasks exist in almost any profession: process a CSV, tidy up folders, update a website page, assemble a report from a dozen documents. You don't need to write code yourself for this: it's enough to frame the task in words.",
+      "hint": "Think about which specialists have work that involves files and data. Hint: almost all of them."
+    }
+  ],
+  "reward": { "cardId": "card-cc-what-is", "badgeId": null }
+}

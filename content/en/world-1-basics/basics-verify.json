@@ -1,0 +1,117 @@
+{
+  "id": "basics-verify",
+  "world": "world-1-basics",
+  "order": 7,
+  "title": "Trust, but verify",
+  "subtitle": "Hallucinations, the knowledge cutoff date, and the habit of checking what matters",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "AI Fluency — Anthropic Academy", "url": "https://www.anthropic.com/learn" },
+    { "title": "Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The most important lesson of this world" },
+    { "type": "text", "md": "Claude answers confidently, fluently, and in detail. And therein lies a trap: **a confident tone does not guarantee correctness**. Sometimes AI models produce plausible but incorrect information — this phenomenon is called a **hallucination**.\n\nWhat it looks like: a nonexistent book with a convincing title and \"author,\" invented statistics (\"according to a 2021 study, 73%…\"), a wrong date for an event, a \"quote\" no one ever said. Everything is impeccably formatted — and all of it is untrue.\n\nThis lesson isn't a reason to fear Claude, but a reason to use it like a professional: knowing the tool's strengths and its limitations." },
+    { "type": "heading", "text": "Why hallucinations happen" },
+    { "type": "text", "md": "Recall the first lesson: a language model doesn't pull facts out of a database — it **generates text** that most plausibly continues the conversation, drawing on patterns from its training.\n\nIn most cases \"plausible\" coincides with \"correct\": the model has seen thousands of texts about Ohm's law and will retell it correctly. But on rare, narrow, or tangled topics the model may \"fill in\" what's missing — just like a person confidently retelling a half-forgotten story unwittingly makes up details. The model isn't \"lying\" on purpose: it has no built-in detector for \"I don't know this for sure,\" although modern models increasingly do admit their uncertainty honestly.\n\nHigh-risk zones:\n\n- **precise facts**: dates, figures, names, quotes, law numbers;\n- **narrow topics** that little is written about online;\n- **links and sources**: article and book titles may be invented;\n- **recent events** — because of the knowledge cutoff date (more on this below)." },
+    { "type": "heading", "text": "The knowledge cutoff date" },
+    { "type": "text", "md": "Every model has a **knowledge cutoff date** — the moment up to which the data for its training was collected. Everything that happened after, the model simply **hasn't seen**: new events, exchange rates, newly passed laws, yesterday's match results.\n\nImagine a very well-read friend who's just returned from a year-long expedition with no internet: he reasons brilliantly about history and science, but doesn't know yesterday's news. Ask him about \"today\" and he might, out of habit, answer from his picture of the world, which is now out of date.\n\nSo for questions like \"who is currently…,\" \"what's the current rate of…,\" \"what's new in…\" a model's answer without web search is by definition unreliable." },
+    { "type": "heading", "text": "How to verify: three habits" },
+    { "type": "text", "md": "**1. Ask for sources and a confidence estimate.** Ask: \"How is this known? How confident are you? What here is worth double-checking?\" An honest answer to such a question often highlights the weak spots itself. But remember: source names also need checking — they too can be a hallucination.\n\n**2. Use web search.** Claude has the ability to search the internet (web search) — then the answer relies on up-to-date pages, and Claude provides links you can follow and verify for yourself. For news, prices, and anything \"now\" — this is a must-have tool: ask \"search the internet\" or turn on search if it didn't kick in automatically.\n\n**3. Match the checking to the cost of a mistake.** An idea for a post — the cost of a mistake is zero, there's nothing to check. A medication dose, a legal step, a major purchase — the cost is high: verify against primary sources and consult a specialist. Here Claude is a helper for preparation, not the final authority." },
+    { "type": "example",
+      "bad": "\"Write an essay with a bibliography\" → copy the result and submit it without opening a single source from the list.",
+      "good": "\"Write an essay outline and suggest which sources to look for\" → find real articles (or ask Claude to search the internet and give links) → verify that each link opens and says what it claims.",
+      "explanation": "A bibliography is a classic hallucination zone: plausible titles and authors may not exist. In the second scenario the person uses Claude for structure and a draft (its strength), while keeping the job of verifying that the sources exist to themselves — opened, read, confirmed." },
+    { "type": "table", "headers": ["Situation", "Hallucination risk", "What to do"], "rows": [
+      ["Explaining a well-known topic", "Low", "Use it with confidence"],
+      ["Brainstorming, texts, ideas", "Not applicable", "There are no \"facts\" here — only taste"],
+      ["Dates, figures, names, quotes", "Medium–high", "Double-check the key facts"],
+      ["Links, books, articles", "High", "Open it and confirm it exists"],
+      ["Events after the knowledge cutoff", "Guaranteed out of date", "Only with web search"],
+      ["Health, money, law", "Critical cost of a mistake", "Verification + consult a specialist"]
+    ] },
+    { "type": "text", "md": "And a final touch — calibrating your expectations correctly. Hallucinations don't make Claude useless, just as typos in newspapers never abolished journalism. In creative tasks, explanations, drafts, and brainstorming — that is, in most everyday work — the problem barely shows up. The professional habit sounds simple: **the higher the cost of a mistake and the more \"fact-heavy\" the answer, the more careful the checking**. With this habit you get all the benefit of the tool without its risks." },
+    { "type": "callout", "kind": "docs", "md": "Anthropic's AI Fluency course (anthropic.com/learn) singles out evaluating the output as one of the four key competencies for working with AI: the user is responsible for checking the facts, logic, and appropriateness of an answer before using it. Claude's help materials also state directly that the model can make mistakes and recommend verifying important information." },
+    { "type": "callout", "kind": "warning", "md": "A red flag is asking Claude for links and exact quotes without web search. Without internet access the model reproduces them from memory, and this is exactly where hallucinations happen most often. A link looks real but may lead nowhere." },
+    { "type": "callout", "kind": "tip", "md": "Turn checking into a conversational habit: after getting an important answer, ask a second question — \"What in this answer is the least reliable? Check it against the internet and give me links.\" You use Claude's strength against its own weakness — and it works great." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is a \"hallucination\" when it comes to AI?",
+      "options": [
+        "A server failure that keeps the chat from loading",
+        "Plausible but incorrect information that the model delivers in a confident tone",
+        "The model refusing to answer a question",
+        "An overly long, off-topic answer"
+      ],
+      "correct": [1],
+      "explanation": "A hallucination is when the model generates convincing-looking but incorrect information: invented facts, links, quotes, figures. The danger is that in form such an answer is indistinguishable from a correct one — which is why what matters must be verified.",
+      "hint": "The key words: \"plausible\" and \"incorrect\" at the same time."
+    },
+    {
+      "type": "quiz",
+      "question": "Why is a model without web search unreliable on questions about recent events?",
+      "options": [
+        "Because discussing news is forbidden",
+        "Because the model has a knowledge cutoff date: everything that happened after, it hasn't seen",
+        "Because the model only understands English-language news",
+        "This is a myth — the model always knows everything current"
+      ],
+      "correct": [1],
+      "explanation": "The data for training the model was collected up to a certain date — the knowledge cutoff. Events after it don't exist for the model, but it may still answer out of habit from an outdated picture of the world. For anything \"fresh\" you need web search — then the answer relies on up-to-date pages with links.",
+      "hint": "Recall the analogy about the well-read friend returning from a year-long expedition with no internet."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Claude answered a question about the planets of the Solar System. One classic hallucination is hiding in the answer — a confident but factually incorrect line. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "The Solar System has eight planets.",
+        "The planet closest to the Sun is Mercury.",
+        "The largest planet is Jupiter.",
+        "Mars has two moons: Phobos and Deimos.",
+        "Venus is the farthest planet from the Sun, and its year lasts 165 Earth years.",
+        "Saturn is famous for its ring system."
+      ],
+      "bugLineIndex": 4,
+      "explanation": "The line about Venus is a hallucination: Venus is the second planet from the Sun, not the farthest (the farthest of the planets is Neptune, and it's Neptune's year that lasts about 165 Earth years). Notice how the error disguises itself: a confident tone, a precise figure, a plausible structure — surrounded by correct facts. That's exactly what hallucinations look like."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Let's practice the habit of verifying. Claude just gave you an answer with a statistic: \"According to research, people remember 90% of information from video and only 10% from text.\" The figures seem suspicious. Step 1: ask Claude to assess how reliable this data is or to cite a source. Step 2: ask it to check via internet search.",
+      "steps": [
+        {
+          "expect": ["source", "where from", "sure", "check", "reliable", "reliability", "data", "research"],
+          "minMatches": 1,
+          "claudeReply": "Good question — and an honest answer: these figures should be treated skeptically. 🤔\n\nSimilar percentages (\"people remember 10% of text, 90% of video\") are widely circulated online, but this is a popular myth: there's no careful scientific study with these numbers, and the percentages themselves \"drift\" across different retellings. Actual retention depends heavily on engagement, repetition, and the quality of the material, not just the format.\n\nI can't name a reliable primary source for these figures — that's a sign they shouldn't be used in your work. Want me to search the internet for what verifiable sources say about remembering information?",
+          "failHint": "Ask about reliability, for example: \"Where do these figures come from? How much can they be trusted?\""
+        },
+        {
+          "expect": ["search", "look", "internet", "yes", "go ahead", "check", "links", "find"],
+          "minMatches": 1,
+          "claudeReply": "🔍 Searching the internet… Here's what turned up in verifiable sources:\n\n1. The specific \"10%-text / 90%-video\" pyramid isn't supported by research — sources trace it to a distorted retelling of an old diagram that had no experimental basis.\n2. Reviews of memory research show: retention is affected by active engagement, repetition, and practice — more strongly than the delivery format.\n\nFor each point I'd provide links you can follow and read yourself — that's the whole point of web search: the answer stops being \"the model's words\" and becomes verifiable.\n\nTakeaway for your work: don't cite \"90/10\"; better to reference real reviews on the role of engagement.",
+          "failHint": "Ask for a check via the internet, for example: \"Search the internet and give me links to sources.\""
+        }
+      ],
+      "successMessage": "Great! You applied both habits: you asked about reliability and demanded a check with sources. Notice: Claude readily helps verify itself — that's worth taking advantage of."
+    },
+    {
+      "type": "quiz",
+      "question": "In which situations is verifying the answer mandatory? Select all correct options.",
+      "options": [
+        "Claude came up with a funny caption for a social media photo",
+        "Claude stated a medication dose",
+        "Claude provided a list of articles with authors and years for an essay",
+        "Claude named the \"current\" exchange rate without using web search"
+      ],
+      "correct": [1, 2, 3],
+      "explanation": "A medication dose is a critical cost of a mistake (verification + a doctor). Bibliographies are a classic zone of invented sources: each one needs to be opened. A \"current\" rate without web search is out of date by definition because of the knowledge cutoff. A photo caption, though, is creative work: there are no facts, nothing to check, and the only criterion is whether you like it.",
+      "hint": "Ask yourself about each option: what's the cost of a mistake, and are there verifiable facts there?"
+    }
+  ],
+  "reward": { "cardId": "card-verify", "badgeId": null }
+}

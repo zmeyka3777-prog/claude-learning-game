@@ -1,0 +1,106 @@
+{
+  "id": "pro-teams",
+  "world": "world-5-claude-code-pro",
+  "order": 4,
+  "title": "Agent teams and background work",
+  "subtitle": "Orchestrator and workers: several agents build a project while you drink your coffee",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Agent Teams — Claude Code Docs", "url": "https://code.claude.com/docs/en/agent-teams" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "From helpers to a team" },
+    { "type": "text", "md": "The subagents from the last lesson are helpers \"on call\": the main session handed off a subtask, got a report, and pulled the results together. A great scheme, but it has a ceiling: helpers have no autonomy — they don't run their own big tasks and live exactly as long as the errand lasts.\n\n**Agent teams** are the next level. This is several full-fledged agents working on a task together: one plays the role of **orchestrator** (the lead) — holding the overall plan, handing out tasks and accepting results — while the rest are **workers**, each with their own front of work. The workers here aren't \"ran-and-reported\": each one runs its own piece independently — writes code, runs tests, reports on progress — and the orchestrator coordinates them and assembles the whole." },
+    { "type": "heading", "text": "The \"orchestrator + workers\" workflow" },
+    { "type": "text", "md": "A typical scenario looks like this. You give a big task: \"Add report export to the app: file generation, a button in the interface, tests.\" The orchestrator breaks it into independent pieces and hands them out: agent A does the server-side file generation, agent B — the button and screen in the interface, agent C — the tests. The pieces are independent, so the agents work **in parallel** — three fronts advancing at once, not one after another.\n\nThe orchestrator meanwhile watches the progress, answers the workers' questions, joins up their results, and resolves conflicts. So the agents don't bump elbows editing the same files, the work is split to be genuinely independent — and the isolation is reinforced by giving each worker its own working copy of the repository (in Git this is called a worktree): each edits their own files in their own space, and the results are merged at the end." },
+    { "type": "heading", "text": "Background agents: work with no supervision" },
+    { "type": "text", "md": "The second idea of the lesson is **background work**. You don't have to babysit an agent (or a whole team) in an open terminal: a task can be launched in the background — the agent keeps working while you're busy with something else, and reports the result when it's done. You kicked off \"go through all the review comments and prepare fixes\" in the morning — and came back to a finished result an hour later.\n\nBackground agents really shine on Claude Code's other surfaces (more in the \"Every surface\" lesson): in the desktop app you can run several parallel sessions and glance at their progress, and in the web and on the phone you can launch a cloud session and check it later from any device. The principle is the same: you stop being the bottleneck — the work goes on even without your eyes on the screen." },
+    { "type": "table",
+      "headers": ["Tool", "What it is", "When to choose it"],
+      "rows": [
+        ["A single session", "You and one agent, step by step", "Ordinary tasks, connected chains of edits"],
+        ["Subagents", "Helpers for subtasks, reporting back to the main session", "Rough searching, review, independent checks"],
+        ["Agent team", "Orchestrator + workers, each running their own front", "A big task that splits into independent pieces"],
+        ["Background agent", "Works without your supervision, reports when ready", "Long tasks you'd rather not babysit"]
+      ]
+    },
+    { "type": "example",
+      "bad": "Assemble a team of five agents to fix a typo in the README.",
+      "good": "Assemble a team: split the task \"translate the interface into Russian\" by sections of the app — one worker per section, have them work in parallel; the orchestrator checks terminology consistency at the end.",
+      "explanation": "A team is heavy artillery: several full-fledged agents burn many times more tokens, and the coordination itself takes effort. For a typo it's absurd — a single session handles it in seconds. A good case is a big task made of independent pieces of the same kind: parallelism gives a real time win, and the orchestrator is left with exactly the coordination — the final check of the whole."
+    },
+    { "type": "text", "md": "How do you know it's time to call a team, not subagents? Look at the nature of the subtasks. If a helper needs to **go, find out, and report back** — a subagent is enough. If each piece is **standalone work with a result in code** (a module, a screen, a set of tests), and there are several such pieces — that's a team. And honestly assess the divisibility: if the pieces snag on each other at every step, parallelism won't help — the agents will sit idle waiting for one another, and a single session will turn out faster.\n\nOne more guide is your own role. With subagents you remain the worker with helpers; with a team you become the client of an orchestrator: you accept not pieces but an assembled result. The bigger and more divisible the task, the more it pays to step up to this level." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Agent Teams page) describes teams as a group of agents working on a task in a coordinated way: the lead agent manages the plan and the distribution of work, the workers execute their parts in parallel and exchange results. It also stresses: the benefit is greatest when the work splits into independent parts with no conflicts over the same files." },
+    { "type": "callout", "kind": "warning", "md": "More agents — more spend: each team member consumes tokens like a full session, and your plan's limits burn through several times faster. Start small: two or three workers on a genuinely divisible task. If the team sits idle waiting for one another — the task was indivisible, and it's cheaper to run it as a single session." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How does a worker in an agent team differ from a subagent?",
+      "options": [
+        "It doesn't, they're the same thing",
+        "A worker independently runs its own front of work and coordinates with the orchestrator; a subagent does a one-off errand and returns a report",
+        "A worker works for free",
+        "A subagent can write code, but a worker can't"
+      ],
+      "correct": [1],
+      "explanation": "A subagent is a helper for one errand: went, did it, reported back to the main session. A worker in a team is a full-fledged agent with its own piece of the task: it writes code, tests, reports on progress, and the orchestrator coordinates everyone. Hence the difference in cost: a team is noticeably more expensive.",
+      "hint": "\"Ran and reported\" versus \"runs its own part of the construction site.\""
+    },
+    {
+      "type": "quiz",
+      "question": "Which task benefits most from an agent team?",
+      "options": [
+        "Fixing one typo in a heading",
+        "A chain of edits where each step depends on the previous one",
+        "Translating the interface into Russian: ten independent sections, one worker per section",
+        "Asking how the project is structured"
+      ],
+      "correct": [2],
+      "explanation": "A team pays off on big tasks made of independent pieces: ten sections are translated in parallel, the time is squeezed almost tenfold, and the orchestrator checks the terminology at the end. A typo and a question are work for a single session, and a dependent chain parallelizes poorly: the agents will wait for one another.",
+      "hint": "Parallelism helps where the pieces don't depend on each other."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a task for the team's orchestrator — so the work can be handed out to workers without conflicts. Toss the extra block overboard.",
+      "blocks": [
+        "Goal: add report export to the app in PDF and Excel.",
+        "Breakdown: worker A — file generation on the server, worker B — the button and export dialog in the interface, worker C — tests for both formats.",
+        "Coordination: the pieces are independent, work in parallel; the orchestrator joins the server part with the interface at the end.",
+        "Definition of done: export works from the interface in both formats, all tests green."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Breakdown: have all three workers edit the same api.ts file at once — it'll be faster."
+      ],
+      "explanation": "The formula for a team task: goal → independent breakdown → coordination rules → a verifiable definition of done. The trap block breaks the main principle: three agents in one file means guaranteed edit conflicts, not speedup. The work is split so each worker owns their own files."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You've launched an agent team on a big task and want to step away. Move the work into the background — ask the agent to keep going in the background and report when everything's ready.",
+      "steps": [
+        {
+          "expectPattern": "(in the background|background|keep going|continue without me|report|when you're done|when you finish|step away)",
+          "output": "● Moving the work into the background.\n\n  ⏺ The team continues: worker A — server generation (60%),\n     worker B — interface (40%), worker C — tests (waiting on A).\n\n  You can take your eyes off the terminal — the work won't stop.\n  When everything's ready, I'll send a final report with the results\n  and a list of changed files.",
+          "failHint": "Say in your own words that you're leaving: for example, \"keep going in the background and report when you're done.\""
+        }
+      ],
+      "successMessage": "That's how background mode works: the agents toil unsupervised, and you come back to a finished report. You've stopped being the bottleneck."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to the mission later.**\n\n1. Take a test project with several independent files (or ask Claude to create one: a mini-site of three pages).\n2. Run `claude` and give it a divisible task: \"Add its own heading and a short description to each of the three pages — split the work between parallel agents, one agent per page.\"\n3. Watch how the work is distributed and runs in parallel; wait for the summary result.\n4. Compare the feel with an ordinary session: where's the win, and where's the coordination overhead?",
+      "checklist": [
+        "The task was split into independent pieces",
+        "The pieces ran in parallel, with no conflicts over files",
+        "I got a summary result across all the parts",
+        "I can explain when a team pays off and when it's overkill"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-teams", "badgeId": null }
+}

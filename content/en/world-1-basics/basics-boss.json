@@ -1,0 +1,137 @@
+{
+  "id": "basics-boss",
+  "world": "world-1-basics",
+  "order": 9,
+  "title": "BOSS: Personal Assistant",
+  "subtitle": "World 1 final challenge: apply it all — from the prompt formula to fact-checking",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Getting Started — Claude Help Center", "url": "https://support.claude.com/en/" },
+    { "title": "Claude prompting best practices — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" },
+    { "title": "AI Fluency — Anthropic Academy", "url": "https://www.anthropic.com/learn" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The challenge: the personal assistant's Saturday" },
+    { "type": "text", "md": "This is a boss level. There will be almost no hints — just you and everything you learned across eight lessons.\n\n**The story.** It's Saturday. In a week, your close friend Anya turns 30, and you've volunteered to throw her a surprise party for 12 guests. Time is short and the to-do list is huge: come up with a concept, build a plan, sort out the budget, check a couple of facts, work through a document. Your only helper is Claude. Luckily, after this world you know how to work with it.\n\nWork through a chain of six challenges. Each one is a real step in preparing the party and, at the same time, a test of one of your World 1 skills.\n\nWhy this particular storyline? Because \"personal assistant\" is the main use case for Claude for most people: not abstract exercises, but real-life tasks where you need to brainstorm, plan, calculate, verify, and forget nothing. If you can pull off Anya's party, you can pull off planning a vacation, a move, or interview prep — the playbook is the same." },
+    { "type": "heading", "text": "Your gear: eight skills" },
+    { "type": "text", "md": "A quick review of what's in your arsenal:\n\n1. **Understanding the tool** — Claude creates answers tailored to your task rather than searching for links; it holds a conversation and remembers the chat's context.\n2. **Order in the interface** — a new task = a new chat; renaming and searching across chats keeps your history clean.\n3. **The prompt formula** — context + task + format; being specific is what wins.\n4. **Dialogue** — the first answer is a draft; \"shorter,\" \"simpler,\" \"more options\" bring it to the finish line.\n5. **Models and modes** — fast ones for the simple stuff, powerful ones with extended thinking for the complex.\n6. **Files** — you can upload and discuss PDFs, photos, and spreadsheets.\n7. **Verification** — a confident tone doesn't equal truth: the model has a knowledge cutoff, so verify what matters, and use web search for anything current.\n8. **Mobility** — voice and camera turn Claude into an assistant on the go.\n\nNotice how the skills stack into a chain: understanding the tool tells you **what** to hand it; the formula and dialogue tell you **how** to phrase it and drive it to a result; models, files, and mobility are **what** you use to amplify the work; verification is **how you make sure** the result can be trusted. In the challenges they'll show up not one at a time, but in combinations — just like in real life." },
+    { "type": "heading", "text": "Rules of engagement" },
+    { "type": "text", "md": "How to tackle the challenges:\n\n- **Read the whole task** before you act: in the boss, as in life, half of all mistakes come from rushing.\n- **Keep the formula and dialogue in mind** — they'll save you in every challenge: when in doubt, ask yourself \"is there context, a task, and a format here?\" and \"can I refine this with a follow-up message?\".\n- **Turn on your skepticism** wherever specific numbers, names, and \"great deals\" appear: at least one challenge is testing exactly your vigilance.\n- **Don't be afraid to make mistakes**: a wrong answer doesn't burn your progress — but a clean run feels better, and the boss card is one of the rarest in the album.\n\nThe final, sixth challenge goes beyond the simulator: you'll do real preparation in the real Claude and come back with a checklist. That's how skills truly take root — in real practice, not in theory." },
+    { "type": "table", "headers": ["Challenge", "Party-prep step", "Skill being tested"], "rows": [
+      ["1", "Formulate the task for the party concept", "The prompt formula"],
+      ["2", "Bring the plan to readiness", "Dialogue and refinements"],
+      ["3", "Pick the right tool for each subtask", "Models and modes"],
+      ["4", "Break down the venue's cost estimate", "Working with files"],
+      ["5", "Catch a dubious \"fact\"", "Verification and critical thinking"],
+      ["6", "Do it all in the real Claude", "Everything together"]
+    ] },
+    { "type": "example",
+      "bad": "\"Help me with a birthday\" — and hope Claude figures out Anya, the 12 guests, the surprise, and the one week of prep on its own.",
+      "good": "\"I'm organizing a surprise for my friend's 30th birthday: 12 guests, in a week, tight budget. Suggest 3 concepts for the evening with a short description of each\" — and then refine in dialogue.",
+      "explanation": "The boss level differs from lesson one in that you already know: the power isn't in a single \"perfect\" request or in hoping the AI will read your mind, but in the combo of \"a specific start + a managed dialogue.\" That combo is exactly what this challenge tests." },
+    { "type": "callout", "kind": "docs", "md": "The AI Fluency course (anthropic.com/learn) describes the full cycle of working with AI: decide what to delegate → describe the task precisely → evaluate the result → use it responsibly. This boss is one pass through the whole cycle: you delegate the party prep to Claude, describe the tasks by the formula, evaluate and verify the answers, and make the final decisions yourself." },
+    { "type": "callout", "kind": "warning", "md": "There are no hints, or almost none, in the boss tasks — that's by design. If you feel you're out of your depth on some topic, it's better to go back and replay the matching lesson: the challenge isn't going anywhere, and the XP for it is more honestly earned with a steady hand." },
+    { "type": "text", "md": "Beat the boss and World 1 is closed: you can do things most people who open Claude \"just to ask\" never touch. Ahead is World 2 — advanced claude.ai: Projects, Artifacts, connectors, deep research. There you'll find that everything you've covered was only the foundation — but what a solid one! Good luck on the challenge — Anya is counting on you, and we're counting on you to come back here in half an hour with the boss card and the World 1 badge. 🏆" }
+  ],
+  "tasks": [
+    {
+      "type": "build-prompt",
+      "instruction": "Challenge 1. Assemble the starter prompt for the party concept — by the formula, with no extra blocks.",
+      "blocks": [
+        "Context: I'm organizing a surprise for my friend Anya's 30th birthday, there will be 12 guests, I have a week to prepare and a limited budget.",
+        "Anya loves board games and Italian food, and dislikes loud clubs.",
+        "Task: suggest 3 different party concepts — from cozy to unconventional.",
+        "Format: for each concept — a name, a 2–3 sentence description, and the rough difficulty of preparing it."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Make something nice, your call, the details don't matter.",
+        "Task: find me links to 20 websites about birthdays."
+      ],
+      "explanation": "The right build: context (event, guests, timeline, budget) + personal details about Anya (they make the concepts precise) + a specific task (3 concepts) + format (the structure of each). The traps: \"your call, the details don't matter\" kills specificity, and \"find 20 links\" is a request for a search engine, not for an assistant."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Challenge 2. Claude suggested three concepts: \"Italian evening at home,\" \"Board-game tournament,\" and \"City quest.\" Take it to a plan: pick a concept (or combine them), ask for a prep plan, then refine it for your constraint — you only have one free evening before Saturday.",
+      "steps": [
+        {
+          "expect": ["italian", "board", "quest", "combine", "pick", "like", "plan", "let's", "option"],
+          "minMatches": 2,
+          "claudeReply": "Great choice! Let's combine the \"Italian evening\" with the board-game tournament — Anya gets both her favorite food and her favorite games. 🎲🍝\n\n**Prep plan:**\n\n1. Today: guest list, secret chat, a poll about allergies\n2. Mon: order the cake (30 candles!), plan a 4-dish menu\n3. Tue: buy groceries and decor in Italian colors\n4. Wed: pick 3–4 board games for 12 people, draw up the tournament bracket\n5. Thu: prep the playlist, coordinate the \"surprise\" timing with guests\n6. Fri: cook the base of the menu, decorate the room\n7. Sat: final cooking, greet the guests, surprise!\n\nHow's that? I can lay out the menu, the tournament bracket, or the shopping list in more detail.",
+          "failHint": "Pick a concept and ask for a plan, for example: \"Combine the Italian evening and board games, build a week-long prep plan.\""
+        },
+        {
+          "expect": ["one evening", "free", "compress", "simplify", "less", "time", "manage", "thursday", "only"],
+          "minMatches": 1,
+          "claudeReply": "Got it, squeezing it into reality: everything active goes into one evening (Thursday, say), and the rest is stuff you do from your phone in 5 minutes on any day.\n\n**From your phone during the week:** secret chat with guests, order a cake for Saturday delivery, order groceries and decor for Friday delivery, pick a playlist.\n\n**One free evening (2–3 hours):** plan a 3-dish menu (a pasta bar solves everything!), pick 3 games and the tournament bracket, write the evening's timing.\n\n**Saturday before the party:** cooking (a pasta bar is 1.5 hours), decorating — ask one guest to come early and help.\n\nThe main principle: anything you can delegate to delivery and guests, you delegate. Want me to lay out the pasta bar in more detail?",
+          "failHint": "State the constraint and ask to adapt the plan, for example: \"I only have one free evening — compress the plan for that.\""
+        },
+        {
+          "expect": ["yes", "let's", "lay out", "pasta", "menu", "detail", "thanks", "great", "list"],
+          "minMatches": 1,
+          "claudeReply": "**Pasta bar for 12 guests:**\n\n- 2 kinds of pasta (penne and fettuccine), 1.2 kg total\n- 3 sauces: tomato with basil, creamy with mushrooms, pesto (store-bought — no shame!)\n- Toppings in bowls: parmesan, sun-dried tomatoes, olives, arugula\n- Guests build their own plate — it's also entertainment, and no one's \"stuck at the table\" before the tournament\n\nAppetizers: bruschetta (ready in 15 minutes) and a cheese board (just slice it nicely).\n\nThe plan is done: concept → weekly plan → realistic version → menu. You ran a classic working dialogue — four messages, zero repeating the context. The boss is impressed. 💪",
+          "failHint": "Wrap up the dialogue: agree to the detailed version or ask to lay out the menu."
+        }
+      ],
+      "successMessage": "Challenge 2 complete! You picked a direction, got a plan, and reworked it for your constraint — without starting over and without repeating the context. That's the mastery of dialogue."
+    },
+    {
+      "type": "quiz",
+      "question": "During prep you have three subtasks: (A) quickly translate a phrase for a card into Italian; (B) deeply think through the party budget, prioritizing when money is tight; (C) write a warm invitation for the guests. How do you sensibly assign models and modes?",
+      "options": [
+        "Everything to the most powerful model with extended thinking: it's an important party, after all",
+        "A — a fast model; B — a powerful model, optionally with extended thinking; C — a balanced model",
+        "Everything to the fastest model: time is precious",
+        "A — powerful with thinking; B — fast; C — fast"
+      ],
+      "correct": [1],
+      "explanation": "The right tool for the task: translating a phrase is trivial, so speed wins (Haiku class); a multi-factor budget with priorities is the hardest of the three, so it gets a powerful model and \"thinking\" (Opus class with extended thinking); an invitation is an ordinary text task for a balanced model (Sonnet class).",
+      "hint": "Judge the difficulty of each subtask, not the importance of the party overall."
+    },
+    {
+      "type": "quiz",
+      "question": "The café sent a venue-rental cost estimate — a 6-page PDF with a pile of line items and footnotes. What do you do as a World 1 graduate?",
+      "options": [
+        "Read all 6 pages myself, Claude can't do this",
+        "Write to Claude: \"I have an estimate,\" but not attach the file",
+        "Attach the PDF to the chat and ask: \"Summarize the estimate in plain language, flag hidden charges and line items worth discussing with the café,\" and then cross-check the key amounts against the original",
+        "Attach the PDF with the message \"take a look\" — that's enough"
+      ],
+      "correct": [2],
+      "explanation": "The full file workflow: upload the document + a specific task (a summary, hidden charges, disputable items) + your own cross-check of the key figures against the original, because it's a money decision. \"Take a look\" with no task gives a vague overview, and without the file Claude won't see the estimate at all.",
+      "hint": "Recall two lessons at once: about files and about verifying what matters."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "You asked Claude (without web search) about cake delivery, and it answered. One item in the answer is a classic hallucination that's dangerous to take on faith. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "Here are some tips for ordering a cake for 12 guests:",
+        "1. Plan for roughly 120–150 g of cake per guest.",
+        "2. Order at least 3–4 days ahead: good bakeries have a queue.",
+        "3. The \"Tiramisu and That's It\" bakery on the next street is currently running a 40% discount on anniversary cakes — just use promo code ANYA30.",
+        "4. Check with guests about allergies before choosing the filling.",
+        "5. Ask the bakery to write the greeting on the cake ahead of time, not at pickup."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Item 3 is a fabrication down to the details: without web search the model can't know a specific bakery \"on the next street,\" any active promotions, or promo codes — those are events and facts beyond its knowledge cutoff. Note the disguise: specific numbers and a name sound more convincing than general advice. Current prices and promotions come only from web search or straight from the venue."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "The boss finale: do real preparation in the real Claude (feel free to use your own event — any occasion works).\n\n1. Open **claude.ai**, create a new chat, and rename it — for example, \"Party: prep.\"\n2. Write a starter prompt by the formula: context (event, people, timeline, budget) + task (3 concepts) + format.\n3. Run a dialogue with at least 3 refinements: pick a concept, ask for a plan, compress the plan to fit your real schedule.\n4. Attach any relevant file (a screenshot of prices, a photo of the venue, an estimate — or any PDF for practice) and ask it to break it down.\n5. Ask Claude to check current information (prices, opening hours, venue ideas) via **web search** — and open at least one link from the answer yourself.\n6. Final flourish: ask Claude to gather the whole discussion into a summary prep checklist.",
+      "checklist": [
+        "I created a separate chat and renamed it",
+        "My starter prompt contained context, a task, and a format",
+        "I made at least 3 refinements in the dialogue without repeating the context",
+        "I uploaded a file and got a breakdown of it",
+        "I used web search and opened at least one link myself",
+        "I have a final checklist that Claude assembled from our dialogue"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-boss-1", "badgeId": "badge-world-1" }
+}

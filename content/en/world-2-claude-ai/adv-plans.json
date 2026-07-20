@@ -1,0 +1,111 @@
+{
+  "id": "adv-plans",
+  "world": "world-2-claude-ai",
+  "order": 9,
+  "title": "Plans and limits",
+  "subtitle": "Free, Pro, Max: how plans work, why limits exist, and how to work efficiently",
+  "xp": 50,
+  "durationMin": 7,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Account & Plans — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Three subscription tiers" },
+    { "type": "text", "md": "claude.ai has several access tiers (we're talking about the principles — for current prices and terms, see the official site):\n\n- **Free** — the free tier: basic conversations with Claude. Great for getting acquainted and handling everyday tasks in moderate volume.\n- **Pro** — a paid subscription for active users: noticeably more work volume and access to the advanced capabilities this world was about — Projects, Research, deeper work with features.\n- **Max** — the tier for the most intensive users: maximum volume and priority access to the most powerful capabilities.\n\nThere are also team/enterprise options — with shared projects and administration — but for personal use the ladder looks like this: Free → Pro → Max." },
+    { "type": "heading", "text": "What limits are and why they exist" },
+    { "type": "text", "md": "At any subscription tier there are **usage limits** — restrictions on how much work you do with Claude over a period of time. Hit the limit, and you'll have to wait for it to reset, or move up a tier.\n\nWhy do limits exist at all? Every Claude response is real computation on powerful servers: long conversations, large files, research, and document generation cost significant resources. Limits are a way to fairly divide that capacity among all users, so the service stays fast and available for everyone — not just for those who run it around the clock.\n\nAn important detail: the limit is spent not \"per message\" but on the volume of work. Consumption depends on how much context Claude processes: the length of the conversation, the size of attached files, the complexity of the task. One message in a huge chat with three PDFs \"weighs\" more than the same message in a fresh chat." },
+    { "type": "table", "headers": ["Factor", "Spends more", "Spends less"], "rows": [
+      ["Chat length", "An endless chat about everything: the whole history is re-read at each step", "A new chat for a new task"],
+      ["Files", "Five big PDFs \"just in case\"", "Only the needed file or a fragment of it"],
+      ["Tools", "Research for a trivial question", "Research for genuinely complex questions, plain search for simple ones"],
+      ["Phrasing", "Five attempts to clarify a vague request", "One well-thought-out request following the \"context + task + format\" formula"]
+    ] },
+    { "type": "heading", "text": "How to work efficiently on any plan" },
+    { "type": "text", "md": "A few habits that save your limit and improve answer quality at the same time:\n\n1. **New task — new chat.** Done with a topic — don't continue with a different one in the same chat. Short context = faster, more accurate, cheaper on the limit.\n2. **Phrase it well the first time.** One request with context, task, and format instead of five clarifications — fewer messages and a better result. Everything World 1 taught is also a way to save your limit.\n3. **The right tool for the task.** Don't launch deep research where a quick search will do, and don't load a whole folder of files if the question is about one document.\n4. **Heavy work goes separate.** Big tasks (data analysis, document generation) are better done in dedicated chats, not inside a mile-long conversation.\n5. **Projects instead of repeats.** Instructions and files in a project are set once — no need to re-explain them in every chat." },
+    { "type": "example",
+      "bad": "One endless \"Everything\" chat: in the morning — about a report, at midday — a dinner recipe, in the evening — a spreadsheet analysis, and all of it with ten files attached from last week. By evening the limit is used up, and Claude \"somehow keeps getting confused.\"",
+      "good": "Morning — an \"June report\" chat inside the \"Work\" project. Midday — a new chat about dinner. Evening — a separate \"Spending analysis\" chat with the one CSV you need. Each chat short and focused.",
+      "explanation": "In an endless chat, Claude processes the whole accumulated history and all files for every reply — the limit melts faster, and quality drops: old context interferes with the new task. Separate chats solve both problems at once — and that's the main life hack of this lesson." },
+    { "type": "heading", "text": "If you hit the limit" },
+    { "type": "text", "md": "A message about reaching the limit is not a disaster. Your options:\n\n- **Wait for the reset** — limits refresh at set intervals, and the interface usually tells you when you can continue.\n- **Plan heavy work ahead** — start big research and document generation while the limit is fresh, not at the end of a \"chatted-out\" day.\n- **Consider moving up a tier** — if you hit the limit regularly and Claude genuinely saves you hours, a subscription pays for itself. If it happened once — just wait for the reset.\n\nDecide on a plan based on actual need, not \"just in case.\"" },
+    { "type": "callout", "kind": "docs", "md": "The Claude Account & Plans section on support.claude.com describes the subscription tiers and the principles of limits: usage volume depends on the plan, consumption is tied to the volume of context processed (conversation length, files), and limits reset over time. Current terms and prices are only on the official pages." },
+    { "type": "callout", "kind": "tip", "md": "A zero-cost habit: before sending a message, ask yourself — \"is this a continuation of the same task or a new one?\" If it's new — open a new chat. One second of decision saves your limit and makes answers more accurate." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Why do usage limits exist in claude.ai?",
+      "options": [
+        "To keep users from learning too much about Claude's capabilities",
+        "Every response requires real computation, and limits fairly distribute that capacity among all users",
+        "It's a technical bug that will be removed soon",
+        "Limits only exist on the free plan"
+      ],
+      "correct": [1],
+      "explanation": "Claude's responses are expensive computations on servers. Limits distribute resources so the service stays fast for everyone. Limits exist on every tier — on paid ones they're simply much higher.",
+      "hint": "Think about what physically happens on the servers when Claude responds."
+    },
+    {
+      "type": "quiz",
+      "question": "What affects how fast the limit is spent? Select all that apply.",
+      "options": [
+        "The length of the current conversation — the whole history is processed at each step",
+        "The size and number of attached files",
+        "The complexity of the task and the tools used (for example, Research)",
+        "Only the number of messages sent — nothing else matters"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "The limit is spent on the volume of work: context (history + files) and heavy tools \"weigh\" more. That's exactly why a message in a fresh chat is cheaper than the same message in a mile-long chat full of PDFs.",
+      "hint": "Recall the \"spends more / spends less\" table."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Tips for saving your limit. One tip is harmful — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Start a new chat for each new task.",
+        "2. Phrase your request fully right away: context, task, format.",
+        "3. Attach only the files needed for the current question.",
+        "4. Keep all your business in one long chat — that way Claude gets to know you better and the limit is spent more slowly.",
+        "5. For recurring tasks, use projects instead of re-explaining context."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Line 4 is a harmful myth: it's the opposite. In a long chat the history is reprocessed at every step — the limit melts faster, and quality drops under the weight of irrelevant context. \"Getting to know you\" between chats is the job of Memory and personal instructions, not of an endless chat."
+    },
+    {
+      "type": "quiz",
+      "question": "You're an active Claude user and today, for the first time, you hit the limit, and your task isn't urgent. What's the most sensible thing to do?",
+      "options": [
+        "Immediately buy the most expensive plan",
+        "Delete the account and create a new one",
+        "Wait for the limit to reset, and while you're at it check: maybe I'm burning the limit with long chats and unnecessary files?",
+        "Never use research and files again"
+      ],
+      "correct": [2],
+      "explanation": "A one-off limit hit is a reason to wait and optimize your habits, not to panic-switch plans. An upgrade makes sense when you hit the limit regularly and understand that the extra volume will pay off. Giving up useful features isn't needed either — you just need to use them for their intended purpose.",
+      "hint": "Key words in the setup: \"for the first time\" and \"not urgent.\""
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: your friend complains that they run out of limit quickly. Ask Claude (playing a consultant) how to work more efficiently, and name at least one habit from the lesson.",
+      "steps": [
+        {
+          "expect": ["limit", "save", "quickly", "run out", "efficient", "how", "why", "tip"],
+          "minMatches": 1,
+          "claudeReply": "Let's figure it out! Most often the limit \"leaks\" for three reasons:\n\n1. **One endless chat** — the whole history is processed for every reply.\n2. **Unnecessary files** — PDFs attached \"just in case\" get processed over and over.\n3. **Heavy tools for small things** — deep research where a plain search would have done.\n\nWhich habit from the lesson do you think is most effective against the first reason?",
+          "failHint": "Ask about saving your limit, for example: \"Why does the limit run out fast and how can I work more efficiently?\""
+        },
+        {
+          "expect": ["new chat", "new task", "separate", "project", "short", "chat per", "phrase"],
+          "minMatches": 1,
+          "claudeReply": "Exactly! 🎯 **\"New task — new chat\"** is rule number one: short context is faster, more accurate, and cheaper on the limit. Add projects for recurring tasks (context set once) and full phrasings from the first message — and the limit will last noticeably longer. A nice bonus: all these habits also improve answer quality.",
+          "failHint": "Name a habit from the lesson — for example: \"start a new chat for a new task.\""
+        }
+      ],
+      "successMessage": "You can diagnose \"limit leaks\" and you know the main habits of efficient work. They'll serve you on any plan."
+    }
+  ],
+  "reward": { "cardId": "card-adv-plans", "badgeId": null }
+}

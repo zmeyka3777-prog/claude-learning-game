@@ -1,0 +1,508 @@
+{
+  "cards": [
+    {
+      "id": "card-what-is-claude",
+      "title": "Meet Claude",
+      "rarity": "common",
+      "description": "You know what Claude is, how an AI assistant differs from a search engine, and which models make up the family.",
+      "icon": "bot"
+    },
+    {
+      "id": "card-interface",
+      "title": "The claude.ai Interface",
+      "rarity": "common",
+      "description": "Chats, history, chat search, and settings — you navigate the interface like it's home.",
+      "icon": "layout-dashboard"
+    },
+    {
+      "id": "card-first-prompt",
+      "title": "First Prompt",
+      "rarity": "rare",
+      "description": "Context + task + format: you know how to phrase a request to get the result you want on the first try.",
+      "icon": "pen-line"
+    },
+    {
+      "id": "card-dialog",
+      "title": "Conversation Master",
+      "rarity": "common",
+      "description": "Clarifications, rephrasings, following a train of thought — you hold a conversation with Claude rather than firing off one-off requests.",
+      "icon": "messages-square"
+    },
+    {
+      "id": "card-models",
+      "title": "The Model Family",
+      "rarity": "epic",
+      "description": "Opus, Sonnet, Haiku, Fable, and extended thinking — you deliberately pick the model and mode to fit the task.",
+      "icon": "sparkles"
+    },
+    {
+      "id": "card-files",
+      "title": "Working with Files",
+      "rarity": "common",
+      "description": "PDFs, images, spreadsheets, and code: you know what you can upload to Claude and what to ask it to do with them.",
+      "icon": "file-stack"
+    },
+    {
+      "id": "card-verify",
+      "title": "Trust, but Verify",
+      "rarity": "rare",
+      "description": "Hallucinations, knowledge cutoff, fact-checking — you know how to verify AI answers.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-mobile-voice",
+      "title": "Claude in Your Pocket",
+      "rarity": "common",
+      "description": "The mobile app and voice mode: Claude is available to you anywhere.",
+      "icon": "smartphone"
+    },
+    {
+      "id": "card-boss-1",
+      "title": "Personal Assistant",
+      "rarity": "legendary",
+      "description": "World 1 boss defeated: the full loop — phrase it, clarify it, get the result. You're a confident Claude user.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-adv-projects",
+      "title": "Projects",
+      "rarity": "rare",
+      "description": "Project instructions and a knowledge base: you organize your work with Claude in projects, not a pile of scattered chats.",
+      "icon": "folder-kanban"
+    },
+    {
+      "id": "card-adv-artifacts",
+      "title": "Artifacts",
+      "rarity": "epic",
+      "description": "Interactive documents and mini-apps right in the chat — you create and publish artifacts.",
+      "icon": "app-window"
+    },
+    {
+      "id": "card-adv-memory",
+      "title": "Memory and Instructions",
+      "rarity": "common",
+      "description": "Personal instructions and memory across chats are tuned to you.",
+      "icon": "brain"
+    },
+    {
+      "id": "card-adv-research",
+      "title": "Research",
+      "rarity": "rare",
+      "description": "Deep research with sources: you know how to pose a research question and read the report critically.",
+      "icon": "telescope"
+    },
+    {
+      "id": "card-adv-connectors",
+      "title": "Connectors: Theory",
+      "rarity": "common",
+      "description": "You understand what a connector is, how verified differs from community, and how to think about security.",
+      "icon": "cable"
+    },
+    {
+      "id": "card-adv-connectors-practice",
+      "title": "Connectors: Practice",
+      "rarity": "rare",
+      "description": "Gmail, Drive, and Calendar are connected — Claude works with your data on your command.",
+      "icon": "plug-zap"
+    },
+    {
+      "id": "card-adv-documents",
+      "title": "Document Factory",
+      "rarity": "common",
+      "description": "docx, xlsx, pptx, pdf as output — you ask for finished files instead of copying text by hand.",
+      "icon": "file-output"
+    },
+    {
+      "id": "card-adv-data-analysis",
+      "title": "Data Analyst",
+      "rarity": "rare",
+      "description": "Upload a spreadsheet, ask a question, get a summary and a chart — data analysis with Claude mastered.",
+      "icon": "chart-spline"
+    },
+    {
+      "id": "card-adv-plans",
+      "title": "Plans and Limits",
+      "rarity": "common",
+      "description": "You know how limits work and how to use Claude effectively on any plan.",
+      "icon": "gauge"
+    },
+    {
+      "id": "card-adv-boss",
+      "title": "The Work Week",
+      "rarity": "legendary",
+      "description": "World 2 boss defeated: project → research → analysis → document → artifact. A full work pipeline with Claude.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-cc-what-is",
+      "title": "An Agent in the Terminal",
+      "rarity": "common",
+      "description": "You understand how the Claude Code agent differs from chat and which surfaces it lives on.",
+      "icon": "square-terminal"
+    },
+    {
+      "id": "card-cc-install",
+      "title": "First Session",
+      "rarity": "common",
+      "description": "Claude Code is installed and running — the first task is handed to the agent.",
+      "icon": "play"
+    },
+    {
+      "id": "card-cc-permissions",
+      "title": "Guardian of Permissions",
+      "rarity": "rare",
+      "description": "Read, write, run commands: you deliberately decide what to allow the agent and what not to.",
+      "icon": "shield"
+    },
+    {
+      "id": "card-cc-claude-md",
+      "title": "CLAUDE.md",
+      "rarity": "epic",
+      "description": "Project memory is set up: the agent knows your commands, rules, and structure without an explanation every session.",
+      "icon": "book-open-text"
+    },
+    {
+      "id": "card-cc-commands",
+      "title": "Slash Master",
+      "rarity": "common",
+      "description": "/init, /help, /clear, /compact, and resuming sessions — Claude Code commands at your fingertips.",
+      "icon": "command"
+    },
+    {
+      "id": "card-cc-workflows",
+      "title": "Workflows",
+      "rarity": "rare",
+      "description": "Feature, bugfix, tests, review — you frame tasks for the agent by the rule \"plan first, code second.\"",
+      "icon": "workflow"
+    },
+    {
+      "id": "card-cc-git",
+      "title": "Git Navigator",
+      "rarity": "rare",
+      "description": "Commits, branches, and PRs by Claude's hand — your project's change history under control.",
+      "icon": "git-branch"
+    },
+    {
+      "id": "card-cc-context",
+      "title": "The Context Window",
+      "rarity": "common",
+      "description": "You know why a session \"gets tired,\" when to run /compact, and when to start a new one.",
+      "icon": "scan-line"
+    },
+    {
+      "id": "card-cc-boss",
+      "title": "First Project",
+      "rarity": "legendary",
+      "description": "World 4 boss defeated: init → task → permissions → commit. You work with Claude Code like a teammate.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-sk-what-is",
+      "title": "A Folder of Instructions",
+      "rarity": "common",
+      "description": "A skill is a folder with a SKILL.md that Claude loads on its own based on the description.",
+      "icon": "folder-open"
+    },
+    {
+      "id": "card-sk-library",
+      "title": "The Anthropic Library",
+      "rarity": "common",
+      "description": "17 official skills: documents, design, development, writing, and a meta-skill.",
+      "icon": "library"
+    },
+    {
+      "id": "card-sk-anatomy",
+      "title": "Anatomy of a SKILL.md",
+      "rarity": "common",
+      "description": "YAML frontmatter with name and description, Markdown instructions, and resources alongside — the three layers of any skill.",
+      "icon": "file-code"
+    },
+    {
+      "id": "card-sk-trigger",
+      "title": "The Trigger Description",
+      "rarity": "rare",
+      "description": "The description decides when a skill fires: the outcome, the trigger words, and the boundaries.",
+      "icon": "crosshair"
+    },
+    {
+      "id": "card-sk-first",
+      "title": "First Skill",
+      "rarity": "rare",
+      "description": "The full loop by hand: task, template, SKILL.md, three tests, and iteration.",
+      "icon": "hammer"
+    },
+    {
+      "id": "card-sk-creator",
+      "title": "skill-creator Master",
+      "rarity": "epic",
+      "description": "A skill that creates skills: you give it raw material, go through the interview, and accept the work against a checklist.",
+      "icon": "wand-sparkles"
+    },
+    {
+      "id": "card-sk-boss",
+      "title": "A Skill of Your Own",
+      "rarity": "legendary",
+      "description": "A working skill for your own task that passed every test — a tool that stays with you after the game.",
+      "icon": "trophy"
+    },
+    {
+      "id": "card-pro-skills",
+      "title": "Project Skills",
+      "rarity": "common",
+      "description": "You put your team's methods in .claude/skills, invoke them with a slash command, and know how a project skill differs from a personal one.",
+      "icon": "puzzle"
+    },
+    {
+      "id": "card-pro-hooks",
+      "title": "Hook Master",
+      "rarity": "epic",
+      "description": "PreToolUse, PostToolUse, Stop: your checks always run — auto-lint, auto-test, and auto-save work without reminders.",
+      "icon": "webhook"
+    },
+    {
+      "id": "card-pro-subagents",
+      "title": "Commander of Subagents",
+      "rarity": "epic",
+      "description": "Grunt work goes into other context windows: you delegate subtasks to helpers and get back only compact reports.",
+      "icon": "git-fork"
+    },
+    {
+      "id": "card-pro-teams",
+      "title": "Orchestrator",
+      "rarity": "rare",
+      "description": "Teams of agents and background work: you split a big task into independent pieces and stop being the bottleneck.",
+      "icon": "users"
+    },
+    {
+      "id": "card-pro-schedules",
+      "title": "Master of Schedules",
+      "rarity": "common",
+      "description": "/loop, scheduled tasks, and routines: the morning report and the automatic PR check happen on their own — no \"as usual\" in the instructions.",
+      "icon": "alarm-clock"
+    },
+    {
+      "id": "card-pro-ci",
+      "title": "An Agent in the Pipeline",
+      "rarity": "rare",
+      "description": "Claude Code in GitHub Actions and GitLab: auto-review of every PR, auto-fixing tests via @claude — and keys only in secrets.",
+      "icon": "git-pull-request"
+    },
+    {
+      "id": "card-pro-settings",
+      "title": "Guardian of Configuration",
+      "rarity": "rare",
+      "description": "settings.json levels, an allowlist without Bash(*), deny beating allow, and the sandbox: freedom for the agent — without security holes.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-pro-surfaces",
+      "title": "Everywhere at Once",
+      "rarity": "common",
+      "description": "Slack, Chrome, desktop, web, and mobile: you hand the agent tasks where they arise, and sessions travel with you.",
+      "icon": "layout-grid"
+    },
+    {
+      "id": "card-pro-boss",
+      "title": "Autopilot",
+      "rarity": "legendary",
+      "description": "World 5 final boss defeated: hooks, subagents, and a schedule assembled into a project that maintains itself.",
+      "icon": "plane"
+    },
+    {
+      "id": "card-mcp-what-is",
+      "title": "The MCP Connector",
+      "rarity": "common",
+      "description": "Host, client, server, and three primitives — tools, resources, prompts: you understand how AI connects to the outside world.",
+      "icon": "usb"
+    },
+    {
+      "id": "card-mcp-connect",
+      "title": "Connection Master",
+      "rarity": "common",
+      "description": "claude mcp add, /mcp, the server registry, and the connector catalog — you connect ready-made servers and know whom to trust.",
+      "icon": "cable"
+    },
+    {
+      "id": "card-mcp-servers",
+      "title": "The Reference Seven",
+      "rarity": "rare",
+      "description": "Everything, Fetch, Filesystem, Git, Memory, Sequential Thinking, Time — you know what each reference server does and what its code teaches.",
+      "icon": "server"
+    },
+    {
+      "id": "card-mcp-build-simple",
+      "title": "Server Author",
+      "rarity": "epic",
+      "description": "The Python/TypeScript SDK and your first own tool: you crossed over from MCP user to server author.",
+      "icon": "hammer"
+    },
+    {
+      "id": "card-mcp-build-deep",
+      "title": "Three Primitives in Action",
+      "rarity": "rare",
+      "description": "Resources, prompts, trigger descriptions, and errors that help the model — your server runs predictably and safely.",
+      "icon": "layers"
+    },
+    {
+      "id": "card-mcp-plugins",
+      "title": "Plugin Builder",
+      "rarity": "epic",
+      "description": "The plugin.json manifest, skills/commands/agents/hooks/.mcp.json components, and testing with --plugin-dir — you package extensions into plugins.",
+      "icon": "puzzle"
+    },
+    {
+      "id": "card-mcp-marketplaces",
+      "title": "Catalog Connoisseur",
+      "rarity": "rare",
+      "description": "The official and community marketplaces, the /plugin command, and a trust checklist — you choose and install plugins deliberately.",
+      "icon": "store"
+    },
+    {
+      "id": "card-mcp-boss",
+      "title": "Published!",
+      "rarity": "legendary",
+      "description": "The end-to-end journey is complete: your own plugin with a skill and an MCP server — from an empty folder to GitHub and a catalog submission.",
+      "icon": "trophy"
+    },
+    {
+      "id": "card-api-first-request",
+      "title": "First Request",
+      "rarity": "common",
+      "description": "API key obtained, first Messages API call made.",
+      "icon": "send"
+    },
+    {
+      "id": "card-api-messages",
+      "title": "Messages API",
+      "rarity": "common",
+      "description": "System prompt, conversation history, and streaming — the foundation of any app built on Claude.",
+      "icon": "messages-square"
+    },
+    {
+      "id": "card-api-prompting",
+      "title": "Prompt Engineer",
+      "rarity": "rare",
+      "description": "XML tags, few-shot, and chain-of-thought — prompts at the level of Anthropic's documentation.",
+      "icon": "braces"
+    },
+    {
+      "id": "card-api-tool-use",
+      "title": "Tool Use",
+      "rarity": "epic",
+      "description": "The agentic loop mastered: Claude calls your tools and works with the results.",
+      "icon": "wrench"
+    },
+    {
+      "id": "card-api-structured",
+      "title": "Structured Outputs",
+      "rarity": "rare",
+      "description": "Guaranteed JSON matching a schema — no more parsing and hoping for the best.",
+      "icon": "file-json"
+    },
+    {
+      "id": "card-api-vision",
+      "title": "Vision and PDF",
+      "rarity": "common",
+      "description": "Images and documents as API input — multimodality in action.",
+      "icon": "image"
+    },
+    {
+      "id": "card-api-thinking",
+      "title": "Extended Thinking",
+      "rarity": "epic",
+      "description": "You know when to let the model think longer — and when it's overkill.",
+      "icon": "brain-circuit"
+    },
+    {
+      "id": "card-api-economy",
+      "title": "Token Economics",
+      "rarity": "rare",
+      "description": "Tokens, prompt caching, and batches — costs under control.",
+      "icon": "coins"
+    },
+    {
+      "id": "card-api-cookbooks",
+      "title": "Cookbooks",
+      "rarity": "common",
+      "description": "Anthropic's official Jupyter recipes: RAG, evals, subagents — run and understood.",
+      "icon": "book-open"
+    },
+    {
+      "id": "card-api-agent-sdk",
+      "title": "Agent SDK",
+      "rarity": "epic",
+      "description": "Your own agent on the Claude Code engine: query(), tools, hooks, permissions.",
+      "icon": "bot"
+    },
+    {
+      "id": "card-api-managed",
+      "title": "Managed Agents",
+      "rarity": "rare",
+      "description": "Agents on Anthropic's infrastructure: sessions and a sandbox without hosting your own.",
+      "icon": "cloud-cog"
+    },
+    {
+      "id": "card-api-boss",
+      "title": "A Product on the API",
+      "rarity": "legendary",
+      "description": "World 7 boss defeated: from a key to a working application with tool use.",
+      "icon": "crown"
+    },
+    {
+      "id": "card-eco-slack",
+      "title": "Claude on the Team",
+      "rarity": "common",
+      "description": "Claude Tag in Slack: thread summaries, answers from your docs, and drafts — right in the team's channels and DMs.",
+      "icon": "message-square"
+    },
+    {
+      "id": "card-eco-excel",
+      "title": "Spreadsheet Master",
+      "rarity": "common",
+      "description": "Claude in Excel and Microsoft 365: dissecting other people's models, formulas, and error-hunting — and the iron rule of checking the numbers.",
+      "icon": "table"
+    },
+    {
+      "id": "card-eco-chrome",
+      "title": "An Agent at the Browser's Wheel",
+      "rarity": "rare",
+      "description": "Claude in Chrome: navigation, actions on pages, and the full debugging loop for web apps — with narrow permissions and confirmations.",
+      "icon": "globe"
+    },
+    {
+      "id": "card-eco-cowork",
+      "title": "An Autonomous Teammate",
+      "rarity": "epic",
+      "description": "Cowork: you hand over the whole task, the agent plans and executes — and you accept the work as a manager would.",
+      "icon": "briefcase"
+    },
+    {
+      "id": "card-eco-security",
+      "title": "Shield Against Injections",
+      "rarity": "epic",
+      "description": "You recognize prompt injection, don't hand secrets into the chat, and keep agents' irreversible actions behind a confirmation.",
+      "icon": "shield-check"
+    },
+    {
+      "id": "card-eco-org",
+      "title": "The Enterprise Perimeter",
+      "rarity": "rare",
+      "description": "Roles, policies, SSO, and zero data retention: you understand how Claude rolls out across an organization without chaos.",
+      "icon": "building-2"
+    },
+    {
+      "id": "card-eco-news",
+      "title": "Always in the Loop",
+      "rarity": "common",
+      "description": "Changelog, release notes, the newsroom, and Anthropic Academy: your 15-minute monthly ritual against knowledge going stale.",
+      "icon": "newspaper"
+    },
+    {
+      "id": "card-eco-exam",
+      "title": "Claude Master",
+      "rarity": "legendary",
+      "description": "The final exam is passed: a clear brief, the right tool, access control, and verifying the result — the four principles of a master in your hands.",
+      "icon": "crown"
+    }
+  ]
+}

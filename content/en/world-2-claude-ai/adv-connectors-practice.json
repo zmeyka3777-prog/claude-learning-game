@@ -1,0 +1,111 @@
+{
+  "id": "adv-connectors-practice",
+  "world": "world-2-claude-ai",
+  "order": 6,
+  "title": "Connectors: hands-on",
+  "subtitle": "Connecting Gmail, Google Drive, and Calendar — and turning Claude into a personal assistant",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "MCP connectors — Claude Help Center", "url": "https://support.claude.com/en/articles/14503689-mcp-connectors" },
+    { "title": "Claude Connectors Directory", "url": "https://claude.com/connectors" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "From theory to practice" },
+    { "type": "text", "md": "In the last lesson you learned what connectors are and how to pick trusted ones. Now — hands-on with the most popular combo: **email + drive + calendar** (using Gmail, Google Drive, and Google Calendar as examples; the logic is the same with other services).\n\nThis trio covers the lion's share of office routine: \"find the email,\" \"what's in that document,\" \"when do I have a slot for a meeting.\" Once connected, all of it is done with a single phrase in chat." },
+    { "type": "heading", "text": "How connecting works" },
+    { "type": "text", "md": "The flow is the same for any connector:\n\n1. Open the connectors section — in claude.ai settings or via the directory.\n2. Find the service you need (say, Gmail) and click \"connect.\"\n3. The service will open its own **authorization window** — you sign in to your account on the service's side and see the list of requested permissions. Read it!\n4. Confirm — and the connector is active: Claude can now reach the service in your chats.\n\nNote: you enter your password on the service's own page (Google), not hand it to Claude. This is standard secure authorization — like \"sign in with Google\" on other sites. You can revoke access at any time: on Claude's side (in connector settings) or on the service's side (in your account's security settings)." },
+    { "type": "heading", "text": "Email: clearing the backlog" },
+    { "type": "text", "md": "With an email connector, Claude becomes a secretary. Example requests:\n\n- \"**Find the email** from Olga about the lease agreement — summarize what was agreed\";\n- \"Which emails from this week **need my reply**? Sort by urgency\";\n- \"Gather everything the tax office wrote this month into a short summary\";\n- \"**Draft a reply** to the client's last email: politely reschedule the meeting to Thursday.\"\n\nNotice: not only exact queries work (\"email from date X\") but also meaning-based ones — \"about the agreement,\" \"needing a reply.\" Claude searches by meaning, not just by words." },
+    { "type": "heading", "text": "Drive and calendar" },
+    { "type": "text", "md": "**Google Drive:** Claude finds documents and answers based on their contents without making you open each file:\n\n- \"Find the Q3 sales deck on the drive and summarize the key numbers\";\n- \"Which document has our delivery terms? Quote the section on timelines\";\n- \"Compare the two versions of the proposal on the drive — what's different?\"\n\n**Google Calendar:** your schedule becomes a conversation:\n\n- \"**What's on my calendar** tomorrow? Where's the busiest part of the week?\";\n- \"Find a free 60-minute slot on Thursday afternoon\";\n- \"Set up a team meeting on Friday at 3:00 PM, call it 'Sprint Retro'.\"\n\nIf the connector has write permissions, Claude can create events and drafts — but actions that change data it usually spells out and double-checks before carrying out." },
+    { "type": "heading", "text": "The magic is in combinations" },
+    { "type": "text", "md": "Real automation begins when connectors work together in a single request:\n\n- \"Look at the email from the conference organizers, **find a free day** in my calendar from the ones proposed, and prepare a draft reply confirming\";\n- \"Gather all the client's project wishes from email, cross-check them against the current spec **on the drive**, and list the contradictions\";\n- \"Every morning it's useful to ask: what's on the calendar today + which emails came in overnight and need a response — one phrase, a ready morning briefing.\"\n\nYou describe the *result*, and Claude decides on its own which service to visit and for what. That's what automation scenarios are: not \"open email, then the calendar, then compare,\" but \"confirm attendance on a convenient day.\"\n\nCombinations work even more powerfully inside projects: in a \"Work\" project with the instruction \"my clients are X and Y, priority is deadlines,\" that same morning briefing will set its own accents by your rules. World 2's features multiply each other." },
+    { "type": "example",
+      "bad": "\"Check my email.\"",
+      "good": "\"Look through today's unread emails. List the ones that need my reply, in order of urgency: from whom, the gist in one line, the deadline if one is mentioned. Skip newsletters and notifications.\"",
+      "explanation": "\"Check my email\" doesn't say what to look for or what to return — you'll get a random recap. The second request sets a period (today), a filter (need a reply, no newsletters), and a format (a list by urgency) — turning a mountain of email into a short action plan." },
+    { "type": "callout", "kind": "docs", "md": "The \"MCP connectors\" article on support.claude.com describes connecting connectors: integrations are built on the MCP protocol, authorization happens on the side of the service being connected, and you can manage active connectors (including disconnecting) in settings. The directory of available integrations is at claude.com/connectors." },
+    { "type": "callout", "kind": "warning", "md": "When connecting a work Google account, remember: the emails and documents Claude accesses enter the conversation's context. Act by company policy, and for experimenting it's better to start with a personal account. And before Claude sends an email or creates an event — check exactly what it's about to do." },
+    { "type": "callout", "kind": "tip", "md": "Meaning-based search is the key skill of this lesson. Don't recall the exact subject line of an email: describe the gist (\"the email where we discussed moving the deadline\") — Claude will find it. Same with drive documents: \"the file with the trip budget calculation\" works better than guessing the name." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How does authorization work when connecting the Gmail connector?",
+      "options": [
+        "You send your Google password into the Claude chat",
+        "You sign in to your account in Google's own authorization window and confirm the requested permissions there",
+        "Claude guesses the password automatically",
+        "You need to forward an email with an access code to support"
+      ],
+      "correct": [1],
+      "explanation": "The password is entered only on the service's own page — this is standard secure authorization, like \"sign in with Google\" on websites. Claude doesn't see the password, and the granted access can be revoked both in Claude's settings and in your Google account settings.",
+      "hint": "Recall: whom do you show your password to, and whom do you only give a permission confirmation?"
+    },
+    {
+      "type": "quiz",
+      "question": "Which request uses two connectors at once?",
+      "options": [
+        "\"Find the email from accounting about vacation\"",
+        "\"What's on my calendar on Friday?\"",
+        "\"Look at the proposed meeting dates in the email and find a free slot in my calendar for them\"",
+        "\"Summarize the sales-plan document from the drive\""
+      ],
+      "correct": [2],
+      "explanation": "The third request needs both email (read the dates from the message) and calendar (find a slot) — Claude visits both services on its own. The others get by with one connector. These combinations are exactly what automation scenarios are.",
+      "hint": "Count how many services each option needs to reach."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Build an \"assistant morning briefing\" — a request that uses the calendar and email and produces a plan for the day. Order: calendar → email → priorities → format.",
+      "blocks": [
+        "Look at my calendar for today: list the meetings with their times.",
+        "Check the unread emails from overnight and flag the ones that need a reply by end of day.",
+        "Match the two together: what I should set aside time for between meetings first.",
+        "Present it all as one short \"Plan for the day\" list — no more than 7 items."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Delete all emails from last month without reviewing them.",
+        "List all 500 emails in the \"Inbox\" folder in full."
+      ],
+      "explanation": "A good briefing: calendar data + filtered email + prioritization + a compact format. Mass deletion without review is a dangerous action you can't automate blindly, and dumping every email turns the summary into a junk pile."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you have Gmail and Google Calendar connected. Ask Claude to find the email about the \"Alpha\" project meeting and check whether you're free at the proposed time.",
+      "steps": [
+        {
+          "expect": ["email", "find", "alpha", "meeting", "calendar", "free", "time", "check"],
+          "minMatches": 2,
+          "claudeReply": "Searching via the Gmail connector... 📧 Found it: email from Dmitry, yesterday, 6:42 PM — \"Alpha project meeting.\" He proposes **Thursday, 2:00 PM, one hour**, to discuss the phase-2 budget.\n\nChecking the calendar... 📅 On Thursday you're busy 1:00–2:30 PM (\"Department sync\"). The proposed time **conflicts** with it.\n\nThe nearest free slots on Thursday: 3:00–5:00 PM. Should I draft a reply suggesting a move to 3:00 PM?",
+          "failHint": "Ask specifically: \"Find the email about the Alpha project meeting and check the calendar to see if I'm free at that time.\""
+        },
+        {
+          "expect": ["yes", "draft", "reply", "reschedule", "propose", "3", "sure", "write"],
+          "minMatches": 1,
+          "claudeReply": "Done, here's the draft reply: ✍️\n\n> Hi Dmitry! Thanks for the invite. At 2:00 PM I have a sync — I could do Thursday at 3:00 PM, same duration. Does that work?\n\nThe draft is saved in your email — **you confirm sending yourself**, I don't send emails without a check. Notice the whole scenario: one message from you → search in email → cross-check with the calendar → a ready draft. This is automation through connectors.",
+          "failHint": "Agree to the suggestion: \"Yes, draft a reply moving it to 3:00 PM.\""
+        }
+      ],
+      "successMessage": "You completed a combined scenario: email + calendar + a draft in one conversation. In real claude.ai with connectors set up, it works the same way."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: connect your first connector and run through three scenarios.\n\n1. Open **claude.ai** → settings → the connectors section (or the directory at claude.com/connectors). Pick one service you actually use: email, calendar, or cloud drive.\n2. Before connecting, check: status (verified?), developer, requested permissions. Connect through the service's authorization window.\n3. Scenario 1 — search: \"find [the email/document/event] about [topic]\" — phrase it by meaning, without the exact name.\n4. Scenario 2 — summary: ask for a digest (\"summary of this week's emails from X,\" \"summarize the document,\" \"my schedule for the week as a list\").\n5. Scenario 3 — an action with a check: a draft reply or a new event. Verify the result in the service itself.\n6. Drop back into connector settings once more: make sure you can see where this access gets disconnected.",
+      "checklist": [
+        "I checked the connector's status, developer, and permissions before connecting",
+        "I connected the connector via authorization on the service's side",
+        "Meaning-based search found what I had in mind",
+        "I got a useful summary of my data",
+        "I performed an action (draft/event) and verified it in the service itself",
+        "I know where to disconnect the connector"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-connectors-practice", "badgeId": null }
+}

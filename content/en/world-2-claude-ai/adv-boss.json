@@ -1,0 +1,130 @@
+{
+  "id": "adv-boss",
+  "world": "world-2-claude-ai",
+  "order": 10,
+  "title": "BOSS: A Work Week",
+  "subtitle": "A project, research, data analysis, a document and an artifact — everything you've learned, in one scenario",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Claude Features — Claude Help Center", "url": "https://support.claude.com/en/" },
+    { "title": "Claude Connectors Directory", "url": "https://claude.com/connectors" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The final challenge of World 2" },
+    { "type": "text", "md": "You've completed nine lessons and now command a whole arsenal: Projects, Artifacts, Memory, Research, Connectors, documents, data analysis and the skill of not running into limits. It's time for the boss.\n\n**The setup:** you're a marketer at a small coffee-shop chain called \"Zerno.\" On Monday the director sets the task of the week: *\"By Friday, propose how to boost sales. Study what competitors are doing, dig into our numbers, give me a document with a plan — and something visual for the team meeting.\"*\n\nThe week runs like a real one: Monday — organizing, Tuesday — research, Wednesday — data, Thursday — the document, Friday — presenting the result. There will be no hints in the tasks: bosses are beaten with what's already in your head.\n\nWhy an end-to-end scenario like this? Because the real value of World 2 isn't in the individual features, but in linking them together. A project without research is an empty folder; research without an analysis of your own data is someone else's conclusions; a document without a visual delivery is a file nobody opens. The boss tests exactly this ability — to assemble the chain." },
+    { "type": "heading", "text": "Map of the week" },
+    { "type": "table", "headers": ["Day", "Task", "Tool from World 2"], "rows": [
+      ["Monday", "Organize a workspace around the task", "Project: instructions + knowledge base"],
+      ["Tuesday", "Study the market and competitors", "Research: a question-brief with criteria"],
+      ["Wednesday", "Break down your own sales", "Data analysis: table → conclusions"],
+      ["Thursday", "Assemble a plan for the director", "Document: docx with a set structure"],
+      ["Friday", "Show the team visually", "Artifact: an interactive page"]
+    ] },
+    { "type": "heading", "text": "Why this exact order" },
+    { "type": "text", "md": "Notice the logic of the pipeline — it carries over to any work task:\n\n1. **The project first.** The whole week is one topic. Instructions (\"you're a marketing analyst for a coffee-shop chain, the audience is the director, the style is businesslike and concise\") and files (the sales export, past materials) are set once — and work across all the week's chats.\n2. **Then external data.** Research answers the question \"what's happening in the market?\" — with criteria, a city scope and a \"comparison + conclusions with links\" format.\n3. **Then internal data.** Analysis of the sales table answers the question \"and what about us?\": trends, menu leaders and laggards, anomalies.\n4. **Then synthesis into a document.** The research conclusions + the analysis conclusions come together into a plan: a docx with a structure you set.\n5. **Delivery at the end.** The team doesn't need a twenty-page plan — it needs a visual artifact: a page with the three main ideas and a chart.\n\nEach step builds on the previous one, and all of it lives in a single project — nothing gets lost or re-explained from scratch.\n\nRemember this template as a universal one: \"organize the space → gather external facts → gather internal facts → synthesize a document → make a visual delivery.\" It works equally well for a sales plan, a term paper, an apartment search and launching your own business. Only the data and the wording change — the pipeline stays the same." },
+    { "type": "example",
+      "bad": "Monday, one chat: \"Claude, come up with how to boost the coffee shop's sales, oh and make a presentation, and check out the competitors, basically everything at once.\"",
+      "good": "Monday: I create a project \"Zerno: sales growth plan,\" write the instructions, upload the sales export. Tuesday: chat \"Market\" — Research on competitors with criteria. Wednesday: chat \"Our numbers\" — analysis of the export. Thursday: chat \"Plan\" — a docx based on the two previous results. Friday: chat \"Meeting\" — an artifact with the main ideas.",
+      "explanation": "\"Everything at once\" in one message gives you mush: without data and research the plan will be made up, and one chat for everything is also a drain on your limit with a drop in quality. A step-by-step pipeline within a project gives a verifiable result at every stage — and each next step stands on the previous one." },
+    { "type": "heading", "text": "The small things that make the difference" },
+    { "type": "text", "md": "- **Data for analysis** — anonymize it: you don't need customer names to draw conclusions about sales.\n- **The Research report** — check it against the links before putting its conclusions into the plan for the director: only verified facts should make it into the document, and hypotheses should be marked \"hypothesis.\"\n- **The document** — review it first, then send it: numbers, names, structure.\n- **The artifact** for the meeting shouldn't contain anything that can't be shown to everyone — especially if you decide to publish it via a link.\n- **Your limit** — protect it: heavy steps (Research, analysis, file generation) go in separate chats, without extra files.\n- **Memory and instructions** play in the background: if your personal settings say \"answer concisely, in English,\" you won't have to remind anyone of it in any chat all week.\n- **Connectors** are optional here but fitting: with email connected you could ask \"gather customer wishes from the last month's emails\" — another source of facts for the plan." },
+    { "type": "callout", "kind": "docs", "md": "All of the week's tools are described in the help center at support.claude.com (the Claude Features section): projects with instructions and a knowledge base, deep research mode with a report and sources, analysis of uploaded tables, creating document files, and artifacts with link publishing. The connectors directory is claude.com/connectors." },
+    { "type": "callout", "kind": "warning", "md": "There are no hints in the boss's tasks. If you feel you're shaky on some topic — go back and replay the matching lesson: projects (2.1), artifacts (2.2), Research (2.4), documents (2.7), data analysis (2.8). The boss isn't going anywhere." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Monday. What's the best way to start a week of work on the director's task?",
+      "options": [
+        "Immediately ask Claude to write the final plan — time is precious",
+        "Create a project with instructions (role, audience, style) and upload the sales export to the knowledge base",
+        "Connect every available connector — just in case they come in handy",
+        "Publish an artifact promising a sales boost"
+      ],
+      "correct": [1],
+      "explanation": "The week is one big topic, which means the workspace comes first: a project with instructions and data. A final plan without research and analysis will be fiction, connectors \"just in case\" break the rule of deliberate connecting, and there's nothing to publish yet."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Tuesday. Assemble a Research request about competitors — in the right order: goal → criteria → scope → result format.",
+      "blocks": [
+        "I'm a marketer for a coffee-shop chain preparing a sales growth plan: study which revenue-boosting techniques are used by coffee shops similar to ours.",
+        "I'm interested in: loyalty programs, seasonal menus, combo deals, working with delivery — and signs that a technique actually works.",
+        "Scope: Russian cities the size of ours, the \"neighborhood coffee shop\" format, data no older than two years.",
+        "Result: a table \"technique → how it works → examples → applicability to us\" + a top-5 of recommendations with links to sources."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Tell me everything about coffee in general: history, varieties, roasting, consumption culture.",
+        "Answer in 10 seconds in a single paragraph, sources not needed."
+      ],
+      "explanation": "Goal → criteria → scope → format — the research-request formula from lesson 2.4. \"Everything about coffee\" scatters the research into an essay, and dropping sources kills verifiability — you can't go to the director with a report like that."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Wednesday. You're in the project, a year's sales export is already in the knowledge base (date, drink, category, amount, time of day). Give Claude an analytical task: it has the context — it needs a goal and specific questions. Then react to a finding.",
+      "steps": [
+        {
+          "expect": ["sales", "revenue", "calculate", "trend", "categor", "top", "anomal", "analyze", "month", "time"],
+          "minMatches": 2,
+          "claudeReply": "Taking the export from the project's knowledge base and computing with code. 📊\n\n**Trend:** revenue is stable, but since February it's down 6% every weekday morning.\n**Top menu:** cappuccino and raf make up 41% of revenue; the matcha line has doubled over six months.\n**Laggards:** 12 items together give less than 2% of revenue.\n**Anomaly:** on Tuesdays revenue is systematically 15–18% lower — the only such day of the week.\n\nShould I dig into the Tuesday anomaly or the morning dip?",
+          "failHint": "Formulate a goal and 2–3 questions about the sales data."
+        },
+        {
+          "expect": ["tuesday", "morning", "dig", "why", "break down", "yes", "deeper", "compare"],
+          "minMatches": 1,
+          "claudeReply": "Digging deeper. 🔍\n\n**Fact from the data:** the Tuesday dip comes entirely from the 8:00–11:00 hours, the average check doesn't change — there are simply fewer purchases.\n\n**Hypothesis (not a fact):** it looks like an external cause — for example, the nearby business center works remotely on Tuesdays. The data can't confirm this — you could check with a barista survey.\n\nWednesday's results are ready: three fact-conclusions and one flagged hypothesis. I'll save them for Thursday — they'll go into the plan together with yesterday's research results.",
+          "failHint": "Pick a finding and ask to break it down in more detail."
+        }
+      ],
+      "successMessage": "The analysis was done by all the rules: a goal and questions, computation on real data, separating facts from hypotheses. The material for the plan is ready."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Thursday. Assemble a request for the final document for the director — in this order: sources → format → structure → style and length.",
+      "blocks": [
+        "Take the conclusions from Tuesday's competitor research and yesterday's analysis of our sales from this project.",
+        "Assemble them into a Word document — a sales growth plan for the director.",
+        "Structure: a half-page summary, what the market showed, what our numbers showed, 5 initiatives with expected effect, risks, a plan for the first month.",
+        "Businesslike style, up to 4 pages, separate facts from hypotheses, key numbers in bold."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Take the numbers off the top of your head — it's faster than searching the project.",
+        "Make it 40 pages right away so it looks solid."
+      ],
+      "explanation": "Sources → format → structure → style: the document synthesizes the results of Tuesday and Wednesday, it isn't written from scratch. \"Numbers off the top of your head\" is the road to a made-up report, and 40 pages \"for solidity\" the director won't read: length is part of the requirements too."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Friday. A plan for preparing for the team meeting. One step is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. I ask Claude to make an artifact: an interactive page with the 3 main initiatives and a sales chart.",
+        "2. I check the page: the numbers match the document, nothing confidential is there.",
+        "3. I iterate: \"make the initiative cards bigger, the chart at the top.\"",
+        "4. I publish the artifact and send the link to the team — along with the payroll sheet on the same page, to avoid doing it twice.",
+        "5. After the meeting I gather feedback and ask Claude to update the artifact."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Step 4 breaks the publishing rule: a published artifact is available to anyone with the link, and the payroll sheet there is a leak of confidential data. You may only publish what's meant for everyone who has the link. The other steps are a model cycle of working with an artifact."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "FINALE: live through a week like this yourself — in a compressed form, in one go. Take your own real task (sales growth, a job search, planning your studies — any where there's a \"study, calculate, propose\").\n\n1. **Project:** create a project for the task in claude.ai, write the instructions (role, audience, style), upload at least one file with data or context.\n2. **Research:** in the project chat, launch research using the formula \"goal + criteria + scope + format.\" Wait for the report, check a couple of sources.\n3. **Analysis:** attach a table of data (or ask to generate demo data) and pose 2–3 analytical questions. Ask to separate facts from hypotheses.\n4. **Document:** ask to assemble the conclusions of steps 2–3 into a file (docx or pdf) with a structure you set. Download it and check.\n5. **Artifact:** ask for an interactive summary page with the main conclusions. Make at least one edit.\n6. Make sure all the chats stayed in one project and each step used the results of the previous ones.",
+      "checklist": [
+        "Project created: instructions written, file uploaded",
+        "Research done by the formula, sources checked",
+        "Data analysis produced conclusions with facts separated from hypotheses",
+        "Document assembled from the research and analysis results, downloaded and checked",
+        "Artifact created and refined with at least one edit",
+        "The whole chain lived through in one project, each step building on the previous one"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-adv-boss", "badgeId": "badge-world-2" }
+}

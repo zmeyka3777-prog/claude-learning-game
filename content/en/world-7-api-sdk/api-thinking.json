@@ -1,0 +1,116 @@
+{
+  "id": "api-thinking",
+  "world": "world-7-api-sdk",
+  "order": 7,
+  "title": "Extended thinking",
+  "subtitle": "Extended thinking: when to turn it on and what depth costs you",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Extended thinking — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/extended-thinking" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "What extended thinking is" },
+    { "type": "text", "md": "**Extended thinking** is a mode where Claude reasons \"to itself\" before answering: it breaks the task down, tests hypotheses, catches its own mistakes — and only then writes the answer. You've already seen this mode in claude.ai; in the API it's controlled by the **`thinking`** parameter.\n\nHow is this different from the chain-of-thought from the prompting lesson? CoT is a request to reason **in the text of the answer**: the reasoning is simulated inside ordinary generation. Extended thinking is a **built-in ability of the model**: the reasoning happens in separate `thinking` blocks, before the answer, and is trained to be genuine working thought rather than text for a reader. On truly hard tasks, built-in thinking is noticeably stronger than the prompt-based trick." },
+    { "type": "heading", "text": "How to turn it on" },
+    { "type": "text", "md": "The modern approach is **adaptive thinking**: `thinking: {\"type\": \"adaptive\"}`. The model itself decides whether it needs to think about a given request and for how long: it won't think about \"hi\", but it will think hard about an architecture problem. This removes the main headache — you don't have to guess in advance how much \"thinking fuel\" to allocate.\n\nThe depth of effort is controlled by the **`output_config: {\"effort\": ...}`** parameter, with values from `\"low\"` to `\"high\"` and above: the higher the effort, the more thorough (and more expensive) the work.\n\nIn older API versions, thinking was enabled with an explicit token budget (`budget_tokens`) — you'll still see this approach in articles and old code, but for newer models it's a thing of the past: adaptive mode picks the depth itself.\n\nThe response gets blocks of `type: \"thinking\"` — the reasoning (or its summary) — followed by ordinary `text` blocks. In a multi-turn conversation, return thinking blocks in the history as-is, without editing them." },
+    { "type": "code", "lang": "python", "title": "Adaptive thinking + effort", "code": "message = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=16000,\n    thinking={\"type\": \"adaptive\"},\n    output_config={\"effort\": \"high\"},\n    messages=[{\n        \"role\": \"user\",\n        \"content\": \"Design a database schema for a scooter rental service: \"\n                   \"tariffs, trips, fines, parking zones. Justify your decisions.\",\n    }],\n)\n\nfor block in message.content:\n    if block.type == \"thinking\":\n        print(\"[thinking]\", block.thinking[:200], \"...\")\n    elif block.type == \"text\":\n        print(block.text)" },
+    { "type": "heading", "text": "The trade-off: depth versus speed and price" },
+    { "type": "text", "md": "Thinking is not a free \"make it smarter\" button. You pay twice:\n\n- **Time.** The reasoning is generated before the answer: the user waits longer. On a heavy task with high effort, an answer can take minutes.\n- **Tokens.** The reasoning is output tokens, and they are billed even when the reasoning text isn't shown. Deep thinking can cost several times more than the answer itself.\n\nHence the rule: **depth should match the task**. Classifying reviews with high-effort thinking is money down the drain: quality won't rise, but your bill and latency will. Complex planning without thinking is the opposite — pinching pennies at the cost of mistakes." },
+    { "type": "table",
+      "headers": ["Task", "Thinking", "Why"],
+      "rows": [
+        ["Classification, field extraction, translation", "Not needed / effort low", "\"At a glance\" tasks — thinking won't add quality"],
+        ["Chatbot with simple answers", "Adaptive with low effort", "Latency is critical, complex questions are rare"],
+        ["Math, resolving contradictions, debugging code", "Adaptive, effort high", "Multi-step logic — the main beneficiary of thinking"],
+        ["Architecture, migrations, deep document analysis", "Adaptive, effort high and above", "The cost of a mistake far exceeds the cost of tokens"]
+      ]
+    },
+    { "type": "example",
+      "bad": "# classifying the sentiment of a review\nthinking={\"type\": \"adaptive\"},\noutput_config={\"effort\": \"high\"},\nmessages=[{\"role\": \"user\", \"content\": \"Review: 'ok'. Sentiment?\"}]",
+      "good": "# classification — fast and cheap\noutput_config={\"effort\": \"low\"},\nmessages=[{\"role\": \"user\", \"content\": \"Review: 'ok'. Sentiment: positive/negative/neutral?\"}]\n\n# and save high effort for complex analysis\n# \"find the logical contradictions in this 30-page contract\"",
+      "explanation": "The sentiment of the word \"ok\" won't become more accurate from deep thinking — but each of thousands of reviews will be processed more slowly and expensively. The matching rule: low effort and speed for routine work, thinking and high effort for complex logic. Tune depth to the task, not \"to the max for reliability\"."
+    },
+    { "type": "heading", "text": "Practical details" },
+    { "type": "text", "md": "What else a developer should know:\n\n- **`max_tokens` covers both thinking and the answer.** The reasoning takes up room in the output limit — set `max_tokens` generously (thousands of tokens), otherwise the model will \"think its way\" to the limit and the answer will be cut off.\n- **Reasoning visibility is configurable.** On the newest models the full \"raw\" reasoning isn't returned: you can get a summary of it (`display: \"summarized\"`) or no text at all — the thinking process itself doesn't change and is billed the same either way.\n- **Streaming is a must on large limits.** Thinking + a long answer = a long request; with streaming you see progress and don't hit timeouts.\n- **Don't duplicate CoT.** If thinking is on, the prompt-based \"reason step by step in tags\" is no longer needed — let the model think with its built-in mechanism." },
+    { "type": "callout", "kind": "docs", "md": "The Extended thinking docs (platform.claude.com/docs/en/build-with-claude/extended-thinking) describe the modes of the `thinking` parameter and stress the trade-off: thinking raises quality on complex reasoning tasks at the cost of extra output tokens and latency. For new models the adaptive mode is recommended — the model itself decides when and how much to think, and depth is tuned with the effort parameter." },
+    { "type": "callout", "kind": "tip", "md": "Pick effort experimentally: run your set of test tasks at low, medium, and high and compare quality against price. Often it turns out that medium gives 95% of high's quality for noticeably less money — but you can only learn this on your own data." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How does built-in extended thinking differ from prompt-based chain-of-thought (\"reason step by step\")?",
+      "options": [
+        "It doesn't — they're two names for the same trick",
+        "Thinking is a built-in ability: the reasoning happens in separate thinking blocks before the answer, and on hard tasks it works better",
+        "CoT only works in English",
+        "Extended thinking is free, while CoT spends tokens"
+      ],
+      "correct": [1],
+      "explanation": "CoT is a prompt-based trick: the model simulates reasoning in the ordinary answer text. Extended thinking is a trained ability: the reasoning is generated in separate thinking blocks before the answer and gives a bigger boost on complex logic. Both spend tokens; language has nothing to do with it.",
+      "hint": "One trick lives in the prompt, the other in the model itself and in a request parameter."
+    },
+    {
+      "type": "quiz",
+      "question": "What do you pay for turning on thinking with high effort? Select all that apply.",
+      "options": [
+        "Increased response time",
+        "Extra output tokens — the reasoning is billed",
+        "A reduced context window for the model",
+        "Nothing — thinking is included in the request price"
+      ],
+      "correct": [0, 1],
+      "explanation": "Two price tags: latency (the reasoning is generated before the answer — the user waits) and money (thinking tokens are billed output, even if their text isn't shown). Thinking doesn't shrink the context window, but the reasoning takes up room in the max_tokens limit.",
+      "hint": "Reasoning is also generation. What does generation always cost?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A developer turned on thinking for a complex task, but answers come back cut off mid-sentence. Find the guilty line.",
+      "lang": "python",
+      "lines": [
+        "message = client.messages.create(",
+        "    model=\"claude-opus-4-8\",",
+        "    max_tokens=500,",
+        "    thinking={\"type\": \"adaptive\"},",
+        "    output_config={\"effort\": \"high\"},",
+        "    messages=[{\"role\": \"user\", \"content\": \"Analyze all the risks in this rental contract: ...\"}],",
+        ")"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "`max_tokens: 500` is the shared ceiling for both the reasoning and the answer. With high effort, thinking eats hundreds of tokens before the first word of the answer — and generation stops at the limit (stop_reason: max_tokens). For thinking tasks, set max_tokens generously to thousands of tokens and check stop_reason."
+    },
+    {
+      "type": "quiz",
+      "question": "For which tasks is turning on thinking with high effort a reasonable choice?",
+      "options": [
+        "Sentiment classification of thousands of short reviews",
+        "Finding logical contradictions in a complex contract",
+        "Translating interface strings into English",
+        "The \"hi, how can I help?\" reply at the start of a chat"
+      ],
+      "correct": [1],
+      "explanation": "Thinking pays off where multi-step logic is needed and the cost of a mistake is high: analyzing contradictions, complex planning, debugging. Classification, translation, and greetings are \"at a glance\" tasks: high effort makes them more expensive and slower, but not better.",
+      "hint": "Where would a human expert actually have to sit down and think for half an hour?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a request for a complex analytical task with thinking: model → generous limit → thinking mode → effort → task. Drop the extras.",
+      "blocks": [
+        "\"model\": \"claude-opus-4-8\"",
+        "\"max_tokens\": 16000",
+        "\"thinking\": {\"type\": \"adaptive\"}",
+        "\"output_config\": {\"effort\": \"high\"}",
+        "\"messages\": [{\"role\": \"user\", \"content\": \"Find contradictions between sections of the contract and assess the risks for each party\"}]"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "\"thinking\": {\"type\": \"maximum_overdrive\"}",
+        "\"messages\": [..., {\"role\": \"user\", \"content\": \"And be sure to reason step by step in <thinking> tags!\"}]"
+      ],
+      "explanation": "The working configuration: adaptive thinking + high effort + max_tokens generous enough for the reasoning. The traps: a thinking type of \"maximum_overdrive\" doesn't exist (don't invent parameter values), and prompt-based CoT on top of enabled thinking is duplication — the model already thinks with its built-in mechanism, and the extra instruction only gets in the way."
+    }
+  ],
+  "reward": { "cardId": "card-api-thinking", "badgeId": null }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "api-cookbooks",
+  "world": "world-7-api-sdk",
+  "order": 9,
+  "title": "Cookbooks",
+  "subtitle": "Ready-made Jupyter recipes: RAG, classification, sub-agents, evals",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Anthropic Cookbook — GitHub", "url": "https://github.com/anthropics/anthropic-cookbook" },
+    { "title": "Anthropic Quickstarts — GitHub", "url": "https://github.com/anthropics/anthropic-quickstarts" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "What the Cookbook is" },
+    { "type": "text", "md": "The **Anthropic Cookbook** (github.com/anthropics/anthropic-cookbook) is the official repository of **ready-made recipes**: dozens of Jupyter notebooks where each typical development task on Claude is worked through with runnable code and explanations. It's the bridge between \"I read the docs\" and \"I built my own thing\": instead of a blank page, you start from a proven example.\n\nWhy notebooks specifically? A **Jupyter notebook** is a document of alternating text and code cells, where you can run the code step by step and see the result immediately. For learning an API it's the ideal format: read the explanation → run the cell → see the live model response → tweak it for yourself. Not \"code you have to understand all at once\", but a guided tour with stops." },
+    { "type": "heading", "text": "The main recipes" },
+    { "type": "table",
+      "headers": ["Recipe", "What's inside", "When you need it"],
+      "rows": [
+        ["RAG (retrieval augmented generation)", "Finding relevant chunks in a knowledge base + generating an answer grounded in what's found", "The bot answers from your documents, not from general knowledge"],
+        ["Classification", "Classifying texts with examples, evals, and prompt tuning", "Sorting tickets, moderation, data labeling"],
+        ["Sub-agents", "The main model hands out subtasks to parallel lightweight agents and combines the results", "A large task is split into independent pieces"],
+        ["Evals (quality evaluations)", "Automatic quality checking of a prompt on a set of tests", "Figuring out whether a new prompt version is better than the old one"],
+        ["Tool use / vision / PDF", "Hands-on notebooks for the topics of earlier lessons", "Reinforcing what you learned on working code"]
+      ]
+    },
+    { "type": "text", "md": "I'll especially highlight **evals** — a topic beginners skip, and wrongly so. A prompt without tests is like code without tests: any edit can quietly break the behavior. The evals recipes show the cycle: gather a set of inputs with expected answers → run the prompt → compute a metric → compare versions. Sometimes the model itself acts as the judge (LLM-as-judge) — this pattern is also covered in the notebooks.\n\nAlongside the cookbook lives a second repository — **anthropic-quickstarts**: not notebooks, but whole starter applications (a customer support agent, a financial data analyzer, a computer-use demo). The cookbook teaches techniques; quickstarts show how the techniques come together into a product." },
+    { "type": "heading", "text": "How to run a notebook in Colab" },
+    { "type": "text", "md": "The fastest way to get a feel for a recipe is **Google Colab**: a free environment where notebooks run right in the browser, with no Python install.\n\nStep by step:\n\n1. Open the notebook on GitHub and copy its URL.\n2. Go to colab.research.google.com → **Open notebook → GitHub** → paste the link. (Trick: in the notebook's URL, replace `github.com` with `githubtocolab.com` — it opens straight in Colab.)\n3. Install the SDK in the first cell: `!pip install anthropic`.\n4. Connect the API key **safely**: Colab has \"Secrets\" on the left (the key icon) — add `ANTHROPIC_API_KEY` there, and in code read it via `userdata.get(...)`. Don't paste the key into a cell: a notebook is easy to share while forgetting the key inside.\n5. Run the cells in order (Shift+Enter) and experiment: change the prompt, the data, the model." },
+    { "type": "code", "lang": "python", "title": "The first cells of a notebook in Colab", "code": "# cell 1: install the SDK\n!pip install anthropic\n\n# cell 2: key from Colab Secrets (don't hardcode it!)\nfrom google.colab import userdata\nimport os\nos.environ[\"ANTHROPIC_API_KEY\"] = userdata.get(\"ANTHROPIC_API_KEY\")\n\n# cell 3: check that everything works\nimport anthropic\nclient = anthropic.Anthropic()\nmsg = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=100,\n    messages=[{\"role\": \"user\", \"content\": \"Answer in one word: working?\"}],\n)\nprint(msg.content[0].text)" },
+    { "type": "heading", "text": "How to learn from the recipes" },
+    { "type": "text", "md": "The working strategy is three passes:\n\n1. **Run it as-is.** Make sure the recipe works, look at the outputs of each cell.\n2. **Plug in your own.** Replace the example's data with yours: your documents in RAG, your categories in classification. This is where the real questions surface.\n3. **Move it into the project.** Pull the core logic out of the notebook and write it up as proper code — notebooks are great for exploration, but production lives in ordinary modules.\n\nAnd keep in mind: the recipes are written for the current API, but the repo is large — if you hit an outdated parameter or model name, cross-check with the docs. The ability to notice \"this notebook is older than the current API\" is also a skill." },
+    { "type": "example",
+      "bad": "Task: a bot over an internal knowledge base. Plan: invent the search architecture, embeddings, chunking, and prompts from scratch — all by yourself from a blank page.",
+      "good": "Task: a bot over an internal knowledge base. Plan: open the RAG recipe from anthropic-cookbook in Colab, run it on a couple of your own documents, understand the setup (chunking → search → generation with context), then adapt it to your base.",
+      "explanation": "RAG is a task with a hundred invisible pitfalls: chunk size, the format of the context in the prompt, source citation. In the recipe these decisions are already made and explained — starting from it saves you days and teaches you on a working example. Reinventing from scratch is worth it once you understand how your case differs from the typical one." },
+    { "type": "callout", "kind": "docs", "md": "The README of the anthropic-cookbook repository (github.com/anthropics/anthropic-cookbook) describes it as a collection of notebooks/recipes for typical Claude tasks — from classification and RAG to sub-agents, tool use, and evals — and recommends running the notebooks in an environment like Google Colab with your own Anthropic API key. For ready-made starter applications, the README points to the neighboring anthropic-quickstarts repository." },
+    { "type": "callout", "kind": "tip", "md": "Bookmark it and check before every new feature: \"is there a recipe for this?\" Even if the recipe doesn't match one-to-one, someone else's decisions about prompt structure and error handling will save you hours. And take the evals pattern into any project — it pays off with the very first prompt change." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is anthropic-cookbook?",
+      "options": [
+        "A paid Anthropic course with a certificate",
+        "The official repository of Jupyter notebooks — ready-made recipes for typical API tasks",
+        "A graphical prompt builder",
+        "An archive of old documentation versions"
+      ],
+      "correct": [1],
+      "explanation": "The Cookbook is github.com/anthropics/anthropic-cookbook: dozens of runnable notebooks with working code and explanations — RAG, classification, sub-agents, evals, tool use, vision. Free, official, kept up to date. Courses with certificates are a separate thing — Anthropic Academy.",
+      "hint": "The word cookbook. What is a developer's cookbook made of?"
+    },
+    {
+      "type": "quiz",
+      "question": "Which recipe do you open if you need a bot that answers from a company's internal documents?",
+      "options": [
+        "Classification",
+        "RAG (retrieval augmented generation)",
+        "Sub-agents",
+        "Evals"
+      ],
+      "correct": [1],
+      "explanation": "RAG is exactly this scenario: find relevant fragments in a knowledge base and generate an answer grounded in them, rather than from the model's general knowledge. Classification sorts texts into categories, sub-agents split up a large task, evals measure quality — all useful, but the \"answer from my documents\" task is solved by RAG.",
+      "hint": "Spell out the acronym: retrieval — search, augmented — enhanced."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the correct order for running a cookbook notebook in Google Colab. Drop the dangerous step.",
+      "blocks": [
+        "Open the notebook from the anthropic-cookbook repository in Colab (Open notebook → GitHub)",
+        "Install the SDK with a cell: !pip install anthropic",
+        "Add ANTHROPIC_API_KEY to Colab Secrets and read it via userdata.get",
+        "Run the cells in order and experiment with prompts and data"
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Paste the API key straight into a code cell so you don't have to bother with Secrets",
+        "Run all the cells in random order — it's faster that way"
+      ],
+      "explanation": "The order: open → install the SDK → connect the key safely → run in order (cells depend on each other: the client from the second is needed by the fifth). A key in a cell is a trap: notebooks get shared and committed, and the key travels along with them; Colab Secrets exist for exactly this."
+    },
+    {
+      "type": "quiz",
+      "question": "Why do you need evals from the cookbook recipes in a project?",
+      "options": [
+        "To measure a prompt's quality on a set of tests and see whether a new version improved it",
+        "To speed up API responses",
+        "To get a discount on tokens",
+        "To automatically fix bugs in the code"
+      ],
+      "correct": [0],
+      "explanation": "Evals are tests for prompts: a set of inputs with expected results, a metric, comparison of versions. Without them, any prompt edit is playing blind: it got better on three examples, but worse on a hundred real cases, and you'll never know. The cookbook recipes give you a ready-made framework, including the LLM-as-judge pattern.",
+      "hint": "Draw the analogy: what do unit tests mean for ordinary code?"
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Mission: run your first recipe.** You'll need an API key (created in the Claude platform Console) and a Google account for Colab.\n\n1. Open github.com/anthropics/anthropic-cookbook and look around: what sections are there, find the recipes on classification and RAG.\n2. Pick a notebook on a topic closer to you (classification is a good one for the first time).\n3. Open it in Colab (Open notebook → GitHub, or the githubtocolab.com trick).\n4. Add the key to Colab Secrets, install the SDK, and walk through the notebook cell by cell.\n5. Experiment: replace the example's data with your own (your texts, your categories) and compare the result.",
+      "checklist": [
+        "The repository has been explored, the section structure is clear",
+        "The notebook is open in Colab and runs",
+        "The key is connected via Secrets, not pasted into a cell",
+        "At least one cell has been changed to your own data and re-run"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-cookbooks", "badgeId": null }
+}

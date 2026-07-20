@@ -1,0 +1,118 @@
+{
+  "id": "cc-workflows",
+  "world": "world-4-claude-code",
+  "order": 6,
+  "title": "Workflows",
+  "subtitle": "How to assign tasks to the agent: feature, bugfix, tests, refactoring, review",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Common workflows — Claude Code Docs", "url": "https://code.claude.com/docs/en/common-workflows" },
+    { "title": "Best practices — Claude Code Docs", "url": "https://code.claude.com/docs/en/best-practices" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The prompt formula works here too — with an adjustment for actions" },
+    { "type": "text", "md": "In World 1 you learned the formula for a strong request: context + task + format. For the agent it still holds, but \"format\" turns into something more serious — a **definition of done**: how will we both know the task is complete?\n\nIn a chat, a bad request costs you an extra couple of messages. With an agent the price is higher: it won't just answer wrong — it will **do** the wrong thing: change the wrong files, waste time on unnecessary work. That's why the rule of being specific here isn't a recommendation but a safety technique. A good task for the agent answers three questions: what to do, where (in which part of the project), and how to check the result." },
+    { "type": "heading", "text": "Golden rule: plan first, code second" },
+    { "type": "text", "md": "For any non-trivial task, ask the agent to **show the plan first**: \"Explore the project and propose a plan, don't change anything yet.\" Claude will investigate the files, think through the approach, and produce a list of steps. You read the plan and either approve it or adjust it: \"step 2 isn't needed, instead do...\".\n\nWhy do this? Fixing a mistake in the plan is a hundred times cheaper than fixing a mistake in the code: one phrase versus redoing edits across five files. On top of that, the plan immediately shows whether the agent understood the task correctly. There's even a dedicated plan mode for this scenario from the lesson on permissions — in it the agent physically cannot change anything until the plan is approved.\n\nThe second rule is **small steps**: not \"build the whole feature at once,\" but step → check → next step. That way it's easier to notice something went wrong and cheaper to roll back." },
+    { "type": "heading", "text": "Five typical scenarios" },
+    { "type": "table",
+      "headers": ["Scenario", "What to specify in the task", "Example wording"],
+      "rows": [
+        ["New feature", "What to add, where, definition of done; ask for a plan", "\"Add search by name to the list page. Plan first\""],
+        ["Bugfix", "Symptom, how to reproduce, error text", "\"When deleting an item the total doesn't recalculate. Steps: ... Find the cause and fix it\""],
+        ["Tests", "What to cover, which cases matter", "\"Write tests for the discount calculation: normal, zero, edge values\""],
+        ["Refactoring", "What to improve and what must not change", "\"Split utils.js into modules. Don't change behavior, tests must pass\""],
+        ["Review", "What to look at and what to pay attention to", "\"Look at my latest changes: bugs, vulnerabilities, what to improve\""]
+      ]
+    },
+    { "type": "text", "md": "Let's look at two scenarios in more detail.\n\n**Bugfix.** The agent, like a doctor, needs symptoms, not a diagnosis from the patient's words. The best recipe: what you did → what you expected → what happened + the exact error text, if any. Then let the agent reproduce the problem itself and prove the fix: \"run the tests and show that the bug is gone.\" Don't impose a cause (\"probably it's the cache\") — a hypothesis can lead astray; if you really want to, mark it as a guess.\n\n**Refactoring** is improving how the code is built without changing its behavior. The key part of the task is the boundary: what must stay as it was. The formula: \"improve X, don't change behavior, prove it with tests.\" Without that boundary, an \"improvement\" easily turns into rewriting everything in sight." },
+    { "type": "example",
+      "bad": "Something broke during checkout, fix it quick.",
+      "good": "Bug: I click \"Place order\" with promo code SALE10 — the page freezes, the console shows the error \"TypeError: discount is undefined.\" Without a promo code everything works. Find the cause and fix it; then check both scenarios — with a promo code and without.",
+      "explanation": "\"Something broke\" forces the agent to guess where to look — it will waste time checking everything and may \"fix\" the wrong thing. A good bug report narrows the search to a minute: exact reproduction steps, the error text, the important detail \"works without a promo code,\" and a definition of done — check both scenarios. The more precise the input, the faster and more reliable the output."
+    },
+    { "type": "heading", "text": "Keep the agent informed and push for verification" },
+    { "type": "text", "md": "Two finishing touches for any scenario.\n\n**You can correct course on the fly.** If you see the agent heading the wrong way — don't wait for the end: stop and adjust. \"Stop, let's do it without a new library — use standard tools\" mid-work is normal and right.\n\n**Ask for proof.** The finale of a good task is verification: \"run the tests,\" \"run the build,\" \"show me how this works.\" The agent can check itself — but it does so more willingly when the check is explicitly part of the task. The phrase \"and make sure the tests pass\" at the end of the wording is the cheapest insurance against surprises." },
+    { "type": "callout", "kind": "docs", "md": "The official best practices (code.claude.com/docs, the Best practices and Common workflows pages) advise: give the agent concrete rather than vague wording; for complex tasks, first ask for investigation and a plan and only then move to implementation; work in iterations with checks. The same pages cover typical processes — from fixing bugs and writing tests to refactoring and working with an unfamiliar codebase." },
+    { "type": "callout", "kind": "tip", "md": "Turn a repeated wording into a CLAUDE.md rule. Tired of writing \"run the tests after edits\" every time? Add that rule to the project memory — and every session will do it by default, without reminders." }
+  ],
+  "tasks": [
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a task for the agent to build a new \"dark theme\" feature using the scheme: context → task → definition of done → request for a plan. Leave the trap blocks aside.",
+      "blocks": [
+        "Context: we have a blog site, the styles live in src/styles/, users are asking for a dark theme.",
+        "Task: add a light/dark theme toggle to the site header, and the choice must persist between visits.",
+        "Definition of done: both themes apply to all pages, tests pass, the build doesn't break.",
+        "First explore the project and show me the plan — don't change anything until I approve it."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Make it look nice, you're smart, you'll figure it out.",
+        "While you're at it, rewrite all the site's styles from scratch."
+      ],
+      "explanation": "The task is assembled by the formula for working with an agent: context (what project, where the styles are), a concrete goal, a checkable definition of done, and \"plan first\" — insurance against heading the wrong way. \"Make it look nice, you'll figure it out\" adds no information, and \"while you're at it, rewrite all the styles\" bloats the task and breaks the small-steps principle: one task — one goal."
+    },
+    {
+      "type": "quiz",
+      "question": "Why ask the agent for a plan before it starts editing?",
+      "options": [
+        "So the session looks more impressive",
+        "A mistake in the plan is fixed with one phrase, but a mistake in the code — by redoing edits across a pile of files; and it also shows whether the agent understood the task correctly",
+        "Without a plan Claude Code refuses to work",
+        "A plan is only needed by managers for reporting"
+      ],
+      "correct": [1],
+      "explanation": "The plan is the cheapest checkpoint: by reading it you verify in a minute whether the agent is heading the right way, and correct course before the changes touch any files. Claude can work without a plan, but for non-trivial tasks \"plan first, code second\" consistently saves time and nerves.",
+      "hint": "Compare the cost of fixing: one phrase on the plan versus redoing edits in five files."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A bug-report task for the agent, broken down line by line. One line harms the effort — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Bug: when uploading a photo larger than 5 MB the profile page freezes.",
+        "Reproduction: profile → \"Change photo\" → select an 8 MB file.",
+        "The console shows the error: \"RangeError: Maximum call stack size exceeded.\"",
+        "The cause is definitely in the compression library — don't check anything else, just swap it for any other one right away.",
+        "After the fix, test uploading files of 1 MB, 5 MB and 10 MB."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "An imposed diagnosis with a ban on checking is a trap: if the cause isn't in the library (which happens all the time), the agent follows a false trail and \"solves\" the wrong problem — and swaps a dependency at random on top of that. Hypotheses are stated as hypotheses: \"I suspect the compression library, but check the cause first.\" The other lines are a model bug report: symptom, steps, error text, verification criterion."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You want to clean up the utils.js file without breaking the project. Assign the agent a refactoring task: mention that behavior must not change, and ask for a plan first. When you like the plan — approve it.",
+      "steps": [
+        {
+          "expectPattern": "(refactor|split|divide|clean up|simplif).*(plan|don'?t chang|do not chang|behav)|(plan|don'?t chang|do not chang|behav).*(refactor|split|divide|clean up|simplif)",
+          "output": "● Studying utils.js and where it's used...\n\nRefactoring plan (behavior doesn't change):\n  1. Group the functions by topic: dates, strings, price handling\n  2. Move them into src/utils/dates.js, strings.js, prices.js\n  3. Update the imports in every file that uses utils.js\n  4. Run npm test and make sure all tests are green\n\nI'm not changing anything, waiting for your approval. Start? _",
+          "failHint": "Phrase the task with two safeguards, for example: \"Split utils.js into modules, don't change behavior. Show me the plan first.\""
+        },
+        {
+          "expectPattern": "(yes|ok|okay|sure|go|start|approve|agree|let'?s go|y)",
+          "output": "✔ Plan approved. Executing step by step...\n\n  1/4 Functions grouped\n  2/4 Created dates.js, strings.js, prices.js\n  3/4 Imports updated in 7 files\n  4/4 npm test: 24 of 24 tests pass ✓\n\n● Done. Behavior didn't change — all tests are green, as agreed.",
+          "failHint": "The plan looks good — approve it: \"yes\", \"sure\" or \"start\"."
+        }
+      ],
+      "successMessage": "A model refactoring: the \"don't change behavior\" boundary is set, the plan is agreed before edits, the finale is proven by tests. Remember this rhythm: agreed → did → verified."
+    },
+    {
+      "type": "quiz",
+      "question": "What's important to include in a bug-report task for the agent? Select all correct options.",
+      "options": [
+        "Reproduction steps: what you did and what happened",
+        "The exact error text, if there is one",
+        "How to check that the bug is fixed",
+        "A categorical order about which file the cause is in, with a ban on checking the rest"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Steps, error text, and a verification criterion are the three pillars of a good bug report: they narrow the search and make the result checkable. But an imposed diagnosis with a ban on diagnostics is harmful: your guess may be wrong, and the agent will follow a false trail. Share hypotheses, but exactly as hypotheses.",
+      "hint": "Three items give the agent facts, one imposes an unverified opinion."
+    }
+  ],
+  "reward": { "cardId": "card-cc-workflows", "badgeId": null }
+}

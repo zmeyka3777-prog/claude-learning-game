@@ -1,0 +1,108 @@
+{
+  "id": "basics-interface",
+  "world": "world-1-basics",
+  "order": 2,
+  "title": "Sign-up and the interface",
+  "subtitle": "Getting comfortable with claude.ai: new chat, history, search, renaming, and settings",
+  "xp": 50,
+  "durationMin": 7,
+  "isBoss": false,
+  "sources": [
+    { "title": "Getting Started — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Sign-up: two minutes and you're set" },
+    { "type": "text", "md": "To start using Claude, you need an account on **claude.ai**. Signing up is standard: you open the site, choose to log in with your email or an existing account (Google, for example), confirm — and you're in the chat interface. No complicated forms or software to install: Claude runs right in your browser — on a computer, a tablet, and a phone.\n\nClaude has free access and paid subscriptions with expanded capabilities. Free access is more than enough to get through this world — don't rush to pay for anything, get comfortable first." },
+    { "type": "heading", "text": "The main screen: everything revolves around the chat" },
+    { "type": "text", "md": "After logging in, you see the main screen. Its center is the **message input field**: this is where you type your request and send it. Claude's answer appears right above the field, and that's how, message by message, a conversation is built — just like in a familiar messaging app.\n\nOff to the side is the **sidebar**. It's home to:\n\n- the **new chat** button — starts a conversation from a blank slate;\n- the **chat history** — a list of all your past conversations;\n- **chat search** — finds an old conversation by words from it;\n- access to your account **settings**.\n\nOn small screens the panel can collapse so it doesn't get in the way of reading — then a separate menu button opens it." },
+    { "type": "heading", "text": "Chats: one conversation — one topic" },
+    { "type": "text", "md": "Each chat is a separate conversation with its own memory. Within a single chat, Claude remembers everything you've discussed: you can refer back to what was said above, clarify, ask for a redo. But **different chats don't know about each other by default**: when you start a new chat, you start from a blank slate.\n\nHence the golden rule of organization: **new task — new chat**. Planning a vacation — one chat. Going through a work report — another. That keeps your history tidy, makes old conversations easy to find, and keeps Claude from getting confused by a context where ten different topics are mixed together.\n\nChats don't disappear anywhere: close the browser tab — the conversation is saved in the history. You can come back to it tomorrow or a month later and pick up right where you left off." },
+    { "type": "example",
+      "bad": "Keeping one endless chat about everything: recipes in the morning, a work report in the afternoon, vacation plans in the evening — all in one conversation for weeks.",
+      "good": "Creating a separate chat for each task: \"Quarterly report,\" \"Vacation in Sochi,\" \"Gift ideas\" — and returning to the right one when the topic is relevant again.",
+      "explanation": "In a \"dump\" of topics, Claude drags along all the extra context: answer quality drops, and finding the right spot in the history is nearly impossible. Separate chats are like folders on your computer: order, quick search, and a clean context for each task." },
+    { "type": "heading", "text": "Managing history: search and renaming" },
+    { "type": "text", "md": "Once you've accumulated a lot of chats, two tools will help.\n\n**Chat search.** There's a search in the sidebar: type in a couple of words from an old conversation — and it'll turn up, even if it was a month ago. For example, the word \"Sochi\" will find that very chat about the vacation.\n\n**Renaming.** Claude gives a chat a name based on the first topic of the conversation, but you can change it to your own — through the chat's menu in the list. Meaningful names like \"Lease agreement — review\" are found by eye faster than any search. In that same chat menu, an unneeded conversation can be deleted." },
+    { "type": "heading", "text": "Settings: worth a one-time look" },
+    { "type": "text", "md": "The account settings (usually opened through the profile menu in the sidebar) gather everything \"long-term\": profile data, subscription management, personalization. The exact set of items changes with updates, so there's no need to memorize it — what matters is knowing it's there and taking one look.\n\nTwo things worth paying attention to from the very start. First, **language**: Claude replies in the language you write in — there's nothing special to switch; write in Russian, it answers in Russian. Second, **personalization**: in the settings you can tell Claude about yourself and your preferences (for example, \"answer briefly\" or \"I work as an accountant\"), and it'll take that into account in conversations. Early on this is optional — you'll come back here once you understand your habits.\n\nEverything else in the settings is about your account and plan: seeing which subscription you have and managing it." },
+    { "type": "table", "headers": ["Interface element", "What it does", "When to use it"], "rows": [
+      ["Input field", "Sends a message to Claude", "Every time — all communication happens here"],
+      ["New chat button", "Starts a conversation from a blank slate", "Every new task or topic"],
+      ["Chat history", "A list of past conversations", "To return to and continue an old conversation"],
+      ["Chat search", "Finds a conversation by words from it", "When there are many chats and scrolling takes long"],
+      ["Chat menu", "Rename or delete a chat", "To tidy up the history"],
+      ["Settings", "Profile, language, personalization", "A one-time setup to fit you"]
+    ] },
+    { "type": "callout", "kind": "docs", "md": "The Claude Help Center (support.claude.com) notes: conversations are saved in your account history automatically, and you can return to them at any time. And in the account settings you can manage your profile and personalization. If something in the interface changes after updates — the current description is always in the Help Center." },
+    { "type": "callout", "kind": "tip", "md": "Don't be afraid of \"breaking\" something. There's no button in Claude's interface that will ruin your account: the worst you can do is delete an unneeded chat. The best way to get comfortable is to spend 10 minutes just clicking around: open the settings, create a couple of chats, rename one, find it with search." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "You were discussing a work report with Claude, and now you want to plan a vacation. What's the best move?",
+      "options": [
+        "Continue in the same chat — what's the difference",
+        "Create a new chat: new task — new conversation",
+        "Delete the old chat and write in it from scratch",
+        "Register a second account for personal topics"
+      ],
+      "correct": [1],
+      "explanation": "The golden rule: one task — one chat. The old chat about the report stays in your history, and you can return to it. And the new chat gives Claude a clean context: it won't drag details of the quarterly report into your vacation plan.",
+      "hint": "Recall the \"bad/good\" example from the theory: what happens to answer quality in a dump-chat?"
+    },
+    {
+      "type": "quiz",
+      "question": "What happens to your conversation if you close the browser tab in the middle of a dialogue?",
+      "options": [
+        "The conversation is deleted permanently",
+        "The conversation is saved in the history — you can return and continue",
+        "Claude sends a copy of the conversation to your email",
+        "The conversation is saved, but you won't be able to continue it — only read it"
+      ],
+      "correct": [1],
+      "explanation": "Chats are saved automatically. Open claude.ai again — the conversation will be in the sidebar, and you can continue it from the same spot: Claude still remembers the context of that chat.",
+      "hint": "The theory said: \"close the tab — the conversation is saved…\" — and then what?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A beginner jotted down a cheat sheet for themselves about the claude.ai interface. One of the statements is a mistake. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. Communication with Claude happens through the message input field.",
+        "2. The new chat button starts a conversation from a blank slate.",
+        "3. A new chat automatically remembers everything from all my past chats.",
+        "4. An old conversation can be found through chat search.",
+        "5. A chat can be renamed to make it easier to find in the history."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The mistake is on line 3: different chats don't know about each other by default. A new chat is a blank slate: Claude remembers context only within the current conversation. That's exactly why the rule \"new task — new chat\" works." },
+    {
+      "type": "quiz",
+      "question": "You've accumulated 50 chats, and about a month ago there was a conversation about a lease agreement. What's the fastest way to find it?",
+      "options": [
+        "Scroll through the entire history top to bottom",
+        "Use chat search, typing in words like \"lease agreement\"",
+        "Create a new chat and ask Claude where that conversation is",
+        "There's no way — old chats are inaccessible"
+      ],
+      "correct": [1],
+      "explanation": "Chat search in the sidebar searches through the content of conversations: a couple of keywords is enough. And to find important chats even faster in the future, give them meaningful names via renaming.",
+      "hint": "The sidebar has a dedicated tool for exactly this situation."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: tidy up your Claude.\n\n1. Open **claude.ai** and log into your account (or sign up — email or a Google account, a couple of minutes).\n2. Find the **new chat** button in the sidebar and create a conversation. Write any question in it — for example, ask for three dinner ideas.\n3. Find this chat in the **history** in the sidebar.\n4. Through the chat menu, **rename** it — to \"Dinner ideas,\" for example.\n5. Use **chat search**: type in a word from the conversation and make sure the chat turns up.\n6. Take a look at your account **settings** — just see what's there, you don't have to change anything.",
+      "checklist": [
+        "I logged into my account on claude.ai",
+        "I created a new chat and got an answer from Claude",
+        "I found this chat in the history in the sidebar",
+        "I renamed the chat to my own name",
+        "I found the chat via search by a keyword",
+        "I opened the settings and looked around in them"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-interface", "badgeId": null }
+}

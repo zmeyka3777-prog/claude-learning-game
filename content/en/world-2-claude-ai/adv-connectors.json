@@ -1,0 +1,115 @@
+{
+  "id": "adv-connectors",
+  "world": "world-2-claude-ai",
+  "order": 5,
+  "title": "Connectors: an overview",
+  "subtitle": "Bridges between Claude and your services: how they work and how not to get burned",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Connectors Directory", "url": "https://claude.com/connectors" },
+    { "title": "Anthropic Connectors Directory FAQ — Claude Help Center", "url": "https://support.claude.com/en/articles/11596036-anthropic-connectors-directory-faq" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude on its own can't see your services" },
+    { "type": "text", "md": "Ask Claude \"what's on my calendar tomorrow?\" — and without extra setup it will honestly reply that it has no access to your calendar. Claude doesn't see your email, documents, spreadsheets, or task lists. And that's the right default: access to personal data should be granted explicitly.\n\nBut when access really is needed — that's where **connectors** come in." },
+    { "type": "heading", "text": "What a connector is" },
+    { "type": "text", "md": "A **connector** is a bridge between Claude and an external service: email, calendar, cloud drive, task tracker, CRM. By connecting it, you allow Claude to reach that service on your behalf: search emails, read documents, look at calendar events, and in some services — create records too.\n\nHere's what it looks like in practice: you type an ordinary phrase — \"find the email from accounting about vacation\" — and Claude, through the connector, searches your inbox and answers to the point, with data from the real email.\n\nUnder the hood, connectors run on **MCP (Model Context Protocol)** — an open protocol that describes how AI assistants connect to external tools. For the user, that's just a technical detail: connecting looks like \"click — authorize in the service — done,\" with no code or configuration." },
+    { "type": "heading", "text": "The directory: verified and community" },
+    { "type": "text", "md": "Claude has a connectors directory (claude.com/connectors) — hundreds of integrations sorted into categories: email and calendars, cloud storage, project management, development, analytics, design, and more.\n\nAn important detail of the directory is a connector's status:\n\n- **Verified** — connectors that have passed review: it's clear who the developer is (often the company that owns the service itself), and the stated permissions match the functions.\n- **Community** — connectors from third-party developers. Many of them are useful, but the level of review is lower, and the responsibility for choosing is on you.\n\nThe rule is the same as with smartphone apps: check who the author is, what permissions it asks for, and why.\n\nBeyond the directory, advanced users can also connect their **own MCP servers** — integrations that aren't in the directory, all the way up to self-built ones. For this world it's enough to know that door exists; how to walk through it is what the world about plugins and MCP will teach." },
+    { "type": "table", "headers": ["Service type", "Examples", "What it gives Claude"], "rows": [
+      ["Email", "Gmail and other email services", "Search and read emails, summaries of threads, draft replies"],
+      ["Calendar", "Google Calendar and equivalents", "Overview of your schedule, finding free slots, creating events"],
+      ["Cloud drives", "Google Drive and other storage", "Search and read documents, answers based on their contents"],
+      ["Tasks and projects", "Task trackers, kanban boards", "Task lists, statuses, creating tickets"],
+      ["Development", "Code hosting and CI services", "Working with repositories, issues, and pull requests"]
+    ] },
+    { "type": "heading", "text": "Security: the main rule" },
+    { "type": "text", "md": "Here's what you need to understand before your first connection: **a connector gets real access to your data**. An email connector reads your email. A drive connector sees your documents. That's not scary — it's literally what it exists for — but it calls for awareness:\n\n1. **Connect only trusted connectors.** Prefer verified ones; for a community connector, find out who the developer is and what their reputation is.\n2. **Read what permissions are requested.** \"Read only\" and \"read + create + delete\" are very different levels of trust.\n3. **Connect as needed.** Don't rack up a dozen connectors \"just in case\" — each one widens the surface of access to your data.\n4. **Review the list.** Connections are managed in settings: drop by from time to time and disconnect what you don't use.\n5. **Work accounts — by company rules.** Before connecting a corporate email or drive, check your employer's policy." },
+    { "type": "example",
+      "bad": "Saw a link online to some unknown community connector offering \"super-access to all email and files,\" connected it without a glance, didn't read the permissions — \"I'll figure it out later.\"",
+      "good": "Need to work with emails → found an email connector in the directory with verified status from the service's own developer → read that it requests access to read emails → connected it, tried it on a couple of queries → a month later checked in settings whether it was still needed.",
+      "explanation": "The first scenario is the classic road to a leak: unknown author plus broad permissions plus \"no look.\" The second is a mindful cycle: a real need, a trusted source, clear permissions, periodic review. It takes a couple of minutes, and it protects your email and documents."
+    },
+    { "type": "callout", "kind": "docs", "md": "The claude.com/connectors directory and the Anthropic Connectors Directory FAQ on support.claude.com describe how the directory works: connectors are built on the open MCP protocol, are split into categories, and users are advised to pay attention to a connector's developer and the access permissions requested. Connected connectors can be managed in settings." },
+    { "type": "callout", "kind": "warning", "md": "The data a connector accesses is processed by the \"Claude + third-party service\" pairing. Don't connect services holding other people's personal data or corporate secrets to a personal account without permission — and remember you can disconnect a connector at any time in settings." },
+    { "type": "callout", "kind": "tip", "md": "Start with one connector that solves your most frequent pain point: for most people that's email or calendar. Once you're comfortable with one, it'll be clear whether you need the rest. We'll get to hands-on practice in the next lesson." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is a connector in claude.ai?",
+      "options": [
+        "A separate Claude model trained on a specific service's data",
+        "A bridge that gives Claude access to an external service on your behalf: email, calendar, drive",
+        "A paid plan with higher limits",
+        "A program you need to install on your computer"
+      ],
+      "correct": [1],
+      "explanation": "A connector is an integration bridge: after you connect and authorize, Claude can reach your service (search emails, read documents, look at your calendar). No separate model or software install is required.",
+      "hint": "The key word from the theory is \"bridge\" between Claude and a service."
+    },
+    {
+      "type": "quiz",
+      "question": "How does a verified connector differ from a community connector?",
+      "options": [
+        "Verified has passed review and its developer is known; community is made by third-party developers with a lower level of review",
+        "Verified is free, while community is always paid",
+        "Community connectors work faster",
+        "Nothing — they're just different words"
+      ],
+      "correct": [0],
+      "explanation": "The difference is the level of review and trust, not price or speed. Community connectors can be excellent, but checking the author and permissions before connecting is your job.",
+      "hint": "Recall the smartphone-app analogy: what do you trust, and why."
+    },
+    {
+      "type": "quiz",
+      "question": "Which security rules should you follow with connectors? Select all that apply.",
+      "options": [
+        "Read what access permissions the connector requests",
+        "Connect only what you actually need, not \"just in case\"",
+        "Periodically review the list of connections and disconnect unused ones",
+        "Connect everything — the more connectors, the smarter Claude"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Every connector is access to your data, so: mindful permissions, connecting as needed, regular review. \"Everything\" doesn't make Claude smarter — it only widens the risk surface.",
+      "hint": "Three correct options come from the list of rules in the theory. One option directly contradicts them."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A user's notes about connectors. One statement is dangerously wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. A connector is a bridge between Claude and an external service.",
+        "2. Connecting usually looks like authorizing in the service, without any code.",
+        "3. A connector gets access to the service's data, so it matters that you trust the developer.",
+        "4. What permissions a connector requests doesn't matter: Claude won't be able to do anything with my data anyway.",
+        "5. Connected connectors can be viewed and disconnected in settings."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Line 4 is a dangerous misconception. A connector grants real access: an email-reading connector really does read your email, and a connector with write permissions can create and change data. That's exactly why you should read the permissions before connecting, not after."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you haven't connected any connectors yet. Ask Claude something about your email or calendar — and see what happens.",
+      "steps": [
+        {
+          "expect": ["email", "mail", "letter", "calendar", "meeting", "find", "show", "schedule"],
+          "minMatches": 1,
+          "claudeReply": "I don't have access to your email or calendar — and that's how it should be by default. 🔒\n\nFor me to answer questions like that, you'd need to connect a **connector** for the relevant service: in settings or the connectors directory you pick the service, authorize in it — and grant me access.\n\nBefore connecting, I'd suggest checking: the connector's status (verified is safer), who the developer is, and what permissions it requests. Want me to tell you which connector is best to start with?",
+          "failHint": "Ask about your data, for example: \"Find the email from the bank from last week\" or \"What's on my calendar tomorrow?\""
+        },
+        {
+          "expect": ["yes", "tell", "which", "start", "sure", "recommend", "email", "calendar"],
+          "minMatches": 1,
+          "claudeReply": "It's best to start with one connector for your most frequent task:\n\n- Drowning in email → an **email** connector: search, thread summaries, draft replies.\n- Lots of meetings → a **calendar** connector: overview of the day, free slots.\n- Working with documents → a **cloud drive** connector: search and questions about file contents.\n\nConnect mindfully: check the developer and permissions, and later disconnect what you don't use in settings. Hands-on connecting is in the next lesson!",
+          "failHint": "Reply with agreement or clarify: \"Yes, recommend where to start.\""
+        }
+      ],
+      "successMessage": "Now you know both the default behavior (no access without permission) and the mindful path to connecting: directory → check the developer and permissions → authorize."
+    }
+  ],
+  "reward": { "cardId": "card-adv-connectors", "badgeId": null }
+}

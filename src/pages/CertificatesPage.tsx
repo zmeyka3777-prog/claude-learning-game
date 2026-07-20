@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Award, Download, Lock, Share2, X } from 'lucide-react';
-import { WORLDS } from '../engine/content';
+import { getWorlds } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
 import {
   canShareCertificate,
@@ -17,6 +17,7 @@ import {
   CERT_WIDTH,
 } from '../lib/certificate';
 import { track } from '../lib/analytics';
+import { useLang, useT } from '../i18n/useT';
 
 interface CertDef {
   id: string;
@@ -31,6 +32,8 @@ interface CertDef {
 
 /** Модал: имя, предпросмотр, скачивание */
 function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => void }) {
+  const t = useT();
+  const { lang } = useLang();
   const playerName = useProgressStore((s) => s.playerName);
   const setPlayerName = useProgressStore((s) => s.setPlayerName);
   const xp = useProgressStore((s) => s.xp);
@@ -40,7 +43,7 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const shareAvailable = canShareCertificate();
 
-  // Перерисовываем предпросмотр при изменении имени
+  // Перерисовываем предпросмотр при изменении имени/языка
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -52,8 +55,9 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
       xp,
       lessonsCompleted,
       date: new Date(),
+      lang,
     });
-  }, [cert, name, xp, lessonsCompleted]);
+  }, [cert, name, xp, lessonsCompleted, lang]);
 
   const commitName = () => {
     if (name.trim() && name.trim() !== playerName) setPlayerName(name);
@@ -72,7 +76,7 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
     const canvas = canvasRef.current;
     if (!canvas) return;
     commitName();
-    void shareCertificate(canvas, `Академия Claude — ${cert.title}`);
+    void shareCertificate(canvas, t('certs.share.title', { title: cert.title }));
   };
 
   return (
@@ -94,25 +98,25 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={`Сертификат «${cert.title}»`}
+        aria-label={t('certs.modal.dialogAria', { title: cert.title })}
       >
         <button
           type="button"
           onClick={onClose}
           className="btn-glass absolute top-4 right-4 grid h-9 w-9 place-items-center"
-          aria-label="Закрыть"
+          aria-label={t('certs.modal.close')}
         >
           <X size={16} />
         </button>
 
         <h2 className="pr-10 font-display text-lg font-semibold sm:text-xl">
-          Сертификат: <span className="gradient-text">{cert.title}</span>
+          {t('certs.modal.prefix')} <span className="gradient-text">{cert.title}</span>
         </h2>
 
         {/* Имя игрока */}
         <label className="mt-4 block">
           <span className="mb-1.5 block text-xs font-semibold tracking-wide uppercase" style={{ color: 'var(--text-muted)' }}>
-            Имя на сертификате
+            {t('certs.modal.nameLabel')}
           </span>
           <input
             type="text"
@@ -120,7 +124,7 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
             onChange={(e) => setName(e.target.value)}
             onBlur={commitName}
             maxLength={60}
-            placeholder="Например: Евгения Малина"
+            placeholder={t('certs.modal.namePlaceholder')}
             className="w-full rounded-2xl border px-4 py-3 text-sm outline-none sm:text-base"
             style={{
               background: 'var(--bg-card)',
@@ -138,7 +142,7 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
           <canvas
             ref={canvasRef}
             className="block h-full w-full"
-            aria-label="Предпросмотр сертификата"
+            aria-label={t('certs.modal.preview.aria')}
           />
         </div>
 
@@ -151,7 +155,7 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
             className="btn-gradient flex flex-1 items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
           >
             <Download size={16} />
-            Скачать PNG
+            {t('certs.modal.download')}
           </button>
           {shareAvailable && (
             <button
@@ -161,13 +165,13 @@ function CertificateModal({ cert, onClose }: { cert: CertDef; onClose: () => voi
               className="btn-glass flex items-center justify-center gap-2 px-6 py-3 text-sm sm:text-base"
             >
               <Share2 size={16} />
-              Поделиться
+              {t('certs.modal.share')}
             </button>
           )}
         </div>
         {name.trim().length === 0 && (
           <p className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-            Введи имя, чтобы скачать сертификат.
+            {t('certs.modal.needName')}
           </p>
         )}
       </motion.div>
@@ -186,6 +190,7 @@ function CertCard({
   onOpen: (cert: CertDef) => void;
 }) {
   const reduced = useReducedMotion();
+  const t = useT();
 
   const accentBorder = cert.isMaster
     ? '1px solid rgba(245, 158, 11, 0.45)'
@@ -221,7 +226,7 @@ function CertCard({
           {cert.title}
         </h3>
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-          {cert.available ? (cert.subtitle ?? 'Доступен — нажми, чтобы получить') : cert.lockCondition}
+          {cert.available ? (cert.subtitle ?? t('certs.available.hint')) : cert.lockCondition}
         </p>
       </div>
       {cert.available && (
@@ -233,7 +238,7 @@ function CertCard({
             color: 'var(--success)',
           }}
         >
-          Доступен
+          {t('certs.available')}
         </span>
       )}
     </>
@@ -265,6 +270,8 @@ function CertCard({
 
 export default function CertificatesPage() {
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const badges = useProgressStore((s) => s.badges);
   const passedWorlds = useProgressStore((s) => s.passedWorlds);
   const [openCert, setOpenCert] = useState<CertDef | null>(null);
@@ -272,21 +279,21 @@ export default function CertificatesPage() {
   const certs = useMemo<CertDef[]>(() => {
     const master: CertDef = {
       id: 'master-claude',
-      title: 'Мастер Claude',
-      subtitle: 'Вся галактика исследована',
+      title: t('certs.master.title'),
+      subtitle: t('certs.master.subtitle'),
       available: badges.includes('badge-world-8'),
-      lockCondition: 'Пройди финальный экзамен сектора 8 «Экосистема» и получи бейдж «Сектор 8 исследован»',
+      lockCondition: t('certs.master.lock'),
       isMaster: true,
     };
-    const worldCerts: CertDef[] = WORLDS.map((world) => ({
+    const worldCerts: CertDef[] = getWorlds(lang).map((world) => ({
       id: `world-${world.order}`,
-      title: `Сектор ${world.order} исследован`,
+      title: t('certs.world.title', { order: world.order }),
       subtitle: world.title,
       available: passedWorlds.includes(world.id),
-      lockCondition: `Одолей босса сектора ${world.order} — «${world.title}»`,
+      lockCondition: t('certs.world.lock', { order: world.order, title: world.title }),
     }));
     return [master, ...worldCerts];
-  }, [badges, passedWorlds]);
+  }, [badges, passedWorlds, t, lang]);
 
   const availableCount = certs.filter((c) => c.available).length;
 
@@ -299,12 +306,13 @@ export default function CertificatesPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="font-display text-2xl font-semibold sm:text-4xl">
-          <span className="gradient-text">Сертификаты</span> экспедиции
+          <span className="gradient-text">{t('certs.title.accent')}</span>
+          {t('certs.title.suffix')}
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
           {availableCount > 0
-            ? `Доступно: ${availableCount} из ${certs.length}. Скачай PNG и покажи, что галактика покорена!`
-            : 'Проходи боссов секторов — за каждый зачтённый мир откроется сертификат.'}
+            ? t('certs.subtitle.some', { count: availableCount, total: certs.length })
+            : t('certs.subtitle.none')}
         </p>
       </motion.div>
 

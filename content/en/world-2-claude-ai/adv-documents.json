@@ -1,0 +1,115 @@
+{
+  "id": "adv-documents",
+  "world": "world-2-claude-ai",
+  "order": 7,
+  "title": "Documents as output",
+  "subtitle": "Asking Claude to produce ready-made files: Word, Excel, PowerPoint, PDF",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Skills & Extensions — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Text in the chat isn't a document yet" },
+    { "type": "text", "md": "Claude wrote you a great report right in the chat. What next? Copy it into Word, set up the headings, build the tables, align everything — another half hour of manual work. Sound familiar?\n\nYou can skip this step: Claude can deliver the result right away as a **ready-made file** — a Word document (**docx**), an Excel spreadsheet (**xlsx**), a PowerPoint presentation (**pptx**), or a **PDF**. With formatting: headings, styles, tables, and in presentations — with slides and design. You download the file and open it in your usual program, send it to a colleague, print it." },
+    { "type": "heading", "text": "Which format for what" },
+    { "type": "table", "headers": ["Format", "When to ask for it", "Example task"], "rows": [
+      ["docx (Word)", "Text documents that people will edit", "A report, a contract template, an article, a guide"],
+      ["xlsx (Excel)", "Data, calculations, anything tabular", "A budget with formulas, a schedule, a registry"],
+      ["pptx (PowerPoint)", "Talks and materials for the screen", "A project presentation, training slides"],
+      ["pdf", "Final \"for reading\" versions, no edits", "A sales proposal, a certificate, a cheat sheet"]
+    ] },
+    { "type": "text", "md": "A simple rule for choosing: text will be **edited** — docx; numbers will be **calculated** — xlsx; it'll be **shown from the stage** — pptx; it must **look the same for everyone and not change** — pdf.\n\nHow does a file differ from an artifact from the previous lesson? An artifact lives in the browser and is great for interactivity; a file is for the world of office programs: it's expected by email, opened in Word and Excel, printed and filed. The same result is sometimes useful in both forms: a presentation page for yourself and a pptx — to send to your boss." },
+    { "type": "heading", "text": "How to ask: format + structure + style" },
+    { "type": "text", "md": "A request for a document is built from three parts:\n\n1. **Format — explicitly.** \"Make a Word file,\" \"put together a pptx presentation,\" \"lay it out in Excel.\" Without this you might just get text in the chat.\n2. **Structure.** List the sections or slides: \"sections: goals, results, problems, plans\" or \"10–12 slides: title, problem, solution, ...\". You're the architect of the document, Claude is the builder.\n3. **Style and length.** A business or casual tone, length (\"each section — no more than half a page\"), design (\"minimalist, dark-blue accents\" for a presentation).\n\nThe more important the document, the more detail you should give about your expectations — as if briefing an assistant.\n\nFor Excel spreadsheets a fourth point is added — **the calculation logic**: which columns to compute with formulas (\"total = price × quantity,\" \"percent of the grand total\"), whether you need total rows and sheets. Then the file arrives not with \"frozen\" numbers, but with working formulas that recalculate when the data changes." },
+    { "type": "example",
+      "bad": "\"Make a presentation about our project.\"",
+      "good": "\"Put together a PowerPoint presentation to pitch the project to management, 10 slides: title, problem, solution, market, quarterly plan, team, budget, risks, success metrics, a final slide with a call to action. Business and minimalist style, no more than 5 lines of text per slide, key figures shown large.\"",
+      "explanation": "From the first request neither the format, nor the structure, nor the audience is clear — you'll most likely get chat text \"loosely based on\" it. The second sets the format (pptx), an exact list of slides, the audience (management), and formatting rules — the output is a file that's nearly ready to present." },
+    { "type": "heading", "text": "Skills: Claude has \"professions\" for documents" },
+    { "type": "text", "md": "Quality work with office formats is handled by Claude's **Skills** — pluggable sets of instructions, \"professional abilities.\" There are skills for creating docx, xlsx, pptx, and pdf: they know the ins and outs of the formats — styles and tables of contents in Word, formulas in Excel, slide layouts in PowerPoint.\n\nFor the user it looks simple: you ask for \"an Excel file with formulas\" — and Claude engages the right skill on its own. Knowing about skills is useful so you feel bolder asking for \"grown-up\" things: a table of contents, headers and footers, formulas, charts. There's a whole next world of the game about skills.\n\nThe reverse direction matters too: Claude can **read** these formats. Upload an xlsx with data and ask \"put together a Word report with conclusions from this\" — you get a \"data → document\" pipeline." },
+    { "type": "heading", "text": "Example: from numbers to a report" },
+    { "type": "text", "md": "An end-to-end scenario worth remembering:\n\n1. You upload a quarterly sales table to the chat (xlsx or csv).\n2. You ask: \"Analyze the data and put together a report **in Word format**: title, brief conclusions (5 points), a top-10 products table, month-over-month trends, recommendations. Business style, 3–4 pages.\"\n3. You get the file, open it, look it over.\n4. You ask for edits: \"move the recommendations to the front, add a section about risks\" — and Claude rebuilds the file.\n\nEdits before downloading are a normal part of the process: it's cheaper to ask Claude to rebuild the document than to fix the formatting by hand." },
+    { "type": "callout", "kind": "docs", "md": "The help center at support.claude.com (the Skills & Extensions section) describes skills as pluggable sets of instructions that extend Claude's capabilities — including for creating Word documents, Excel spreadsheets, PowerPoint presentations, and PDFs. The ability to create and download files depends on your plan and enabled features." },
+    { "type": "callout", "kind": "warning", "md": "Open and check the file before sending it to anyone: numbers, names, formatting. Claude may have misunderstood the data, and a presentation may have ended up with an overcrowded slide. A file is already a \"product,\" and you're responsible for the product." },
+    { "type": "callout", "kind": "tip", "md": "Got a sample? Attach it! Upload a past report or a corporate template with the words \"make a new one in the same style and structure.\" Imitating a sample works better than any verbal descriptions of style." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Colleagues will be making edits to the document's text. Which format should you ask Claude for?",
+      "options": [
+        "pdf",
+        "docx (Word)",
+        "pptx (PowerPoint)",
+        "Just text in the chat"
+      ],
+      "correct": [1],
+      "explanation": "The rule: text gets edited — docx, numbers get calculated — xlsx, things get shown — pptx, a \"read-only\" final — pdf. PDF is hard to edit, and chat text would leave colleagues to format it into a document themselves.",
+      "hint": "Recall the one-sentence rule from the theory: \"text will be edited — ...\"."
+    },
+    {
+      "type": "quiz",
+      "question": "What makes up a good request for a document? Select all correct options.",
+      "options": [
+        "An explicit statement of the format: \"a Word file,\" \"a pptx presentation\"",
+        "Structure: a list of sections or slides",
+        "Style and length: tone, length, design",
+        "The request \"make it nice\" with no details — Claude will figure it all out"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Format + structure + style are the three pillars of a document request. \"Make it nice\" with no details leaves every decision to chance: something will come out, but hardly what you specifically need.",
+      "hint": "The theory had a numbered list of three parts of a request."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a request for a report from data — in this order: source data → format → structure → style and length.",
+      "blocks": [
+        "Here's a table of the quarterly customer survey results (I've attached the xlsx).",
+        "Put together a report from it in Word format.",
+        "Structure: a title page, key conclusions (5 points), scores by category in a table, customer quotes, recommendations.",
+        "Business style, 3–4 pages long, put important figures in bold."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Any format, whatever you like — I don't care what comes out.",
+        "Make up the survey results yourself, no need to look at the table."
+      ],
+      "explanation": "Data → format → structure → style: each part narrows the space of guesswork. \"Any format\" brings back the uncertainty, and \"make up the results yourself\" is a straight path to a report with fabricated numbers: the data must come from a real file."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you've uploaded a table of your family's expenses over six months to the chat. Ask for a document from it — for example, a Word report or an Excel spreadsheet with analysis. State the format and structure.",
+      "steps": [
+        {
+          "expect": ["word", "docx", "excel", "xlsx", "pdf", "report", "file", "presentation", "put together", "make"],
+          "minMatches": 2,
+          "claudeReply": "Got it! 📄 Analyzing the expense table and putting together a file per your structure.\n\nDone — the file is created and ready to download. Inside:\n\n- **Summary:** spending over six months by category, total — $4,120.\n- **Table by category:** groceries 38%, transport 17%, entertainment 14%...\n- **Trends:** a noticeable rise in entertainment spending in May–June.\n- **Recommendations:** 3 categories where you can really save.\n\nOpen the file and look it over. Anything to fix — structure, style, add a section?",
+          "failHint": "Name the format and structure, for example: \"Put together a Word report: summary, table by category, trends, recommendations.\""
+        },
+        {
+          "expect": ["add", "change", "fix", "section", "chart", "graph", "shorten", "move", "make"],
+          "minMatches": 1,
+          "claudeReply": "Updated the file — download the fresh version. ✅\n\nNotice the working cycle: file → review → edit → new file. Rebuilding the document takes me seconds, while manual reformatting would've taken you half an hour. So don't hesitate to run edits until the document is exactly what you need.",
+          "failHint": "Ask for any edit: \"Add a chart by category\" or \"Shorten the recommendations to three points.\""
+        }
+      ],
+      "successMessage": "You've mastered the \"data → ready file → edits\" pipeline. It's one of the most time-saving Claude scenarios."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: get a real file from Claude.\n\n1. Think of a document you'll actually find useful: a trip plan (docx), a personal budget (xlsx), a hobby presentation (pptx), a cheat sheet (pdf).\n2. Open **claude.ai** and phrase your request using the formula: format + structure (list the sections/slides/columns) + style and length.\n3. If you have data (a table, notes) — attach the file as the source.\n4. Download the result and open it in the corresponding program. Check: is the structure yours? are the data undistorted?\n5. Go back to the chat and ask for at least one edit. Download the updated version and compare.",
+      "checklist": [
+        "I explicitly stated the file format in the request",
+        "I listed the structure: sections, slides, or columns",
+        "I downloaded the file and opened it in my usual program",
+        "I checked the data and structure against the request",
+        "I asked for an edit and got the updated file"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-documents", "badgeId": null }
+}

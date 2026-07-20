@@ -1,0 +1,156 @@
+{
+  "worlds": [
+    {
+      "id": "world-1-basics",
+      "order": 1,
+      "title": "First Steps",
+      "subtitle": "From \"what is Claude\" to a confident conversation",
+      "icon": "rocket",
+      "color": "violet",
+      "lessons": [
+        "basics-what-is-claude",
+        "basics-interface",
+        "basics-first-prompt",
+        "basics-dialog",
+        "basics-models",
+        "basics-files",
+        "basics-verify",
+        "basics-mobile-voice",
+        "basics-boss"
+      ]
+    },
+    {
+      "id": "world-2-claude-ai",
+      "order": 2,
+      "title": "Advanced claude.ai",
+      "subtitle": "Projects, Artifacts, connectors, Research — 80% of the features many people never discover",
+      "icon": "sparkles",
+      "color": "cyan",
+      "lessons": [
+        "adv-projects",
+        "adv-artifacts",
+        "adv-memory",
+        "adv-research",
+        "adv-connectors",
+        "adv-connectors-practice",
+        "adv-documents",
+        "adv-data-analysis",
+        "adv-plans",
+        "adv-boss"
+      ]
+    },
+    {
+      "id": "world-3-skills",
+      "order": 3,
+      "title": "Skills",
+      "subtitle": "The key \"secret\" tool — from using to creating",
+      "icon": "wand",
+      "color": "pink",
+      "lessons": [
+        "sk-what-is",
+        "sk-library",
+        "sk-anatomy",
+        "sk-trigger",
+        "sk-first",
+        "sk-creator",
+        "sk-boss"
+      ]
+    },
+    {
+      "id": "world-4-claude-code",
+      "order": 4,
+      "title": "Claude Code — Basics",
+      "subtitle": "From zero to confident work in the terminal and IDE",
+      "icon": "terminal",
+      "color": "violet",
+      "lessons": [
+        "cc-what-is",
+        "cc-install",
+        "cc-permissions",
+        "cc-claude-md",
+        "cc-commands",
+        "cc-workflows",
+        "cc-git",
+        "cc-context",
+        "cc-boss"
+      ]
+    },
+    {
+      "id": "world-5-claude-code-pro",
+      "order": 5,
+      "title": "Claude Code — Advanced",
+      "subtitle": "Hooks, subagents, schedules, CI/CD — automation and scaling",
+      "icon": "cpu",
+      "color": "cyan",
+      "lessons": [
+        "pro-skills",
+        "pro-hooks",
+        "pro-subagents",
+        "pro-teams",
+        "pro-schedules",
+        "pro-ci",
+        "pro-settings",
+        "pro-surfaces",
+        "pro-boss"
+      ]
+    },
+    {
+      "id": "world-6-mcp-plugins",
+      "order": 6,
+      "title": "Plugins and MCP",
+      "subtitle": "The integration ladder: connector → skill → plugin → your own MCP server",
+      "icon": "plug",
+      "color": "amber",
+      "lessons": [
+        "mcp-what-is",
+        "mcp-connect",
+        "mcp-servers",
+        "mcp-build-simple",
+        "mcp-build-deep",
+        "mcp-plugins",
+        "mcp-marketplaces",
+        "mcp-boss"
+      ]
+    },
+    {
+      "id": "world-7-api-sdk",
+      "order": 7,
+      "title": "API and Agent SDK",
+      "subtitle": "Building on Claude: Messages API, tool use, your own agents",
+      "icon": "code",
+      "color": "violet",
+      "lessons": [
+        "api-first-request",
+        "api-messages",
+        "api-prompting",
+        "api-tool-use",
+        "api-structured",
+        "api-vision",
+        "api-thinking",
+        "api-economy",
+        "api-cookbooks",
+        "api-agent-sdk",
+        "api-managed",
+        "api-boss"
+      ]
+    },
+    {
+      "id": "world-8-ecosystem",
+      "order": 8,
+      "title": "Ecosystem and Professional Work",
+      "subtitle": "Claude in Slack, Excel, Chrome, Cowork + security and how to stay up to date",
+      "icon": "globe",
+      "color": "cyan",
+      "lessons": [
+        "eco-slack",
+        "eco-excel",
+        "eco-chrome",
+        "eco-cowork",
+        "eco-security",
+        "eco-org",
+        "eco-news",
+        "eco-exam"
+      ]
+    }
+  ]
+}

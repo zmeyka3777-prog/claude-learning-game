@@ -1,0 +1,109 @@
+{
+  "id": "basics-first-prompt",
+  "world": "world-1-basics",
+  "order": 3,
+  "title": "Your first prompt",
+  "subtitle": "The formula for a strong request: context + task + format",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Prompt engineering overview — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview" },
+    { "title": "Claude prompting best practices — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "What is a prompt" },
+    { "type": "text", "md": "A **prompt** is simply your message to Claude: a question, a request, a task. The word sounds technical, but there's no magic behind it — it's ordinary text in human language.\n\nSo why is there so much talk around prompts? Because the way you phrase your request determines the quality of the answer — and it matters a lot. Claude can't read your mind: it sees only what you wrote. Write \"make some text\" and you'll get some text. Describe who the text is for, what it's about, and what it should be like, and you'll get text you can use right away.\n\nThe good news: writing strong prompts is a skill, not a talent. And it has a simple working formula." },
+    { "type": "heading", "text": "The formula: context + task + format" },
+    { "type": "text", "md": "Let's break a strong prompt into three parts.\n\n**1. Context** — the background you can't solve the task well without. Who you are, what the situation is, who the result is for, what matters to keep in mind. Imagine you're handing a task to a smart new employee on their first day: they're clever, but they know nothing about your affairs — tell them what you know yourself.\n\n**2. Task** — what specifically needs to be done. Not \"help me with an email,\" but \"write an email to a client apologizing for the delayed delivery and giving a new deadline.\"\n\n**3. Format** — what the result should look like: length, structure, style, language. \"Three paragraphs,\" \"a table with columns X and Y,\" \"a list of 5 points,\" \"formal tone,\" \"explain it like I'm in school.\"\n\nNot every request needs all three parts — \"translate this word\" works perfectly fine as is. But the more important and complex the task, the more each part of the formula pays off." },
+    { "type": "code", "lang": "text", "title": "A prompt built by the formula", "code": "Context: I own a small coffee shop, and we've just added\ndelivery through an app. Our audience is people living in the\nnearby buildings, and our tone is friendly and informal.\n\nTask: write a social media post that announces the delivery\nand motivates people to place their first order.\n\nFormat: up to 500 characters, 1-2 emoji, ending with a\ncall to action and the promo code FIRST for a 10% discount." },
+    { "type": "heading", "text": "Being specific is what matters" },
+    { "type": "text", "md": "The main principle inside each part of the formula is **being specific**. A vague request forces Claude to guess, and it will guess the \"average\" option.\n\nCompare how a request changes as it gets more specific:\n\n- \"Write some text\" → about what? for whom? what kind?\n- \"Write a congratulation\" → that's a task now, but to whom and from whom?\n- \"Write a warm congratulation to my colleague Marina on her 10-year work anniversary at the company, on behalf of the whole team, 3-4 sentences, no pomp\" → Claude will deliver a ready result on the first try.\n\nA useful self-check: reread your prompt and ask yourself — \"if this task were handed to me, would I have enough information?\" If not, add what's missing.\n\nAnother working technique is to say **what you want**, not just what you don't want: instead of \"don't write too long and don't use jargon,\" better \"keep it under 100 words, write in a conversational style.\" A positive phrasing gives Claude a clear goal to aim for, rather than a minefield of prohibitions." },
+    { "type": "example",
+      "bad": "Write a cover letter.",
+      "good": "I'm a data analyst with 3 years of experience, applying for a product analyst role at a streaming service. Write a cover letter: emphasize my experience with SQL and A/B testing, and explain why media services in particular interest me. Length — up to 150 words, tone professional but lively.",
+      "explanation": "The first prompt forces Claude to invent the profession, the company, and the experience — you'll get a generic template \"for no one.\" The second one contains context (who I am, where I'm applying), a task (a letter with specific emphases), and a format (length, tone) — the result can be sent with almost no edits." },
+    { "type": "heading", "text": "Bonus technique: a role" },
+    { "type": "text", "md": "A fourth, optional part is often added to the three parts of the formula — a **role**. It's a request to respond from a certain standpoint: \"You're an experienced HR specialist…\", \"Respond like a strict editor…\", \"Imagine you're a math tutor for a fifth-grader…\".\n\nA role works like a focus setting: an HR specialist will pay attention to how an employer will read the letter; a strict editor will ruthlessly cut the fluff; a tutor will explain patiently and with examples. A role is especially useful when you need not just an answer, but an answer with certain expertise or character.\n\nIt's important not to confuse a role with flattery: \"you're the greatest genius of all time\" adds no information about the task. A working role is always specific: a profession, an audience, a style of behavior." },
+    { "type": "callout", "kind": "docs", "md": "The official prompting guide (platform.claude.com, the Prompt engineering section) advises: be clear and direct — treat Claude like a very capable new employee who needs the task explained explicitly, with context and detail. The less the model has to guess about your intentions, the more accurate the result. The same guide recommends giving examples of the desired result — it's one of the most powerful techniques." },
+    { "type": "callout", "kind": "tip", "md": "Don't aim for the \"perfect prompt\" on the first try — that's a perfectionism trap. Write a good first version using the formula, look at the answer, and refine it in dialogue. The next lesson is precisely about why a dialogue is often stronger than the most carefully crafted single request." },
+    { "type": "callout", "kind": "warning", "md": "Being specific is not the same as being long. A page-long prompt where half is \"fluff\" is worse than three precise sentences. Add only the details that actually affect the result: audience, goal, constraints, style." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What three parts make up the formula for a strong prompt?",
+      "options": [
+        "Greeting + question + thanks",
+        "Context + task + format",
+        "Topic + keywords + hashtags",
+        "Role + password + command"
+      ],
+      "correct": [1],
+      "explanation": "The formula: context (background about the situation), task (what specifically to do), and format (what the result should be — length, structure, tone). Politeness isn't forbidden, but what affects the quality of the answer isn't politeness — it's the information in these three parts.",
+      "hint": "The first part answers \"what's the situation?\", the second \"what to do?\", the third \"in what form?\"."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Build a prompt using the \"context → task → format\" formula: you need to ask Claude to help with a listing for selling a bicycle.",
+      "blocks": [
+        "Context: I'm selling a mountain bike, I've ridden it for two seasons, it's in excellent condition, there's a small scratch on the frame.",
+        "Task: write a listing for a classifieds site — honest, but appealing.",
+        "Format: a headline + 3-4 sentences of description, friendly tone, ending with the price $250 and a call to message me."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "Write something about a bike, you know the deal.",
+        "P.S. If it doesn't work out — no big deal, you don't have to try."
+      ],
+      "explanation": "The correct order mirrors the formula: first the background (what kind of bike, its condition), then a clear task (a listing for a site), then the format (structure, tone, price, call to action). The trap blocks — vagueness (\"something, you know the deal\") and devaluing the task — only get in the way: they add no information and blur the requirements."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Here's a prompt broken down line by line. One line cancels out all the specificity of the request. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "I'm preparing for an interview for a project manager position.",
+        "The interview is in three days, the company develops mobile games.",
+        "Do something useful on this topic.",
+        "At the end, add a preparation checklist of 5 points."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The line \"Do something useful\" is the absence of a task: there's context, there's a format, but what exactly to do is unknown. Claude will have to guess: a list of questions? a preparation plan? a self-introduction? Replace it with a specific action, for example: \"Compile a list of 10 likely interview questions and brief tips on how to answer them\"."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Practice! You need a congratulation: your grandmother's turning 80, and you want a warm, short text for a card. Write Claude a prompt using the formula: context (who, what occasion) + task (a congratulation) + format (short, for a card).",
+      "steps": [
+        {
+          "expect": ["grandm", "80", "birthday", "congrat", "card", "short", "warm"],
+          "minMatches": 3,
+          "claudeReply": "Gladly! Here's a version for the card:\n\n---\n\n**Dear Grandma!**\n\nHappy birthday — happy wonderful 80! Thank you for your warmth, your pies, and your wisdom, which keep our whole family cozy. May every day bring you joy, and may we be right there to multiply it.\n\nBig, big hugs!\n\n---\n\nDoes this work? I can make it more heartfelt, add some humor, or mention something personal — just tell me a couple of details about your grandma.",
+          "failHint": "Build the prompt from three parts, for example: \"My grandmother is turning 80. Write a warm, short congratulation for a card\"."
+        },
+        {
+          "expect": ["add", "personal", "pie", "garden", "grandkid", "change", "heartfelt", "humor", "mention"],
+          "minMatches": 1,
+          "claudeReply": "Great addition — personal details make a congratulation far more alive! Here's a new version:\n\n---\n\n**Dear Grandma!**\n\nHappy birthday — a whole 80 years of light and kindness! We grew up on your famous pies and on the stories you tell better than anyone in the world. Stay just the way you are — the dearest and most beloved. Wishing you health and joy every single day!\n\nYour grandkids\n\n---\n\nSee how the pairing works: a good first prompt gave the foundation, and a refinement brought it to perfection.",
+          "failHint": "Ask to change or add a personal detail, for example: \"Add a mention of her pies\" or \"Make it more heartfelt\"."
+        }
+      ],
+      "successMessage": "Excellent! You applied the \"context + task + format\" formula and immediately practiced a refinement. This is the basic cycle of working with Claude."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of these prompts is worded best?",
+      "options": [
+        "Write a letter.",
+        "Write a long, beautiful letter, a very good one, the best letter in the world, do your best.",
+        "Write a letter to my landlord: I'm asking to move the rent payment from the 5th to the 15th because my payday date has changed. Polite tone, 3-4 sentences.",
+        "You're the greatest writer of all time. Write a letter."
+      ],
+      "correct": [2],
+      "explanation": "The third option contains context (renting, the reason for the change), a task (a letter with a specific request), and a format (tone, length). Options 2 and 4 are longer than the first, but there's no more information in them: \"beautiful\" and \"greatest writer\" don't tell Claude what the letter is about or what should be in it.",
+      "hint": "Look not for the longest prompt, but for the one that has all three parts of the formula."
+    }
+  ],
+  "reward": { "cardId": "card-first-prompt", "badgeId": "badge-first-prompt" }
+}

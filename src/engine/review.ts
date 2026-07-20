@@ -3,7 +3,7 @@
  * Урок становится due, когда с момента прохождения (или последнего
  * повторения) прошёл интервал текущего этапа: 3 → 7 → 30 дней.
  */
-import type { CompletedLesson, ReviewEntry } from './types';
+import type { CompletedLesson, LangCode, ReviewEntry } from './types';
 
 /** Интервалы этапов повторения в днях: этап 0 → 3 дня, 1 → 7, 2 → 30 */
 export const REVIEW_INTERVALS_DAYS = [3, 7, 30] as const;
@@ -47,11 +47,19 @@ export function getDueLessonIds(
     .map(([id]) => id);
 }
 
-/** Склонение: «1 урок ждёт», «2 урока ждут», «5 уроков ждут» */
-export function formatDueLessons(count: number): string {
-  const mod10 = count % 10;
-  const mod100 = count % 100;
-  if (mod10 === 1 && mod100 !== 11) return `${count} урок ждёт`;
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${count} урока ждут`;
-  return `${count} уроков ждут`;
+/**
+ * Ключ строки-склонения для счётчика due-уроков.
+ * Возвращает семантический ключ ('review.due.one' | 'few' | 'many'),
+ * а сам текст берётся из словаря через useT — так работает и pluralization ru,
+ * и простое множественное число en.
+ */
+export function dueLessonsKey(count: number, lang: LangCode = 'ru'): string {
+  if (lang === 'ru') {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'review.due.one';
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'review.due.few';
+    return 'review.due.many';
+  }
+  return count === 1 ? 'review.due.one' : 'review.due.many';
 }

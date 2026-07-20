@@ -1,0 +1,212 @@
+{
+  "id": "pro-boss",
+  "world": "world-5-claude-code-pro",
+  "order": 9,
+  "title": "BOSS: Autopilot",
+  "subtitle": "An end-to-end scenario: hooks + subagents + scheduling — a project that maintains itself",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    {
+      "title": "Hooks Guide — Claude Code Docs",
+      "url": "https://code.claude.com/docs/en/hooks-guide"
+    },
+    {
+      "title": "Subagents — Claude Code Docs",
+      "url": "https://code.claude.com/docs/en/sub-agents"
+    },
+    {
+      "title": "Scheduled Tasks — Claude Code Docs",
+      "url": "https://code.claude.com/docs/en/scheduled-tasks"
+    }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    {
+      "type": "heading",
+      "text": "Final challenge: build the autopilot"
+    },
+    {
+      "type": "text",
+      "md": "The boss's premise. You join the team on **shop-api** — an online store with decent code but zero automation: the linter runs \"whenever someone remembers,\" session progress gets lost, reviews are done by hand, and every morning an intern assembles the project summary. Your task: in a single session, turn the project into an **autopilot** by applying everything this world taught you:\n\n1. **Hooks** — auto-lint after every edit and auto-save of progress at the end of a session.\n2. **Subagents** — parallel recon and review without cluttering the context.\n3. **Scheduling** — a morning summary that assembles itself, no intern required.\n\nThere are no hints in the boss tasks — just you and the skills from eight lessons. Before the fight, a quick check of your arsenal."
+    },
+    {
+      "type": "heading",
+      "text": "Arsenal check: who's responsible for what"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Mechanism",
+        "Trigger",
+        "Your job in this boss"
+      ],
+      "rows": [
+        [
+          "PostToolUse hook",
+          "After a file edit",
+          "Auto-lint: every edit is checked right away"
+        ],
+        [
+          "Stop hook",
+          "The agent finished working",
+          "Auto-save: progress is captured with no reminders"
+        ],
+        [
+          "Subagents",
+          "Your request to delegate",
+          "Parallel recon of modules with a clean context"
+        ],
+        [
+          "Routine",
+          "Schedule (time)",
+          "Morning summary on weekdays at 9:00 — on its own"
+        ],
+        [
+          "settings.json",
+          "Always",
+          "All of this lives here — and must not open a hole"
+        ]
+      ]
+    },
+    {
+      "type": "text",
+      "md": "Recall the three principles every autopilot rests on.\n\n**Principle 1: events go to hooks, time goes to schedules.** A reaction to an action (\"after an edit,\" \"at the end of a session\") is a hook in settings.json. Regularity by the clock (\"every morning\") is a routine. Mix them up and you get a linter that runs at midnight and a report that never arrives.\n\n**Principle 2: send the grunt work offstage.** Anything bulky that ends in a short conclusion — combing through code, proofreading, reviewing — goes to subagents with their own context windows. The main session stays the command post: it receives reports and gives orders.\n\n**Principle 3: automation without a safety net is more dangerous than no automation.** Every command in a hook runs silently and with your permissions; every rule in allow applies to the whole team. Before you automate — reread exactly what will run on its own."
+    },
+    {
+      "type": "text",
+      "md": "And remember the self-sufficiency rule that runs through half of this world: a subagent, a routine, and an agent in CI cannot see your conversation. The task you give them must contain everything: what to do, where to get the data, what counts as the result, where to report. Phrasings like \"as usual,\" \"what we agreed on,\" \"ask me\" are a sure way to get broken automation.\n\nIf you forget something along the way, that's fine: go back to the relevant lesson, refresh, and continue. The boss doesn't test your memory of terms — it tests your ability to assemble a working system out of these mechanisms."
+    },
+    {
+      "type": "heading",
+      "text": "Battle plan"
+    },
+    {
+      "type": "text",
+      "md": "The order of steps in this boss is not accidental — it's also the right order in a real project.\n\n**First, the foundation**: the auto-lint hook, so every later edit — yours, the subagents', future routines' — is checked right away. **Then a security review**: before the automation starts acting on its own, the config is reread with fresh eyes — this step catches everything a colleague \"tuned\" too generously. **Then recon** by subagents: the plan for a big refactor is built on facts, not memory. **Next, scheduling**: the morning-summary routine frees a human from playing alarm clock. **And only at the end — the exit**: the last line of defense, the Stop hook, captures progress on its own.\n\nNote that every step has a check: the hook is tested with an edit, the config with a review, the routine with the honest question \"will it actually run without me?\" Automation without a check is a hope, not a system."
+    },
+    {
+      "type": "example",
+      "bad": "\"I'll automate everything at once: I'll dump a dozen hooks from some article into settings.json, allow Bash(*) so questions stop getting in the way, and set up five routines — I'll figure out later which of them work.\"",
+      "good": "\"I go step by step: one auto-lint hook — tested with an edit. Config review before the commit — Bash(*) struck out. Recon by subagents — the report shows me what works. One routine — reread its text through the eyes of an agent that knows nothing about us. Every mechanism verified before the next.\"",
+      "explanation": "The first approach builds not an autopilot but a minefield: unread hooks run silently, Bash(*) disables the safety net, and five unverified routines will quietly burn limits for months. The second approach is engineering: one mechanism at a time, each battle-tested before moving to the next. That is exactly how this boss is built."
+    },
+    {
+      "type": "callout",
+      "kind": "docs",
+      "md": "All three pillars of this boss are described in the Claude Code documentation: the Hooks Guide (lifecycle events and the commands bound to them), Subagents (helpers with an isolated context), and Scheduled Tasks together with Routines (scheduled jobs that run without the user). Keep these pages within reach — professionals stand out not by memorized syntax but by the habit of checking the primary source."
+    },
+    {
+      "type": "callout",
+      "kind": "warning",
+      "md": "The boss tasks have no hints and no right to a nudge: read the terminal output and the configs as carefully as you would in a real project. Especially in the settings.json task — there, as in life, the dangerous line looks perfectly ordinary."
+    }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 1. You're in the terminal, in the shop-api project folder. Start the agent, then give it the first automation task: ask it to set up a hook that runs the linter (npm run lint) after every file edit.",
+      "steps": [
+        {
+          "expectPattern": "^claude$",
+          "output": "✻ Welcome to Claude Code!\n\n  Folder: ~/work/shop-api\n  CLAUDE.md found. No hooks in the settings — automation from scratch.\n\n> _"
+        },
+        {
+          "expectPattern": "(hook).*(lint|edit|PostToolUse)|((lint).*(hook|edit|automat))",
+          "output": "● Setting up a hook in .claude/settings.json:\n\n  Event: PostToolUse (after a file is edited/created)\n  Matcher: Edit|Write\n  Command: npm run lint\n\n✔ Done. Let's test it: I'll edit src/cart.ts from your earlier task...\n  ⏺ Hook fired: npm run lint → 1 warning → fixing → clean.\n\n  Now every edit is checked on its own — \"whenever someone remembers\" is over."
+        }
+      ],
+      "successMessage": "Step 1 cleared: auto-lint on PostToolUse works. Notice the loop: edit → hook → error → self-fix — already without you."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Step 2. A colleague \"tuned\" the automation and sent .claude/settings.json for review before committing to the shared repo. One line opens a dangerous hole — find it.",
+      "lang": "json",
+      "lines": [
+        "{",
+        "  \"permissions\": {",
+        "    \"allow\": [\"Bash(npm run lint)\", \"Bash(npm test)\", \"Bash(*)\"],",
+        "    \"deny\": [\"Read(.env)\"]",
+        "  },",
+        "  \"hooks\": {",
+        "    \"PostToolUse\": [",
+        "      { \"matcher\": \"Edit|Write\",",
+        "        \"hooks\": [{ \"type\": \"command\", \"command\": \"npm run lint\" }] }",
+        "    ],",
+        "    \"Stop\": [",
+        "      { \"hooks\": [{ \"type\": \"command\", \"command\": \"bash scripts/save-session.sh\" }] }",
+        "    ]",
+        "  }",
+        "}"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "At the end of the allow list, Bash(*) is lurking — \"any command without confirmation.\" It nullifies the whole point of permissions: right next to the harmless npm run lint and npm test, everything is silently allowed, including destructive commands — and this would have gone into Git for the entire team. A correct allowlist names specific commands. The hooks in this config are set up correctly: auto-lint on PostToolUse, the auto-save script on Stop."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 3. Before a big refactor you need recon, but you can't clutter the session context. Delegate two parallel investigations to subagents: a map of the payments module and a list of all TODO/FIXME in the project.",
+      "steps": [
+        {
+          "expectPattern": "(subagent|sub-agent|delegate|parallel|two agents|launch agents|spawn agents)",
+          "output": "● Launching two subagents in parallel...\n\n  ⏺ Subagent 1: investigates src/payments/ (17 files — in its context)\n  ⏺ Subagent 2: searches for TODO/FIXME across the whole project (41 files — in its context)\n\n● Reports received:\n  1. Payments: entry via PaymentService, 3 providers, weak spot —\n     duplicated retry logic in two providers.\n  2. Technical debt: 14 TODOs, 3 FIXMEs; critical one — a FIXME in refund.ts\n     (\"partial refund not handled\").\n\n  Only the conclusions reached our session — the 58 files read stayed offstage."
+        }
+      ],
+      "successMessage": "Step 3 cleared: two recon runs happened at once, the command post's context stays clean. 58 files of grunt work — in other windows; you have two compact reports."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Step 4. Free the intern: assemble the text of the \"shop-api morning summary\" routine — self-sufficient, ready to run without you. Drop the extra blocks.",
+      "blocks": [
+        "Schedule: every weekday at 9:00.",
+        "Task: in the shop-api project, assemble a 24-hour summary — new commits (git log for the last 24 hours), test status (npm test), open PRs.",
+        "Format: a short markdown report in reports/morning.md — three sections, the critical one first.",
+        "If there are no changes over the day — a single line \"no changes,\" without an empty report."
+      ],
+      "correctOrder": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "distractors": [
+        "Also: continue the task we discussed in this session.",
+        "Note: if anything is unclear — ask me at the moment it runs."
+      ],
+      "explanation": "The formula for a working routine: schedule → a self-sufficient task with its data sources → the format and destination of the result → behavior on an empty result. Both traps break the self-sufficiency rule: a routine starts from a blank slate and doesn't remember \"our session,\" and \"ask me at 9 in the morning\" turns the automation back into a manual process."
+    },
+    {
+      "type": "quiz",
+      "question": "The architect's final check. Match them in your head and pick the row where EVERYTHING is correct: \"after every edit — the linter,\" \"every morning — the summary,\" \"comb through 60 files and give a short conclusion.\"",
+      "options": [
+        "Routine / PostToolUse hook / main session",
+        "PostToolUse hook / scheduled routine / subagent",
+        "Stop hook / PostToolUse hook / routine",
+        "Subagent / Stop hook / routine"
+      ],
+      "correct": [
+        1
+      ],
+      "explanation": "Events go to hooks: \"after every edit\" is PostToolUse. Time goes to schedules: \"every morning\" is a routine. Bulky grunt work with a short conclusion goes to a subagent with its isolated context. These are the three principles of the autopilot; whoever distributes them correctly assembled this boss level deliberately."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "Step 5. The autopilot is assembled. Wrap up: ask the agent to show the final setup (what now runs on its own), then exit the session — and watch the last line of defense do its job.",
+      "steps": [
+        {
+          "expectPattern": "(summary|what.?s set up|what.?s working|show|recap|check the setup|review the setup)",
+          "output": "● shop-api automation summary:\n\n  ✔ PostToolUse hook → npm run lint (auto-lint on every edit)\n  ✔ Stop hook → scripts/save-session.sh (auto-save of progress)\n  ✔ Permissions: targeted allow, Read(.env) in deny, Bash(*) rejected\n  ✔ \"Morning summary\" routine: weekdays, 9:00 → reports/morning.md\n  ✔ Subagent reports saved for the refactor plan\n\n  The project maintains itself. You can exit."
+        },
+        {
+          "expectPattern": "^(exit|/exit)$",
+          "output": "⏺ Stop hook fired: bash scripts/save-session.sh\n   ✔ Session log updated\n   ✔ git commit: \"Automation: hooks, permissions, morning-summary routine\"\n\n✻ Session ended. Progress captured automatically —\n   the autopilot did its first job.\n\n$ _"
+        }
+      ],
+      "successMessage": "Boss defeated! The session closed — and the auto-save fired on its own: the final beat of the scenario was placed by the automation you set up yourself. Hooks, subagents, scheduling — this is now your standard arsenal."
+    }
+  ],
+  "reward": {
+    "cardId": "card-pro-boss",
+    "badgeId": "badge-world-5"
+  }
+}

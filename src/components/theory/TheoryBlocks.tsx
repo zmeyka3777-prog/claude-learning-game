@@ -8,10 +8,12 @@ import { motion, useReducedMotion } from 'motion/react';
 import { BookOpen, Check, Copy, Lightbulb, ThumbsDown, ThumbsUp, TriangleAlert } from 'lucide-react';
 import type { CalloutKind, TheoryBlock } from '../../engine/types';
 import { renderMarkdown } from '../../lib/markdown';
+import { useT } from '../../i18n/useT';
 
 // --- Код с кнопкой «копировать» ---------------------------------------------
 
 function CodePanel({ code, lang, title }: { code: string; lang: string; title?: string }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -41,10 +43,10 @@ function CodePanel({ code, lang, title }: { code: string; lang: string; title?: 
           onClick={copy}
           className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors hover:bg-white/10"
           style={{ color: copied ? 'var(--success)' : 'var(--text-secondary)' }}
-          aria-label="Копировать код"
+          aria-label={t('code.copy')}
         >
           {copied ? <Check size={13} /> : <Copy size={13} />}
-          {copied ? 'Скопировано' : 'Копировать'}
+          {copied ? t('code.copied') : t('code.copy')}
         </button>
       </div>
       <pre className="overflow-x-auto p-4 text-sm leading-relaxed" style={{ color: '#d6e2ff' }}>
@@ -58,29 +60,30 @@ function CodePanel({ code, lang, title }: { code: string; lang: string; title?: 
 
 const CALLOUTS: Record<
   CalloutKind,
-  { icon: typeof Lightbulb; label: string; color: string; bg: string }
+  { icon: typeof Lightbulb; labelKey: string; color: string; bg: string }
 > = {
   tip: {
     icon: Lightbulb,
-    label: '💡 Совет',
+    labelKey: 'callout.tip',
     color: 'var(--accent-cyan)',
     bg: 'rgba(34, 211, 238, 0.08)',
   },
   warning: {
     icon: TriangleAlert,
-    label: '⚠️ Важно',
+    labelKey: 'callout.warning',
     color: 'var(--accent-amber)',
     bg: 'rgba(245, 158, 11, 0.08)',
   },
   docs: {
     icon: BookOpen,
-    label: '📖 Из документации',
+    labelKey: 'callout.docs',
     color: 'var(--accent-violet)',
     bg: 'rgba(139, 92, 246, 0.1)',
   },
 };
 
 function Callout({ kind, md }: { kind: CalloutKind; md: string }) {
+  const t = useT();
   const conf = CALLOUTS[kind];
   return (
     <div
@@ -88,7 +91,7 @@ function Callout({ kind, md }: { kind: CalloutKind; md: string }) {
       style={{ borderColor: conf.color, background: conf.bg }}
     >
       <div className="mb-1.5 text-sm font-semibold" style={{ color: conf.color }}>
-        {conf.label}
+        {t(conf.labelKey)}
       </div>
       <div className="text-[15px]" style={{ color: 'var(--text-primary)' }}>
         {renderMarkdown(md)}
@@ -108,6 +111,7 @@ function ExampleBlockView({
   good: string;
   explanation: string;
 }) {
+  const t = useT();
   return (
     <div className="space-y-3">
       <div className="grid gap-3 sm:grid-cols-2">
@@ -119,7 +123,7 @@ function ExampleBlockView({
             className="mb-2 flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase"
             style={{ color: 'var(--error)' }}
           >
-            <ThumbsDown size={14} /> Плохо
+            <ThumbsDown size={14} /> {t('example.bad')}
           </div>
           <p className="font-mono text-sm whitespace-pre-wrap" style={{ color: 'var(--text-primary)' }}>
             {bad}
@@ -133,7 +137,7 @@ function ExampleBlockView({
             className="mb-2 flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase"
             style={{ color: 'var(--success)' }}
           >
-            <ThumbsUp size={14} /> Хорошо
+            <ThumbsUp size={14} /> {t('example.good')}
           </div>
           <p className="font-mono text-sm whitespace-pre-wrap" style={{ color: 'var(--text-primary)' }}>
             {good}

@@ -4,9 +4,11 @@
  */
 import { motion, useReducedMotion } from 'motion/react';
 import { Sparkles } from 'lucide-react';
+import { useT } from '../../i18n/useT';
 
 export function StarLoader() {
   const reduced = useReducedMotion();
+  const t = useT();
 
   return (
     <div
@@ -53,7 +55,7 @@ export function StarLoader() {
       </div>
 
       <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-        Загрузка сектора…
+        {t('loader.sector')}
       </span>
     </div>
   );

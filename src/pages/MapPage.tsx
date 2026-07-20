@@ -7,17 +7,20 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowRight, ChevronDown, Compass, Lock } from 'lucide-react';
-import { CHANGELOG, WORLDS } from '../engine/content';
+import { getChangelog, getWorlds } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
-import { formatDueLessons, getDueLessonIds } from '../engine/review';
+import { dueLessonsKey, getDueLessonIds } from '../engine/review';
 import { WorldMap, RecommendedBadge } from '../components/map/WorldMap';
 import { getAccentColor, getIcon } from '../lib/icons';
 import { getTrackInfo, isWorldRecommended } from '../lib/tracks';
-import type { World } from '../engine/types';
+import { useLang, useT } from '../i18n/useT';
+import type { LangCode, World } from '../engine/types';
 
 /** Стеклянный баннер «Повторение дня» — только когда есть due-уроки */
 function ReviewBanner() {
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const completedLessons = useProgressStore((s) => s.completedLessons);
   const reviewLog = useProgressStore((s) => s.reviewLog);
 
@@ -49,10 +52,13 @@ function ReviewBanner() {
         </span>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-base font-semibold">
-            <span className="gradient-text">Повторение дня</span> — {formatDueLessons(dueCount)}
+            <span className="gradient-text">
+              {t('review.daily.pre')} {t('review.daily.accent')}
+            </span>{' '}
+            — {t(dueLessonsKey(dueCount, lang), { count: dueCount })}
           </h3>
           <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Короткая сессия закрепит пройденное. +25 XP за повторение.
+            {t('map.review.body')}
           </p>
         </div>
         <ArrowRight size={18} className="shrink-0" style={{ color: 'var(--accent-pink)' }} />
@@ -61,12 +67,12 @@ function ReviewBanner() {
   );
 }
 
-/** Формат даты записи ленты: «20 июля 2026» */
-function formatChangelogDate(iso: string): string {
+/** Формат даты записи ленты: «20 июля 2026» / «July 20, 2026» */
+function formatChangelogDate(iso: string, lang: LangCode): string {
   const time = Date.parse(`${iso}T00:00:00`);
   if (Number.isNaN(time)) return iso;
   try {
-    return new Date(time).toLocaleDateString('ru-RU', {
+    return new Date(time).toLocaleDateString(lang === 'en' ? 'en-US' : 'ru-RU', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -79,8 +85,10 @@ function formatChangelogDate(iso: string): string {
 /** Блок «Что нового»: последние 3 записи, summary разворачивается кликом */
 function ChangelogBlock() {
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const [expanded, setExpanded] = useState<string | null>(null);
-  const entries = CHANGELOG.slice(0, 3);
+  const entries = getChangelog(lang).slice(0, 3);
 
   if (entries.length === 0) return null;
 
@@ -91,10 +99,10 @@ function ChangelogBlock() {
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.4 }}
       className="glass-card p-5"
-      aria-label="Что нового"
+      aria-label={`${t('map.whatsnew.pre')} ${t('map.whatsnew.accent')}`}
     >
       <h2 className="mb-3 font-display text-base font-semibold">
-        ✨ Что <span className="gradient-text">нового</span>
+        ✨ {t('map.whatsnew.pre')} <span className="gradient-text">{t('map.whatsnew.accent')}</span>
       </h2>
       <div className="space-y-2">
         {entries.map((entry) => {
@@ -114,7 +122,7 @@ function ChangelogBlock() {
               >
                 <div className="min-w-0 flex-1">
                   <div className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-cyan)' }}>
-                    {formatChangelogDate(entry.date)}
+                    {formatChangelogDate(entry.date, lang)}
                   </div>
                   <div className="truncate text-sm font-semibold">{entry.title}</div>
                 </div>
@@ -152,6 +160,7 @@ function ChangelogBlock() {
 
 /** Приветственный тост после выбора трека в онбординге */
 function WelcomeToast() {
+  const t = useT();
   const track = useProgressStore((s) => s.track);
   const location = useLocation();
   const [visible, setVisible] = useState(
@@ -194,11 +203,12 @@ function WelcomeToast() {
               <Compass size={20} className="text-white" />
             </span>
             <div className="min-w-0 text-sm">
-              <div className="font-display font-semibold">
-                Добро пожаловать в экспедицию, исследователь!
-              </div>
+              <div className="font-display font-semibold">{t('toast.welcome.title')}</div>
               <div className="mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                Трек {info.emoji} «{info.title}» выбран — рекомендованные сектора отмечены на карте.
+                {t('toast.welcome.body', {
+                  emoji: info.emoji,
+                  title: t(`track.${info.id}.title`),
+                })}
               </div>
             </div>
           </motion.div>
@@ -218,6 +228,7 @@ function ComingSoonWorld({
   recommended: boolean;
 }) {
   const reduced = useReducedMotion();
+  const t = useT();
   const Icon = getIcon(world.icon);
   const accent = getAccentColor(world.color);
 
@@ -238,7 +249,7 @@ function ComingSoonWorld({
       </span>
       <div className="min-w-0 flex-1">
         <div className="text-xs font-semibold tracking-wide uppercase" style={{ color: accent }}>
-          Сектор {world.order}
+          {t('map.sector', { order: world.order })}
         </div>
         <h3 className="font-display text-base font-semibold" style={{ color: 'var(--text-secondary)' }}>
           {world.title}
@@ -258,7 +269,7 @@ function ComingSoonWorld({
           }}
         >
           <Lock size={12} />
-          Скоро
+          {t('map.comingSoon')}
         </span>
       </div>
     </motion.div>
@@ -267,11 +278,14 @@ function ComingSoonWorld({
 
 export default function MapPage() {
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const completedCount = useProgressStore((s) => Object.keys(s.completedLessons).length);
   const track = useProgressStore((s) => s.track);
 
-  const activeWorlds = WORLDS.filter((w) => !w.comingSoon);
-  const upcomingWorlds = WORLDS.filter((w) => w.comingSoon);
+  const worlds = getWorlds(lang);
+  const activeWorlds = worlds.filter((w) => !w.comingSoon);
+  const upcomingWorlds = worlds.filter((w) => w.comingSoon);
 
   return (
     <div className="py-8">
@@ -284,12 +298,12 @@ export default function MapPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="font-display text-2xl font-semibold sm:text-4xl">
-          Карта <span className="gradient-text">галактики</span>
+          {t('map.title.pre')} <span className="gradient-text">{t('map.title.accent')}</span>
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
           {completedCount === 0
-            ? 'Твоя экспедиция начинается. Выбери первый урок сектора 1!'
-            : `Пройдено уроков: ${completedCount}. Продолжай экспедицию!`}
+            ? t('map.subtitle.start')
+            : t('map.subtitle.progress', { count: completedCount })}
         </p>
       </motion.div>
 
@@ -311,7 +325,7 @@ export default function MapPage() {
               className="text-center text-xs font-semibold tracking-widest uppercase"
               style={{ color: 'var(--text-muted)' }}
             >
-              Следующие сектора галактики
+              {t('map.nextSectors')}
             </h2>
             {upcomingWorlds.map((world, i) => (
               <ComingSoonWorld
@@ -346,10 +360,11 @@ export default function MapPage() {
             </span>
             <div className="min-w-0 flex-1">
               <h3 className="font-display text-base font-semibold">
-                <span className="gradient-text">Библиотека</span>: готовые скиллы, плагины и MCP
+                <span className="gradient-text">{t('topbar.library')}</span>
+                {t('map.library.titleSuffix')}
               </h3>
               <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
-                Проверенные расширения с командами установки — прокачай свой арсенал.
+                {t('map.library.body')}
               </p>
             </div>
             <ArrowRight size={18} className="shrink-0" style={{ color: 'var(--accent-cyan)' }} />

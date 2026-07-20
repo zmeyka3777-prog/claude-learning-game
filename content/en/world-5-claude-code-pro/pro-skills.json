@@ -1,0 +1,108 @@
+{
+  "id": "pro-skills",
+  "world": "world-5-claude-code-pro",
+  "order": 1,
+  "title": "Your own Skills and slash commands",
+  "subtitle": "Project Skills in .claude/skills: describe a technique once — the whole team uses it forever",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Skills — Claude Code Docs", "url": "https://code.claude.com/docs/en/skills" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A familiar power — now in the terminal" },
+    { "type": "text", "md": "You already know Skills from World 3: a folder with a `SKILL.md` that captures a ready-made method — how to do a specific task the right way. In Claude Code, Skills work exactly the same way, but here they truly come into their own: an agent in the terminal doesn't just read instructions, it carries them out — running scripts, editing files, running checks.\n\nThe big news of this lesson: Skills can be **project-level**. They live right in the repository, in the `.claude/skills/` folder, get committed to Git along with the code — and are automatically available to everyone working on that project. Describe once how your team ships a release or writes a migration, and that technique is known to every developer's agent." },
+    { "type": "heading", "text": "Three levels: personal, project, plugins" },
+    { "type": "table",
+      "headers": ["Where it lives", "Who sees it", "What it's for"],
+      "rows": [
+        ["~/.claude/skills/ (home folder)", "Only you, across all your projects", "Personal techniques: your commit style, your report templates"],
+        [".claude/skills/ (in the project root)", "The whole team — the folder is committed to Git", "Rules and procedures of a specific project: release, migrations, deploy"],
+        ["Inside plugins", "Everyone who installed the plugin", "Ready-made Skills from marketplaces — more on that in World 6"]
+      ]
+    },
+    { "type": "text", "md": "The difference between the personal and project levels is the difference between \"my habit\" and \"our standard.\" A skill \"format PR descriptions with this template\" in `~/.claude/skills/` helps only you. The same skill in the project's `.claude/skills/` lands in the repository, reaches your colleagues with their next `git pull` — and every one of their agents starts formatting PRs the same way. No mass emails saying \"team, we have a new policy\": the policy just lives in the code.\n\nIf a personal and a project skill have the same name, the more specific one wins — the project one: project rules outrank personal habits." },
+    { "type": "heading", "text": "How a skill is built: nothing new" },
+    { "type": "code", "lang": "markdown", "title": ".claude/skills/release-notes/SKILL.md", "code": "---\nname: release-notes\ndescription: Compiles release notes from commits since the last tag. Use when asked to prepare release notes, a changelog, or a release description.\n---\n\n# Release notes\n\n1. Collect commits since the last tag: git log <tag>..HEAD --oneline\n2. Group them: New / Fixes / Other\n3. Write in English, without commit hashes\n4. Save the result to docs/releases/<version>.md" },
+    { "type": "text", "md": "The anatomy is the same as in World 3: a folder named after the skill, containing a `SKILL.md` with frontmatter (`name` and `description`) and instructions. Alongside it you can put helper files — templates, scripts, examples: the agent pulls them in when the skill fires.\n\nA skill fires in two ways. **Automatically** — Claude reads the `description` and decides on its own that the skill fits the task: you ask \"prepare release notes\" and the agent finds the skill by its description and applies it. And **explicitly, via a slash command**: type `/` and the skill's name — `/release-notes` — and it runs immediately, no guessing. Every skill is at the same time a slash command: `/skill-name` appears in the suggestions after you press `/`, right next to built-in commands like `/help` and `/init`." },
+    { "type": "example",
+      "bad": "---\nname: helper\ndescription: A useful skill for various project tasks.\n---",
+      "good": "---\nname: db-migration\ndescription: Creates a database migration following the project's rules. Use when asked to add or change a table, column, or index.\n---",
+      "explanation": "Auto-invocation of a skill depends entirely on the description: Claude picks a skill by matching its description against the task. \"A useful skill for various tasks\" matches no specific request — such a skill will never fire. A good description names what the skill does and in which phrasings to call it. The rule from World 3 holds here too: the description decides everything."
+    },
+    { "type": "heading", "text": "How a skill differs from CLAUDE.md" },
+    { "type": "text", "md": "It may look like Skills duplicate CLAUDE.md — both hold instructions. The difference is the economics of context. CLAUDE.md loads **in full, always**, into every session — which is why it must stay short: only what's needed constantly. A skill loads **in full only when needed**: in an ordinary session only a short description of it is present, while the full instructions and files are pulled in the moment it fires.\n\nHence the rule for choosing: everyday rules (run commands, code conventions, forbidden zones) go in CLAUDE.md; occasional multi-step procedures (release, migration, report) go into Skills. Ten pages of release policy in CLAUDE.md would eat memory in every session; in a skill they cost nothing until needed." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code docs (the Skills page) describe Skills as reusable sets of instructions in folders with a SKILL.md: personal ones in `~/.claude/skills`, project ones in the repository's `.claude/skills`. Claude applies a skill automatically when its description matches the task, and any skill can be invoked explicitly by a slash command with its name." },
+    { "type": "callout", "kind": "tip", "md": "The best candidate for your first project skill is a procedure you've already explained to the agent in chat twice. Once you notice you're dictating the same steps again, say: \"Turn these steps into a project skill called release-notes.\" Claude will create the folder in .claude/skills and write the SKILL.md itself — all that's left is to review and commit it." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "You're in a Claude Code session in the shop-api project. A colleague says: \"We have a release-notes skill, just call it.\" Invoke the skill explicitly — with a slash command by its name.",
+      "steps": [
+        {
+          "expectPattern": "^/release-notes$",
+          "output": "● Applying skill release-notes (.claude/skills/release-notes/SKILL.md)\n\n  Collecting commits since the last tag v2.3.0...\n  Grouping into sections...\n\n● Done: docs/releases/v2.4.0.md\n  • New: QR-code payment, filter orders by date\n  • Fixes: duplicate emails on repeat orders\n\n  All per the policy in SKILL.md — same as the whole team.",
+          "failHint": "Invoking a skill explicitly is a slash command with its name: /release-notes"
+        }
+      ],
+      "successMessage": "Exactly: every skill is at the same time a slash command. /skill-name runs it immediately, with no reliance on auto-firing."
+    },
+    {
+      "type": "quiz",
+      "question": "Where must a skill live so the whole project team gets it automatically?",
+      "options": [
+        "In each developer's ~/.claude/skills/",
+        "In .claude/skills/ inside the project repository",
+        "In CLAUDE.md — paste the whole skill text in",
+        "On the company's shared network drive"
+      ],
+      "correct": [1],
+      "explanation": "The .claude/skills/ folder lives in the repository and is committed to Git — the skill reaches colleagues along with the code, and everyone's agent works by the same rules. The personal folder ~/.claude/skills/ is visible only to you, and pasting into CLAUDE.md would bloat every session's memory.",
+      "hint": "Whatever gets committed to Git is what's shared."
+    },
+    {
+      "type": "quiz",
+      "question": "A two-page multi-step release procedure. Where should it go and why?",
+      "options": [
+        "In CLAUDE.md — it loads automatically, after all",
+        "In a skill: the full instructions load only when needed, not every session",
+        "Nowhere — dictate it to the agent from scratch each time",
+        "In README.md — the agent will figure out to read it"
+      ],
+      "correct": [1],
+      "explanation": "That's the key difference from CLAUDE.md: project memory loads in full, always, so it's reserved for short everyday rules. A skill, by contrast, \"sleeps,\" taking up space only with a short description, and unfolds in full only when it fires. Long, occasional procedures are skill territory.",
+      "hint": "Recall the economics of context: what loads always, and what loads on demand."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Here's the SKILL.md of a project skill. One line guarantees it will never fire automatically. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: deploy-check",
+        "description: A skill that does various useful checks.",
+        "---",
+        "1. Run the tests: npm test",
+        "2. Check that .env didn't get into the commit",
+        "3. Make sure the version in package.json is bumped"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "Auto-invocation of a skill is decided by the description: Claude matches the description against the current task. \"Various useful checks\" matches no real request — the agent will never realize the skill is needed. A working version: \"Verifies readiness to deploy: tests, secrets, version. Use before a deploy or when asked to check a release.\" The skill's steps themselves are written well."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **You need Claude Code installed — if you don't have it, come back to this mission later.**\n\n1. Open a terminal in any of your own projects and run `claude`.\n2. Ask: \"Create a project skill commit-style: commits are written in English, the first line is up to 60 characters, and it ends with what exactly was verified.\" Check that a `.claude/skills/commit-style/` folder with a SKILL.md appeared.\n3. Open the SKILL.md and make sure the description is specific: it says what the skill does and when to apply it. If it's vague — fix it.\n4. Type `/` and find your skill in the list. Invoke `/commit-style` and watch the agent apply your rules.",
+      "checklist": [
+        "The .claude/skills/commit-style/ folder with a SKILL.md was created",
+        "The description is specific: what it does and when to apply it",
+        "The skill shows up in the slash-command list after pressing /",
+        "The explicit call /commit-style worked"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-skills", "badgeId": null }
+}

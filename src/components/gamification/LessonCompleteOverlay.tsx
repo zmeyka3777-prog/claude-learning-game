@@ -8,6 +8,7 @@ import { Award, Star, Zap } from 'lucide-react';
 import type { LessonCompletionResult } from '../../engine/progressStore';
 import type { Lesson } from '../../engine/types';
 import { getBadge, getCard } from '../../engine/content';
+import { useLang, useT } from '../../i18n/useT';
 import { BadgeUnlock } from './BadgeUnlock';
 import { ConfettiBurst } from './ConfettiBurst';
 import { FunctionCardView } from './FunctionCardView';
@@ -28,9 +29,11 @@ export function LessonCompleteOverlay({
   onContinue,
 }: LessonCompleteOverlayProps) {
   const navigate = useNavigate();
-  const card = result.newCardId ? getCard(result.newCardId) : undefined;
+  const t = useT();
+  const { lang } = useLang();
+  const card = result.newCardId ? getCard(result.newCardId, lang) : undefined;
   const badges = result.newBadgeIds
-    .map((id) => getBadge(id))
+    .map((id) => getBadge(id, lang))
     .filter((b): b is NonNullable<typeof b> => Boolean(b));
 
   // Звёзды за аккуратность: 3 — без ошибок, 2 — до двух, 1 — больше
@@ -77,7 +80,7 @@ export function LessonCompleteOverlay({
         </div>
 
         <h2 className="font-display text-xl font-semibold sm:text-2xl">
-          {lesson.isBoss ? 'Босс повержен!' : 'Экспедиция завершена!'}
+          {lesson.isBoss ? t('complete.boss') : t('complete.lesson')}
         </h2>
         <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
           {lesson.title}
@@ -96,12 +99,14 @@ export function LessonCompleteOverlay({
           transition={{ delay: 0.5, type: 'spring', stiffness: 260, damping: 18 }}
         >
           <Zap size={20} />
-          {result.alreadyCompleted ? 'Урок уже был пройден' : `+${result.xpGained + bonusXp} XP`}
+          {result.alreadyCompleted
+            ? t('complete.alreadyDone')
+            : t('complete.xp', { n: result.xpGained + bonusXp })}
         </motion.div>
 
         {result.streakCurrent > 0 && (
           <p className="mt-2 text-sm" style={{ color: 'var(--accent-pink)' }}>
-            🔥 Стрик: {result.streakCurrent} дн.
+            {t('complete.streak', { n: result.streakCurrent })}
           </p>
         )}
 
@@ -117,7 +122,7 @@ export function LessonCompleteOverlay({
               className="mb-2 text-center text-xs font-semibold tracking-wide uppercase"
               style={{ color: 'var(--accent-cyan)' }}
             >
-              Новая карточка в альбоме
+              {t('complete.newCard')}
             </div>
             <FunctionCardView card={card} />
           </motion.div>
@@ -144,7 +149,7 @@ export function LessonCompleteOverlay({
             transition={{ delay: 0.85 }}
           >
             <Award size={18} />
-            Получить сертификат
+            {t('complete.getCertificate')}
           </motion.button>
         )}
 
@@ -156,7 +161,7 @@ export function LessonCompleteOverlay({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
         >
-          Дальше
+          {t('complete.next')}
         </motion.button>
       </motion.div>
     </motion.div>

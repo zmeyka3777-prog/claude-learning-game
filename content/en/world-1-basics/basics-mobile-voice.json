@@ -1,0 +1,113 @@
+{
+  "id": "basics-mobile-voice",
+  "world": "world-1-basics",
+  "order": 8,
+  "title": "Mobile Claude and voice",
+  "subtitle": "Apps for iOS and Android, voice mode and camera: Claude always within reach",
+  "xp": 50,
+  "durationMin": 7,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude on Mobile — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude in your pocket" },
+    { "type": "text", "md": "Everything you've learned in this world works not just at your computer. Claude has **official mobile apps for iOS and Android** — search for \"Claude\" in the App Store or Google Play (the publisher is Anthropic; be careful — popular apps sometimes have fake clones).\n\nSign in to the same account and you get a **shared chat history**: a conversation you started on your computer, you can continue on your phone on the subway, and vice versa. Started sketching out a presentation plan over breakfast in the morning — you pick it up at your desk right where you left off.\n\nThe app's interface mirrors the web version: an input field, chat history, search, model selection. But your phone has two superpowers that a computer doesn't: **a microphone right at hand** and **a camera**." },
+    { "type": "heading", "text": "Voice mode: talk instead of typing" },
+    { "type": "text", "md": "The mobile apps have a **voice mode**: you speak with Claude out loud, and it responds by voice — you get a live conversation, like talking on the phone with a well-read companion.\n\nWhen this is more convenient than typing:\n\n- **your hands are busy** — you're cooking, driving (safely!), out walking with a stroller;\n- **your thoughts outpace your fingers** — dictating an idea is easier than typing it;\n- **speech practice** — rehearse a talk, practice a foreign language in dialogue;\n- **learning on the go** — ask Claude to explain a topic and listen like a podcast, only you can interrupt and clarify.\n\nVoice input doesn't change the rules: the \"context + task + format\" formula and follow-up clarifications work exactly the same, just spoken aloud. Say \"shorter\" — and Claude will trim it down." },
+    { "type": "heading", "text": "Camera: show Claude what you see" },
+    { "type": "text", "md": "From the lesson on files you know that Claude \"sees\" images. On a phone this comes into full force — you can **photograph anything straight into the chat** using the attach button:\n\n- an ingredient label — \"is there gluten in this?\";\n- a menu in a foreign language — \"translate it and suggest what to order\";\n- a receipt — \"what is this charge for and is everything correct here?\";\n- a plant on your windowsill — \"what's wrong with it and how do I save it?\";\n- furniture assembly instructions — \"explain step 7 in plain language\";\n- a shop window, a document, a notice in your building's entrance, a textbook page.\n\nThe formula is the same: photo + a specific question = a useful answer. And, as with any file, after the first answer the dialogue continues: \"now translate just the desserts section,\" \"compare this with the photo I sent earlier.\"" },
+    { "type": "heading", "text": "Scenarios that change your habits" },
+    { "type": "text", "md": "Mobile Claude is valuable not because it's \"the same thing, but on a phone,\" but because it's right there in the moments when there's no computer but there is a question. A few examples of how this fits into your day.\n\n**Morning:** on your way to work, talk through your day's plan by voice — \"I have three meetings and a report, help me set priorities.\" **Daytime:** in a store, photograph two products and compare ingredients. **Evening:** while cooking dinner from a recipe, ask by voice \"what can I substitute for cream?\" — without touching the screen with messy hands. **On a trip:** a photo of a schedule, a sign, or a ticket — \"what time is my train and which platform?\"\n\nThe general principle: previously such micro-tasks were either postponed \"until you're at a computer\" or solved with half an hour of googling. Now, between the question and the answer, there's one photo or one phrase." },
+    { "type": "table", "headers": ["\"On the go\" situation", "Tool", "What to say/do"], "rows": [
+      ["Cooking dinner, hands covered in flour", "Voice", "\"What can I substitute for cream in this recipe?\""],
+      ["Store, choosing between products", "Camera", "Photo of labels: \"Compare the ingredients, which is healthier?\""],
+      ["Commuting to work", "Voice", "\"Explain topic X, I have 20 minutes\" — listen and ask follow-ups"],
+      ["Restaurant abroad", "Camera", "Photo of the menu: \"Translate it, what here has no meat?\""],
+      ["An idea struck on a walk", "Voice", "Dictate the thought, ask it to be shaped into a note"],
+      ["A child asks \"why is the sky blue\"", "Voice", "Figure it out together with Claude out loud"]
+    ] },
+    { "type": "example",
+      "bad": "Standing in the store, trying to manually retype the tiny ingredient list from the label into the chat: \"watersflourssaltemulsifier E471…\" — with typos, five minutes, and you couldn't make out half of it.",
+      "good": "Photograph the label into the chat and ask: \"I'm trying to avoid sugar in hidden forms. Is there any here, and under what names?\"",
+      "explanation": "The camera removes an entire layer of manual work: no need to retype — Claude reads the text from the photo itself, even the fine print. And a specific question (not \"what is this?\" but \"find the hidden sugar\") gives you an actionable answer right there at the store shelf." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Help Center (support.claude.com, the Claude on Mobile section) confirms: the official apps are available for iOS and Android, support voice conversations with Claude, uploading photos and files, and chat history syncs with the web version — you can continue conversations from any device." },
+    { "type": "callout", "kind": "tip", "md": "Try the \"one-week rule\": every time a question comes up on the go that you'd normally google or postpone — ask Claude by voice or with a photo. Over a week you'll discover your own personal scenarios that no lesson describes." },
+    { "type": "callout", "kind": "warning", "md": "Voice and camera are still sending data into the chat. Don't photograph other people's documents or dictate sensitive information (passwords, full card details) — same as in the web version. And don't use your phone while driving: voice mode only via hands-free and by the rules." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What happens to a chat you started on your computer if you open the Claude mobile app with the same account?",
+      "options": [
+        "It's in the history — you can continue the conversation from your phone right where you left off",
+        "The history is empty on the phone: computer chats don't get there",
+        "You'll have to email the chat to yourself",
+        "The mobile app doesn't show history at all"
+      ],
+      "correct": [0],
+      "explanation": "Chat history is shared across all devices on one account: started on the computer — continued on the phone on the subway, and vice versa. This is one of the main convenient little things about mobile Claude.",
+      "hint": "The key phrase from the theory — \"shared history\" between devices."
+    },
+    {
+      "type": "quiz",
+      "question": "In which situations is voice mode more convenient than typing? Select all that apply.",
+      "options": [
+        "Hands busy with cooking",
+        "You want to practice conversational foreign language",
+        "You need to send Claude a photo of a document",
+        "You want to listen to an explanation of a topic on the way, asking follow-ups as you go"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "Voice helps when your hands are busy, for speech practice, and for a \"podcast with feedback\" on the way. But a photo is sent by the camera, not by voice — that's the phone's other superpower.",
+      "hint": "One of the options is about an image, not about speech."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "A mobile scenario simulation. You're in a supermarket choosing breakfast cereal, and you've photographed the ingredient label (the photo is already \"attached\"). Your goal — less sugar. Ask Claude about these ingredients. Then clarify what to buy instead.",
+      "steps": [
+        {
+          "expect": ["sugar", "ingredients", "label", "healthy", "how much", "is there", "cereal"],
+          "minMatches": 2,
+          "claudeReply": "Looking at the ingredients from the photo 📸\n\nThere's a lot of sugar here, and it's hidden under several names:\n\n- **sugar** — 2nd in the ingredient list (the closer to the start, the larger the share);\n- **glucose-fructose syrup** — this is sugar too;\n- **honey** — this is also sugar, even though it sounds healthy.\n\nBottom line: by ingredients this is more of a dessert than a healthy breakfast — roughly a third of the weight is sugars. Want me to suggest what to look for on the shelf instead of this cereal?",
+          "failHint": "Ask about what concerns you, for example: \"How much sugar is here? I'm trying to avoid it.\""
+        },
+        {
+          "expect": ["what to buy", "instead", "alternative", "recommend", "yes", "go ahead", "suggest", "substitute"],
+          "minMatches": 1,
+          "claudeReply": "Here's what to look for on the shelf — right now, while you're in the store:\n\n1. **Old-fashioned rolled oats** — a one-word ingredient list: \"rolled oats.\" Ideal.\n2. **Muesli with no added sugar** — look for \"no sugar\" on the package, but still check the ingredients: there should be no syrups.\n3. Add the sweetness yourself: a banana or berries — that's a completely different story than syrup in the ingredients.\n\nA rule for the future: if sugar (or syrup/honey/molasses) is in the first three ingredients — put it back on the shelf. Happy shopping! 🛒",
+          "failHint": "Ask for an alternative, for example: \"So what should I get instead of these?\""
+        }
+      ],
+      "successMessage": "Great! Photo + a specific question + a follow-up — and the decision is made right at the shelf in a minute. That's mobile Claude in action."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A beginner's notes about mobile Claude. Find the incorrect statement.",
+      "lang": "markdown",
+      "lines": [
+        "1. Claude apps exist for both iOS and Android.",
+        "2. In the app you can talk with Claude by voice.",
+        "3. You can photograph a document or label straight into the chat.",
+        "4. Voice mode is only in the web version on a computer; the app doesn't have it.",
+        "5. Chat history syncs between phone and computer."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The mistake is on line 4 — it's exactly the opposite: voice mode is precisely a feature of the mobile apps. The rest is correct: apps on both platforms, the camera for photos into the chat, and shared history across devices."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: put Claude in your pocket.\n\n1. Install the official **Claude** app from the App Store or Google Play (the publisher is Anthropic) and sign in to your account.\n2. Make sure you can see your chats from the computer — open one of them.\n3. Try **voice mode**: find the voice conversation button in the app and ask something out loud — for example, ask for a dinner idea. Ask a follow-up question by voice.\n4. Try the **camera**: photograph any label, book cover, or (non-confidential) document into the chat and ask a question about the photo.\n5. Bonus: start any chat on your phone and continue it on your computer.",
+      "checklist": [
+        "I installed the official app and signed in",
+        "I can see my computer chats in the app",
+        "I talked with Claude by voice and asked a follow-up",
+        "I sent a photo into the chat and got an answer about it",
+        "(Bonus) I continued a mobile chat on the computer"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-mobile-voice", "badgeId": null }
+}

@@ -8,6 +8,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { Lightbulb, MessageCircle, SendHorizontal, Sparkles } from 'lucide-react';
 import type { ChatSimTask as ChatSimTaskType } from '../../engine/types';
 import { renderMarkdown } from '../../lib/markdown';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface ChatMessage {
@@ -52,6 +53,7 @@ interface ChatSimTaskProps {
 let chatMsgId = 1;
 
 export function ChatSimTask({ task, onSolved }: ChatSimTaskProps) {
+  const t = useT();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [stepIndex, setStepIndex] = useState(0);
   const [input, setInput] = useState('');
@@ -127,14 +129,14 @@ export function ChatSimTask({ task, onSolved }: ChatSimTaskProps) {
           </span>
           <span className="text-sm font-semibold">Claude</span>
           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            симулятор
+            {t('chat.header.sim')}
           </span>
         </div>
 
         <div ref={scrollRef} className="max-h-80 space-y-3 overflow-y-auto p-4">
           {messages.length === 0 && (
             <p className="py-4 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
-              Напиши сообщение — «Claude» ответит
+              {t('chat.empty')}
             </p>
           )}
           {messages.map((msg, i) => {
@@ -195,7 +197,7 @@ export function ChatSimTask({ task, onSolved }: ChatSimTaskProps) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Напиши Claude…"
+              placeholder={t('chat.placeholder')}
               disabled={typing}
               className="min-w-0 flex-1 rounded-xl border bg-transparent px-4 py-2.5 text-[15px] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent-violet)]"
               style={{ borderColor: 'var(--border-glass)', color: 'var(--text-primary)' }}
@@ -204,7 +206,7 @@ export function ChatSimTask({ task, onSolved }: ChatSimTaskProps) {
               type="submit"
               disabled={!input.trim() || typing}
               className="btn-gradient grid h-10 w-10 shrink-0 place-items-center"
-              aria-label="Отправить"
+              aria-label={t('chat.send.aria')}
             >
               <SendHorizontal size={17} />
             </button>
@@ -235,7 +237,7 @@ export function ChatSimTask({ task, onSolved }: ChatSimTaskProps) {
           style={{ borderColor: 'rgba(52, 211, 153, 0.4)', background: 'rgba(52, 211, 153, 0.07)' }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Диалог удался!
+            {t('chat.solved')}
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>{task.successMessage}</p>
         </motion.div>

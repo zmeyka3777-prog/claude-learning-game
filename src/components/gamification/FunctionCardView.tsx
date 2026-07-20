@@ -4,12 +4,14 @@
  */
 import type { CardRarity, FunctionCard } from '../../engine/types';
 import { getIcon } from '../../lib/icons';
+import { useT } from '../../i18n/useT';
 
-export const RARITY_LABELS: Record<CardRarity, string> = {
-  common: 'Обычная',
-  rare: 'Редкая',
-  epic: 'Эпическая',
-  legendary: 'Легендарная',
+/** Ключ строки-редкости для словаря (перевод берётся через useT) */
+export const RARITY_KEYS: Record<CardRarity, string> = {
+  common: 'rarity.common',
+  rare: 'rarity.rare',
+  epic: 'rarity.epic',
+  legendary: 'rarity.legendary',
 };
 
 const RARITY_BORDERS: Record<CardRarity, string> = {
@@ -39,6 +41,7 @@ interface FunctionCardViewProps {
 }
 
 export function FunctionCardView({ card, earned = true }: FunctionCardViewProps) {
+  const t = useT();
   const Icon = getIcon(card.icon);
 
   return (
@@ -66,14 +69,14 @@ export function FunctionCardView({ card, earned = true }: FunctionCardViewProps)
             className="text-[11px] font-semibold tracking-wide uppercase"
             style={{ color: earned ? RARITY_TEXT[card.rarity] : 'var(--text-muted)' }}
           >
-            {RARITY_LABELS[card.rarity]}
+            {t(RARITY_KEYS[card.rarity])}
           </span>
         </div>
         <div className="font-display text-sm font-semibold">
           {earned ? card.title : '???'}
         </div>
         <p className="text-xs leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          {earned ? card.description : 'Пройди урок, чтобы открыть эту карточку.'}
+          {earned ? card.description : t('card.locked.desc')}
         </p>
       </div>
     </div>

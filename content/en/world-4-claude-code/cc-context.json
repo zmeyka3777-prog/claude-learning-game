@@ -1,0 +1,109 @@
+{
+  "id": "cc-context",
+  "world": "world-4-claude-code",
+  "order": 8,
+  "title": "The context window",
+  "subtitle": "Why a long session \"gets tired\" and what to do about it",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Context windows — Claude Code Docs", "url": "https://code.claude.com/docs/en/context-window" },
+    { "title": "Memory (CLAUDE.md) — Claude Code Docs", "url": "https://code.claude.com/docs/en/memory" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A session has a working memory — and it's finite" },
+    { "type": "text", "md": "Everything that happens in a session goes into the **context window** — the agent's working memory. Into it go your messages and Claude's replies, the contents of files that were read, the results of executed commands, error texts. That's exactly why the agent \"remembers\" the course of the work: the whole history is physically in front of it.\n\nBut the window isn't infinitely stretchy: it has a limit. It's roomy — hours of work fit into it — yet a large project generates context quickly: one long file or a verbose test output takes up a noticeable chunk. The fuller the window, the less room there is for anything new — and the more carefully you need to spend what's left.\n\nThis isn't a flaw of one particular tool but a fundamental property of language models: for any of them, the amount of \"working memory\" is finite. The only difference is that Claude Code gives you convenient levers for managing this resource — and that's what this lesson is about." },
+    { "type": "heading", "text": "Signs of a \"tired\" session" },
+    { "type": "text", "md": "When the window is close to full, the session starts to \"get tired\" — you can notice it from the behavior:\n\n- the agent **forgets early agreements**: you asked it not to touch the styles, and it's editing them again;\n- it **repeats already-fixed mistakes** or re-reads files it studied long ago;\n- the answers become more generic, losing touch with the details of your project;\n- Claude Code itself warns that the context is running out — watch for such indicators.\n\nIt's important to understand: this isn't \"the model got dumber.\" It's just that the oldest and most important content gets pushed out by the volume of fresh clutter — command outputs, accidentally read large files, long dead-end branches of discussion. Scolding the agent is useless, but tidying up its working memory is entirely doable — and there are two tools for it." },
+    { "type": "table",
+      "headers": ["Symptom", "What to do"],
+      "rows": [
+        ["The history is long, but the task isn't finished yet", "/compact — compress the history, keeping the essence"],
+        ["The task is done, you're starting a new one", "/clear or a new session — a clean slate"],
+        ["The agent forgot an important rule", "Write the rule into CLAUDE.md so it survives any session"],
+        ["A huge file is coming up to read \"just in case\"", "Don't read \"just in case\": ask only for what's needed"]
+      ]
+    },
+    { "type": "heading", "text": "/compact: compress without losing the essence" },
+    { "type": "text", "md": "The **`/compact`** command is the main tool for extending a session. It replaces the long history with a short summary: what you did, what you arrived at, which decisions were made. The details of the conversation disappear, the essence remains, room is freed up.\n\nYou can guide the compression by adding an instruction to the command — for example: `/compact keep the details about the database schema`. Then, when compressing, the agent will treat the specified topic more carefully.\n\nWhen the window fills to the limit, Claude Code may perform the compression automatically — but it's better not to let it get that far: compress at a **logical point** (a task is finished, a plan is agreed), not in the middle of delicate work, when the details matter most." },
+    { "type": "heading", "text": "A new session and the CLAUDE.md safety net" },
+    { "type": "text", "md": "Sometimes it's more correct not to compress but to **start over**. The rule is simple: a new task means a new session (or /clear). Dragging yesterday's layout context into a task about reports is pointless: the old context doesn't help, it just eats room and scatters attention.\n\nThe fear \"if I start over, everything will be forgotten\" is cured by **CLAUDE.md**: the project's commands, rules, and forbidden zones live in a file and are loaded into every session automatically. That's the safety net: everything truly important should live in CLAUDE.md, not in the fragile dialog history. If you notice you keep repeating the same thing to the agent after every restart — that's a signal: move it into the project memory.\n\nBefore a planned end to a large session there's one more trick: ask the agent to sum things up — \"write a brief note of what's done and what's left, into a file progress.md.\" The next session will start by reading this file and instantly get up to speed." },
+    { "type": "example",
+      "bad": "One endless week-long session: layout, then reports, then bug fixes — all in a single dialog. By Friday the agent confuses tasks and forgets rules.",
+      "good": "One session per task: finished the layout — /clear, started the reports. In the middle of a large task — /compact at a logical point. Project rules — in CLAUDE.md, the day's results — in progress.md.",
+      "explanation": "An endless session accumulates junk context: scraps of old tasks push out what's important, and the agent \"gets tired\" — forgets agreements, gets confused in the details. Context hygiene is simple: one task — one session, compression at meaningful points, and everything long-lived (rules, work status) — in files that don't depend on the dialog's memory."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the page about the context window) describes it as the session's limited working memory, which includes messages, file contents, and tool results. For managing it, compacting the history (/compact) and timely starting of new sessions are recommended, while long-term knowledge about the project is suggested to be stored in CLAUDE.md memory files." },
+    { "type": "callout", "kind": "tip", "md": "Save the window from the very start: ask the agent to read specific files rather than \"study the whole project\"; for noisy commands — ask for a brief summary of the result. A clean context isn't just \"we'll work longer\" — it also means noticeably more accurate answers right now." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What goes into a Claude Code session's context window?",
+      "options": [
+        "Only your messages — files and commands are stored separately",
+        "Messages, contents of read files, command results, error texts — the whole working history of the session",
+        "Only CLAUDE.md",
+        "All the computer's files at once"
+      ],
+      "correct": [1],
+      "explanation": "The context window is the session's working memory, and everything that happens goes into it: the dialog, files that were read, command output, errors. That's why it fills up: one big file or a verbose test output eats a noticeable chunk. The computer's files don't go into the window on their own — only what the agent actually read.",
+      "hint": "Recall where the agent \"remembers\" the course of the work from: the whole history is in front of it."
+    },
+    {
+      "type": "quiz",
+      "question": "By what signs can you tell that a session has \"gotten tired\" and the context is running out? Choose all correct options.",
+      "options": [
+        "The agent forgets agreements from the start of the session",
+        "The agent repeats already-fixed mistakes or re-reads files it already studied",
+        "Claude Code warns that the context is running out",
+        "The computer starts making noise with its fan"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Forgotten agreements, repeated mistakes, and warnings from the tool itself are the classic triad of a full window: the old gets pushed out by the fresh volume. The fan has nothing to do with it — the context doesn't live in your processor. Once you see the signs, it's time to choose: /compact at a logical point or a new session.",
+      "hint": "Three signs are about the dialog's memory, one is about the hardware."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You've been working on a large task for a long time: the session history has grown, but you can't abandon the context — the work is in full swing. Apply the command that will compress the history while keeping the essence.",
+      "steps": [
+        {
+          "expectPattern": "^/compact( .*)?$",
+          "output": "● Compressing the session history...\n\n✔ Done. History replaced with a summary:\n  • Task: recalculating discounts in the cart\n  • Done: fixed discount.js, added 4 tests, all green\n  • Decisions: discounts are computed on the server; don't touch legacy/\n  • Left: display the discount in the cart interface\n\n  The context window is freed — the essence of the work is preserved.\n\n> _",
+          "failHint": "You need the history-compression command — /compact. Not /clear: that would erase everything, and you still need the context."
+        }
+      ],
+      "successMessage": "Correct: /compact compressed a multi-hour history into a short summary — the agreements and work status survived, and room was freed up. /clear in this situation would have been a mistake: it would have erased everything."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Notes on managing context. One statement is incorrect — find it.",
+      "lang": "markdown",
+      "lines": [
+        "The context window includes messages, read files, and command results.",
+        "/compact replaces a long history with a short summary, keeping the essence.",
+        "Starting a new session for a new task is normal practice, not a loss.",
+        "CLAUDE.md is erased on every /clear, so the rules will have to be written again.",
+        "Everything truly important is worth storing in files, not in the dialog history."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Exactly the opposite: CLAUDE.md is a file on disk, and no /clear, /compact, or session restart touches it. It's automatically loaded into every new session — that's its role as a safety net: the rules survive any context reset. The other statements are correct."
+    },
+    {
+      "type": "quiz",
+      "question": "You've finished a layout task and are moving to a completely different one — data analysis. What's the wisest thing to do?",
+      "options": [
+        "Continue in the same session: the more context, the better",
+        "Start a new session (or /clear): the old context isn't needed for the new task, and the important rules live in CLAUDE.md anyway",
+        "Definitely /compact — you must not start a new session",
+        "Delete CLAUDE.md to free up context"
+      ],
+      "correct": [1],
+      "explanation": "The rule \"a new task means a new session\": the layout context is no helper in data analysis — it's ballast that eats the window and scatters the agent's attention. A clean start loses nothing: the project's commands and rules will load from CLAUDE.md automatically. /compact is good in the middle of one large task, not between different ones.",
+      "hint": "Will the layout context help with analyzing data? And what stores the project rules in the meantime?"
+    }
+  ],
+  "reward": { "cardId": "card-cc-context", "badgeId": null }
+}

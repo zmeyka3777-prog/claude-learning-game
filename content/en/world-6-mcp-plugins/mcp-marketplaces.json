@@ -1,0 +1,113 @@
+{
+  "id": "mcp-marketplaces",
+  "world": "world-6-mcp-plugins",
+  "order": 7,
+  "title": "Marketplaces",
+  "subtitle": "The official catalog, the community one with review, and the /plugin command: how to choose and install",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Discover plugins — Claude Code Docs", "url": "https://code.claude.com/docs/en/discover-plugins" },
+    { "title": "Plugin marketplaces — Claude Code Docs", "url": "https://code.claude.com/docs/en/plugin-marketplaces" },
+    { "title": "anthropics/claude-plugins-official", "url": "https://github.com/anthropics/claude-plugins-official" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Where plugins come from" },
+    { "type": "text", "md": "A plugin **marketplace** is not a store with a storefront and payment, but a catalog: a repository with a list of plugins and information on where to install them from. There are two main catalogs:\n\n- **The official one** — `anthropics/claude-plugins-official`, an Anthropic-curated marketplace of ~100 plugins: integrations with GitHub, Linear, Notion, tools for AWS, Cloudflare, MongoDB, and much more. It's connected in Claude Code out of the box.\n- **The community one** — `anthropics/claude-plugins-community`: community plugins that enter the catalog through a review process — submissions are examined before acceptance.\n\nAnd a third level: **any Git repository can become a marketplace** with a catalog file inside. This is how teams make internal marketplaces: one repository — and the whole company shares a set of signature plugins.\n\nWhy a catalog at all, if a plugin can be downloaded from anywhere? For the same reason a phone has an app store: a single place to search, standard installation, and updates. Install a plugin from a marketplace — and when the author releases a new version, you update the normal way, rather than \"download the folder again and lay it out by hand.\"" },
+    { "type": "heading", "text": "The /plugin command" },
+    { "type": "text", "md": "All plugin management is gathered into one slash command — **`/plugin`**. It opens an interactive menu: browsing catalogs, searching, installing, enabling and disabling, removing. The main moves:\n\n- **View and install**: `/plugin` → pick a marketplace → pick a plugin → install. Before installing, the menu shows which components will arrive: how many commands, whether there are skills, agents, hooks, MCP servers — read this list carefully, it matters more than the marketing description.\n- **Connect a new marketplace**: `/plugin marketplace add owner/repo` — for example, the community catalog or your team's internal repository.\n- **Manage what's installed**: plugins can be temporarily disabled without removing them — handy for debugging, when you need to figure out which plugin is interfering.\n\nAfter installing, check the result with the same commands as always: `/help` shows the plugin's new slash commands, `/mcp` — its MCP servers. If something is missing — look at the plugin's description: it may need environment variables or an access token." },
+    { "type": "code", "lang": "text", "title": "A typical plugin session", "code": "> /plugin marketplace add anthropics/claude-plugins-community\n  ✔ Marketplace connected: claude-plugins-community\n\n> /plugin\n  Marketplaces: claude-plugins-official, claude-plugins-community\n  → Browse plugins → github (official)\n    Components: 3 commands, 1 MCP server\n  → Install\n\n  ✔ Installed the github plugin. New commands visible in /help" },
+    { "type": "heading", "text": "How to choose: trust matters more than features" },
+    { "type": "text", "md": "A plugin is not passive text. Hooks run commands on your machine automatically, on session events; MCP servers are runnable code with access wherever you let it; skills and commands directly affect the agent's behavior across all your projects. So installing a plugin is a trust decision, like installing a program on your computer, and before install it's worth going through a checklist:\n\n1. **Who's the author?** The official catalog is curated; the community one passes review; a random repository — only your own inspection.\n2. **Which components get installed?** A plugin of commands alone is more harmless than one with hooks and MCP servers: the latter execute code.\n3. **What's inside?** A catalog is a Git repository: any plugin's source can be opened and read before installing.\n4. **Is the project alive?** The date of the last update and open issues say no less about quality than the description.\n\nThis checklist takes two minutes, and it saves you from the main troubles: someone else's code with excess permissions and \"dead\" plugins that break on the next Claude Code update." },
+    { "type": "table",
+      "headers": ["Source", "Who verifies", "Trust level"],
+      "rows": [
+        ["claude-plugins-official", "Curated by Anthropic", "High, but reading the description is still worth it"],
+        ["claude-plugins-community", "Community review of submissions", "Medium: there was review, but check the components"],
+        ["A random repository", "No one but you", "Only after reading the source"]
+      ]
+    },
+    { "type": "example",
+      "bad": "Saw a \"top-10 plugins for Claude Code\" on social media, added an unfamiliar marketplace, and installed all ten at once. A week later sessions are sluggish, the agent behaves oddly, and which plugin is to blame is unknown.",
+      "good": "Found the needed integration in the official catalog via /plugin, looked at the component list (2 commands, 1 MCP server), installed one plugin, worked with it for a day, confirmed its usefulness — and only then added the next one.",
+      "explanation": "Plugins are installed one at a time and deliberately: each adds commands, skills, and servers to every session of yours. Ten unverified plugins at once is both a risk (hooks and servers execute code) and undebuggable: when a problem arises you'll have to disable them one by one. Going gradually gives both safety and an understanding of what actually brings value."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (Discover plugins / Plugin marketplaces) describes /plugin as a single management point: browsing catalogs, installing and disabling plugins, connecting marketplaces with the `/plugin marketplace add` command. A Git repository with a plugin catalog can act as a marketplace; Anthropic's official marketplace is available out of the box." },
+    { "type": "callout", "kind": "warning", "md": "A plugin with hooks gets the right to run commands on your machine automatically, on session events. This is the most powerful — and the riskiest — component. See hooks/ in an unfamiliar plugin — be sure to read which commands it runs before installing." },
+    { "type": "callout", "kind": "tip", "md": "A great way to learn is to read other people's plugins from the official catalog: it's a GitHub repository where you can see how the pros build manifests, commands, and servers. Find a plugin similar to your idea and peek at its structure before the world's final boss." }
+  ],
+  "tasks": [
+    {
+      "type": "terminal-sim",
+      "instruction": "Connect the community marketplace with the command `/plugin marketplace add anthropics/claude-plugins-community`, then open the plugins menu with the `/plugin` command.",
+      "steps": [
+        {
+          "expectPattern": "^/plugin marketplace add\\s+anthropics/claude-plugins-community$",
+          "output": "✔ Marketplace connected: claude-plugins-community\n  Source: github.com/anthropics/claude-plugins-community\n  Plugins in catalog: 47",
+          "failHint": "A marketplace is connected like this: /plugin marketplace add anthropics/claude-plugins-community"
+        },
+        {
+          "expectPattern": "^/plugin$",
+          "output": "Plugins\n\n  Marketplaces:\n  • claude-plugins-official (default) — ~100 plugins\n  • claude-plugins-community — 47 plugins\n\n  [ Browse plugins ]  [ Installed ]  [ Marketplaces ]\n\n  Select a plugin to see its components and install.",
+          "failHint": "The plugin management menu is opened by the /plugin slash command"
+        }
+      ],
+      "successMessage": "Now you have access to both main catalogs. Note: before installing any plugin, the menu shows its components — that's your security checkpoint."
+    },
+    {
+      "type": "quiz",
+      "question": "How does the official claude-plugins-official marketplace differ from the community catalog?",
+      "options": [
+        "The official one is paid, the community one is free",
+        "The official one is curated by Anthropic; in community, community plugins enter through submission review",
+        "The official one works only on macOS",
+        "In no way — they're mirrors of the same repository"
+      ],
+      "correct": [1],
+      "explanation": "The difference is in the curation model: the official catalog is assembled and maintained by Anthropic (~100 plugins: github, linear, notion, aws, and others), while community is filled with community plugins through a review process. Both are free, both work everywhere, and they're different repositories with different contents.",
+      "hint": "Think not about money and platforms, but about who verifies the catalog's contents."
+    },
+    {
+      "type": "quiz",
+      "question": "What should you check BEFORE installing an unfamiliar plugin? Choose ALL the correct items:",
+      "options": [
+        "Who the author is and which marketplace the plugin comes from",
+        "Which components it installs — especially whether there are hooks and MCP servers",
+        "The source in the catalog's repository, if the source is unfamiliar",
+        "The number of emojis in the description",
+        "Nothing: once a plugin made it into some catalog, it's safe"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Three checks from the lesson's checklist: the source and author, the makeup of the components (hooks and servers execute code — pay them special attention), and, when in doubt, reading the source. Emojis say nothing about safety, and blind trust in any catalog is a mistake: catalogs have different levels of verification.",
+      "hint": "There are three correct answers, and all of them are about trust and makeup, not about presentation."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A colleague's notes on marketplaces. One statement is dangerously wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Anthropic's official marketplace is available in Claude Code out of the box.",
+        "A new marketplace is connected with the /plugin marketplace add owner/repo command.",
+        "Plugins from the community catalog need not be checked — review guarantees complete safety.",
+        "A team's internal marketplace is an ordinary Git repository with a plugin catalog.",
+        "An installed plugin can be temporarily disabled without removing it."
+      ],
+      "bugLineIndex": 2,
+      "explanation": "Review in the community catalog is a filter, not a guarantee: it reduces risk but doesn't cancel your own check. Before installing, still look at the author and the components — especially hooks and MCP servers, which execute code on your machine. The other statements are correct."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: assemble your own set of plugins. **Requires Claude Code.**\n\n1. Run `claude` and open `/plugin`. Browse the official catalog: find 2-3 plugins useful specifically to you (integration with your tracker? your cloud? your git host?).\n2. For each candidate, open the description and look at the component makeup: how many commands, whether there are skills, hooks, MCP servers.\n3. Install one plugin that passed your checklist. Check `/help` — did its commands appear; if there's an MCP server — check `/mcp`.\n4. Try the plugin on a real task. If it didn't come in handy — disable or remove it via /plugin: hygiene matters no less than installation.",
+      "checklist": [
+        "I browsed the official catalog and found plugins for my tasks",
+        "Before installing, I checked the candidate's component makeup",
+        "The plugin is installed, its commands are visible in /help",
+        "I applied the plugin to a real task and decided whether to keep it"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-mcp-marketplaces", "badgeId": null }
+}

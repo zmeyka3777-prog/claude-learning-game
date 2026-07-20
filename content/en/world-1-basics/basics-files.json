@@ -1,0 +1,115 @@
+{
+  "id": "basics-files",
+  "world": "world-1-basics",
+  "order": 6,
+  "title": "Files: PDFs, Photos, Spreadsheets",
+  "subtitle": "Upload documents and images — and turn them into answers",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features — Claude Help Center", "url": "https://support.claude.com/en/" },
+    { "title": "Vision — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/vision" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude can read your files" },
+    { "type": "text", "md": "So far we've only sent Claude text. But one of the most useful capabilities is **uploading files** right into the chat. Attach a document and Claude has \"read\" it: now you can ask questions about the contents, request a summary, look for errors, translate, or analyze.\n\nThis changes the scale of what you can do. Asking \"explain what comprehensive car insurance is\" is one thing; attaching **your own** insurance policy and asking \"What's covered here and what isn't? Are there any catches?\" is another. The answer won't be abstract — it'll be about your specific document.\n\nYou upload via the attach button next to the input field (a paperclip or plus icon) — or just drag a file into the chat window with your mouse. You can attach several files at once and, for example, ask Claude to compare them." },
+    { "type": "heading", "text": "What you can upload" },
+    { "type": "text", "md": "The main file categories:\n\n- **PDF documents** — contracts, manuals, articles, reports, books. Claude reads both the text and the structure of the document.\n- **Images** (photos, screenshots, scans) — Claude \"sees\" pictures: it recognizes text in a photo, makes sense of screenshots with errors, and describes diagrams and charts.\n- **Spreadsheets** (CSV, Excel) — data, lists, exports. You can ask it to find patterns, calculate totals, and explain the numbers.\n- **Text files and documents** — notes, articles, code.\n\nPractical takeaway: almost anything you work with on a computer can be shown to Claude and discussed." },
+    { "type": "table", "headers": ["You upload", "You ask Claude", "You get"], "rows": [
+      ["A contract (PDF)", "\"Summarize it in plain language and point out the risks\"", "A clear digest with red flags"],
+      ["A screenshot of an error", "\"What does this mean and how do I fix it?\"", "An explanation and steps to solve it"],
+      ["A photo of a document or sign", "\"Transcribe the text from the photo / translate it\"", "Recognized and translated text"],
+      ["A spending spreadsheet (CSV/Excel)", "\"Where do I spend the most? What can I cut?\"", "Analysis with conclusions and advice"],
+      ["A long article (PDF)", "\"Summarize it in 10 bullet points\"", "A digest instead of an hour of reading"],
+      ["A photo of what's in your fridge", "\"What can I cook from this?\"", "Recipes from the ingredients you have"]
+    ] },
+    { "type": "heading", "text": "How to ask: file + a specific task" },
+    { "type": "text", "md": "The formula from the \"Your First Prompt\" lesson works here too — the file simply becomes the context now. The main mistake is attaching a document with no task at all, or with the task \"take a look.\" Claude will say something, but it's better to steer it right away:\n\n- what to do: summarize, check, translate, compare, calculate;\n- what to focus on: \"pay attention to the deadlines and penalties\";\n- what form the answer should take: \"as a table,\" \"a list of 5 points,\" \"in plain language.\"\n\nAnd remember the dialogue: after the first answer about the file you can follow up — \"what about clause 4.2?\", \"translate this paragraph,\" \"now compare it with the previous contract.\"" },
+    { "type": "example",
+      "bad": "[attached a 12-page lease agreement] \"Take a look.\"",
+      "good": "[attached a 12-page lease agreement] \"I'm renting an apartment for the first time. Summarize the agreement in plain language and, in a separate list, highlight the clauses that are unfavorable or unusual for me: penalties, deadlines, termination terms, deposit.\"",
+      "explanation": "\"Take a look\" forces Claude to guess what matters to you — you'll get a general description of the document. The second version has context (first rental), a task (summary + finding unfavorable clauses), and a format (plain language, a separate list) — the answer is immediately focused on what really matters to a tenant." },
+    { "type": "text", "md": "A separate superpower is **several files at once**. Attach two quotes and ask Claude to compare them by price, timelines, and risks in a single table. Or upload your resume and a job posting: \"What's my resume missing for this role?\" A comparison like that would take an evening by hand, but in the chat it's a single message.\n\nAnd don't forget that once uploaded, a file lives in the chat's context: you can come back to it throughout the whole conversation, ask new questions, request a recalculation, or look at it from a different angle — no need to re-attach it." },
+    { "type": "heading", "text": "Limits: what's worth knowing" },
+    { "type": "text", "md": "A few honest caveats:\n\n- **Size matters.** There are limits on file size and page count (they depend on your plan). A very thick document may need to be split into parts.\n- **Source quality.** A blurry photo of tiny text or a crooked scan may be read with errors by Claude — just like by a human. The clearer the source, the more accurate the analysis.\n- **Complex tables in scans.** Handwritten text and tangled tables in photos are recognized worse than printed text.\n- **Check what's important.** If a serious decision hinges on a file (money, legal matters, health), verify the key numbers and wording against the original — the whole next lesson is about this." },
+    { "type": "callout", "kind": "docs", "md": "The official documentation (platform.claude.com, Vision section) confirms it: Claude can analyze images — photographs, charts, diagrams, screenshots — and answer questions about them, while PDF support lets it work through both the text and the visual content of documents. The Help Center at support.claude.com describes uploading files into the chat as one of Claude's core features." },
+    { "type": "callout", "kind": "warning", "md": "The files you upload become part of the conversation. Don't upload other people's personal data or documents you don't have the right to share. For corporate documents, check your company's policy — many organizations have rules about what may be sent to external services." },
+    { "type": "callout", "kind": "tip", "md": "A phone tip: photograph a paper document straight into the chat — a receipt, an instruction manual, a menu in a foreign language, a note from your doctor (printed!). A photo is a file too, and Claude will read it. More on mobile scenarios in the \"Mobile Claude and Voice\" lesson." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Which file types can you upload to a chat with Claude? Select all that apply.",
+      "options": [
+        "PDF documents",
+        "Images: photos, screenshots, scans",
+        "Spreadsheets (CSV, Excel)",
+        "None — Claude works only with the text of messages"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Claude accepts PDFs, images, spreadsheets, and text files. The last option is a misconception: uploading files is one of the core features, and it's exactly why Claude is worth using for working with documents.",
+      "hint": "The theory had a whole table of scenarios — recall what was being uploaded in it."
+    },
+    {
+      "type": "quiz",
+      "question": "You've attached a 12-page PDF contract. Which request gives the most useful answer?",
+      "options": [
+        "\"Take a look\"",
+        "\"This is a contract\"",
+        "\"I'm renting an apartment for the first time. Summarize the contract in plain language and list the clauses that are unfavorable for me: penalties, deadlines, termination\"",
+        "Write nothing — Claude will figure out what's needed"
+      ],
+      "correct": [2],
+      "explanation": "The file is the context, but you still set the task and format. The third option tells Claude who you are, what to do, and what to focus on — the answer will be focused on the tenant's risks, not a general description of the document.",
+      "hint": "The \"context + task + format\" formula hasn't gone anywhere — the file only replaces part of the context."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: imagine you've attached a photo of a supermarket receipt to the chat (the system has already \"attached\" it for you). Ask Claude to do something useful with this receipt — for example, break down the purchases or add up spending by category.",
+      "steps": [
+        {
+          "expect": ["receipt", "add up", "categor", "break", "spending", "expense", "how much", "purchase"],
+          "minMatches": 2,
+          "claudeReply": "Breaking down the receipt! 🧾 Here's what I got by category:\n\n| Category | Amount |\n|---|---|\n| Groceries (milk, bread, vegetables, chicken) | $16.50 |\n| Sweets and snacks | $9.10 |\n| Household chemicals | $6.00 |\n| Beverages | $5.10 |\n| **Total** | **$36.70** |\n\nNotably, sweets and snacks are almost a quarter of the receipt. Want me to suggest where you could save, or compare this with a typical grocery basket?",
+          "failHint": "Ask for a specific action with the receipt, for example: \"Break down the purchases by category and calculate how much went to each.\""
+        },
+        {
+          "expect": ["save", "advice", "yes", "sure", "compare", "want", "suggest"],
+          "minMatches": 1,
+          "claudeReply": "Here are a couple of observations about this receipt:\n\n1. **Snacks and sweets ($9.10)** — the most \"compressible\" category: if that share repeats on every trip, it adds up to a noticeable sum over a month.\n2. **Beverages ($5.10)** — bottled water and soda are often noticeably cheaper when bought by the pack.\n3. **Staple groceries ($16.50)** look reasonable — not much to save on here.\n\nIf you send receipts regularly, I can track your spending trends. That's how a single photo of a receipt turns into financial analytics!",
+          "failHint": "Agree to Claude's offer or ask for advice: \"Yes, suggest where I can save.\""
+        }
+      ],
+      "successMessage": "Great! You saw the full cycle of working with a file: upload → specific task → follow-up in dialogue. In the real Claude it works exactly the same way."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A beginner's cheat sheet on working with files. One statement is wrong — find it.",
+      "lang": "markdown",
+      "lines": [
+        "1. A file is attached with the button by the input field or by dragging it into the chat window.",
+        "2. Claude can recognize text in photos and screenshots.",
+        "3. After uploading a file you can ask follow-up questions about it.",
+        "4. The size and volume of uploaded files are not limited in any way.",
+        "5. For important documents, key numbers are worth verifying against the original."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "The error is in line 4: limits on file size and volume do exist (and depend on your plan). A very large document may need to be split into parts. The other statements are true — including the fifth: verifying important data is essential."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: feed Claude a real file.\n\n1. Pick a file: any PDF (a manual, an article, a receipt) **or** a photo with text (packaging, a document, a sign). Don't use anything confidential.\n2. Open **claude.ai**, start a new chat, and attach the file — with the button by the input field or by dragging it.\n3. Write a specific task: for example, \"Summarize the main points in 5 bullets\" for a PDF, or \"Transcribe the text from the photo and explain what it is\" for an image.\n4. Once you get the answer, ask a follow-up question about the file's contents — for example, about a specific point or number.\n5. Verify a couple of facts from the answer against the file itself: is everything accurate?",
+      "checklist": [
+        "I picked a non-confidential file (PDF or a photo with text)",
+        "I attached the file to the chat",
+        "I formulated a specific task, not just \"take a look\"",
+        "I asked a follow-up question about the contents",
+        "I verified at least two facts from the answer against the original"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-files", "badgeId": null }
+}

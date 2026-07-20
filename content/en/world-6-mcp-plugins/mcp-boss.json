@@ -1,0 +1,135 @@
+{
+  "id": "mcp-boss",
+  "world": "world-6-mcp-plugins",
+  "order": 8,
+  "title": "BOSS: Publish It",
+  "subtitle": "An end-to-end scenario: a plugin with a skill and an MCP server — from an empty folder to publication",
+  "xp": 150,
+  "durationMin": 10,
+  "isBoss": true,
+  "sources": [
+    { "title": "Plugins — Claude Code Docs", "url": "https://code.claude.com/docs/en/plugins" },
+    { "title": "Plugin marketplaces — Claude Code Docs", "url": "https://code.claude.com/docs/en/plugin-marketplaces" },
+    { "title": "anthropics/claude-plugins-community", "url": "https://github.com/anthropics/claude-plugins-community" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The final trial: from idea to publication" },
+    { "type": "text", "md": "The situation: your team keeps a database of notes about clients, and everyone is tired of retelling it to Claude by hand. You decide to make a **client-notes** plugin and share it: inside — an MCP server with a tool to search the notes, and a skill that teaches the agent to format client answers by the team's standard.\n\nThis is a boss level: no hints. But there will be the whole path a real plugin author walks — the seven lessons of this world, folded into one scenario: **server → plugin → local test → publication**. Walk it in the simulators, then repeat it for real in the final mission.\n\nBefore you start, mentally check your arsenal. From lesson 1 you know a server provides tools, resources, and prompts. From lessons 2-3 — how to connect servers and check them via `/mcp`. From lessons 4-5 — how to write a tool with a description the model understands when to call, and with errors that help rather than scare. From lesson 6 — the contract of plugin structure, and from lesson 7 — how the catalogs are built through which your plugin reaches people. All of this will come in handy now." },
+    { "type": "heading", "text": "Route map" },
+    { "type": "table",
+      "headers": ["Stage", "What you do", "How you verify it"],
+      "rows": [
+        ["1. Server", "An MCP server with the search_notes tool (SDK, descriptions, errors)", "claude mcp add + /mcp + a test question"],
+        ["2. Plugin", "The skeleton: .claude-plugin/plugin.json, skills/, .mcp.json", "the structure matches the contract from lesson 6"],
+        ["3. Test", "A local run without installation", "claude --plugin-dir + /mcp + the skill firing"],
+        ["4. Publication", "A GitHub repository + a catalog submission", "a colleague installs the plugin and everything works"]
+      ]
+    },
+    { "type": "text", "md": "Let's assemble this into a structure. Notice how the elements of every lesson take their places: the manifest — in the service folder `.claude-plugin/`, the skill and the server config — in the plugin root, and the server code itself — right there, in the plugin folder, so that on installation it travels to users along with everything else in one package:" },
+    { "type": "code", "lang": "text", "title": "The client-notes plugin in full", "code": "client-notes/\n├── .claude-plugin/\n│   └── plugin.json          ← the plugin's passport\n├── skills/\n│   └── client-answers/\n│       └── SKILL.md         ← the standard for client answers\n├── server/\n│   └── notes_server.py      ← MCP server: the search_notes tool\n└── .mcp.json                ← how to launch the server" },
+    { "type": "code", "lang": "json", "title": "The manifest and the server config", "code": "// .claude-plugin/plugin.json\n{\n  \"name\": \"client-notes\",\n  \"description\": \"Search the client notes database + a standard for formatting answers\",\n  \"version\": \"0.1.0\",\n  \"author\": { \"name\": \"Evgenia M.\" }\n}\n\n// .mcp.json — the server comes up together with the plugin\n{\n  \"mcpServers\": {\n    \"client-notes\": {\n      \"command\": \"python\",\n      \"args\": [\"server/notes_server.py\"]\n    }\n  }\n}" },
+    { "type": "heading", "text": "Publication: the last mile" },
+    { "type": "text", "md": "It works locally — time to share. The publication path:\n\n1. **A GitHub repository.** A plugin is a folder, so publication begins with an ordinary git repository: the server code, the skill, the manifest, plus a README with a description and installation instructions — that very document that will stand in for you beside every future user.\n2. **Choosing a channel.** An internal plugin — add it to your team's marketplace (any Git repository with a catalog). A public one — submit it to the community catalog `anthropics/claude-plugins-community`, where it will be examined through a review process.\n3. **Verification by someone else's hands.** The real test of publication is when a colleague installs the plugin via /plugin on their clean machine, and everything works without your verbal explanations. Everything you had to explain out loud or fix on the spot is a ready candidate for a line in the README.\n\nAnd remember what the marketplace lesson taught, now from the other side of the counter: reviewers and users will look at your plugin with the same checklist — author, components, source. A clear README, a tidy manifest, and no excess permissions for the server — that's your reputation.\n\nBefore submitting, go through a short quality checklist: the tool descriptions answer the four questions (what it does, when to use it, parameters, result); errors are returned as text without secrets and stack traces; tokens are read from environment variables and documented in the README; the plugin name is in kebab-case, the version is set. Five minutes of checking save weeks of back-and-forth with reviewers." },
+    { "type": "example",
+      "bad": "Dump a folder with code onto GitHub without a README, with the manifest {\"name\": \"My Cool Plugin\"} and a server that requires a full-access token to the CRM, documenting none of it.",
+      "good": "A repository with a README (what it does, how to install, what permissions are needed), a manifest with the valid name client-notes and a description, a server that reads the token from an environment variable and asks only for read access to the notes.",
+      "explanation": "The first version fails both the review and users' trust: an invalid name breaks installation, the missing README hides the requirements, and an undocumented full-access token is a security red flag. The second version answers all the questions from lesson 7's checklist before they're even asked."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (Plugins / Plugin marketplaces) locks in the whole route: the manifest `.claude-plugin/plugin.json` with the required `name` field, components in the plugin root, local development via `--plugin-dir`, distribution through marketplaces — from a team repository to the community catalog anthropics/claude-plugins-community with submission review." },
+    { "type": "callout", "kind": "tip", "md": "Don't chase size: the best first public plugin is small and flawless. One useful tool with an excellent description and one skill that genuinely saves time is worth more than a combine of twenty half-baked commands." }
+  ],
+  "tasks": [
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the end-to-end scenario of publishing the client-notes plugin — from an empty folder to the catalog — in the right order.",
+      "blocks": [
+        "Write the MCP server: the search_notes tool with a description and error handling",
+        "Create the plugin skeleton: .claude-plugin/plugin.json + skills/ + .mcp.json",
+        "Test locally: claude --plugin-dir ./client-notes, check /mcp and the skill",
+        "Publish the repository on GitHub with a README",
+        "Submit to the community catalog or add the plugin to the team marketplace",
+        "Ask a colleague to install the plugin via /plugin and confirm everything works without hints"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4, 5],
+      "distractors": [
+        "Submit to the catalog before the plugin's first local run"
+      ],
+      "explanation": "The route repeats the map from the theory: server → plugin skeleton → local test → GitHub → distribution channel → verification by someone else's hands. A submission before the first run is an antipattern: reviewers and users shouldn't be your first testers."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The client-notes plugin is assembled, but when launched with --plugin-dir not a single component is picked up. Look at the structure and find the line with the error.",
+      "lang": "text",
+      "lines": [
+        "client-notes/",
+        "├── plugin.json",
+        "├── skills/",
+        "│   └── client-answers/",
+        "│       └── SKILL.md",
+        "├── server/",
+        "│   └── notes_server.py",
+        "└── .mcp.json"
+      ],
+      "bugLineIndex": 1,
+      "explanation": "The manifest is in the plugin root, but its place is the service folder: .claude-plugin/plugin.json. Not finding the manifest at the contracted path, the loader doesn't recognize the folder as a plugin — which is why \"nothing works at all.\" The components, meanwhile, are laid out correctly: skills/ and .mcp.json in the root, the server code in the plugin folder."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "The structure is fixed. Run a local check: launch Claude Code with the plugin (`claude --plugin-dir ./client-notes`), check the server (/mcp), and ask a question about a client (\"What do we know about the client Pharma Plus?\").",
+      "steps": [
+        {
+          "expectPattern": "^claude --plugin-dir\\s+\\.?/?client-notes/?$",
+          "output": "╭────────────────────────────────────────────╮\n│ Claude Code                                │\n│ Loaded local plugin: client-notes          │\n│ + skill client-answers                     │\n│ + MCP server client-notes                  │\n╰────────────────────────────────────────────╯\n> _"
+        },
+        {
+          "expectPattern": "^/mcp$",
+          "output": "MCP Servers:\n\n  ✔ client-notes (plugin: client-notes) — connected\n    Tools: search_notes (Searches client notes by name or keywords)\n\n  Total: 1 server, 1 tool."
+        },
+        {
+          "expectPattern": "(client|Pharma|know|note)",
+          "output": "● Using the search_notes tool (query: \"Pharma Plus\")...\n\n● By the team standard (skill client-answers):\n\n  **Client:** Pharma Plus\n  **Status:** active, contract through 12.2026\n  **Last contact:** 07/14 — discussed expanding the order\n  **Risks:** asked for a discount, awaiting a reply by end of month\n\n  Source: 3 notes from the team database."
+        }
+      ],
+      "successMessage": "The full local run is complete: the plugin loaded, the server is connected, the tool was called, and the skill formatted the answer by the standard. This is exactly what should work for any colleague after installation — you can publish."
+    },
+    {
+      "type": "quiz",
+      "question": "Without which file is a folder not considered a Claude Code plugin at all?",
+      "options": [
+        "README.md with a description",
+        ".mcp.json with MCP servers",
+        ".claude-plugin/plugin.json with a name field",
+        "skills/ with at least one skill"
+      ],
+      "correct": [2],
+      "explanation": "The only required file of a plugin is the manifest .claude-plugin/plugin.json, and its only required field is name. All components (skills, commands, servers) are optional, and a README is formally not required — though for publication it's necessary in human terms."
+    },
+    {
+      "type": "quiz",
+      "question": "You want your public plugin to get into Anthropic's community catalog. What's the right path?",
+      "options": [
+        "Write to claude.ai support and attach an archive with the plugin",
+        "Publish the plugin in your own GitHub repository and submit to anthropics/claude-plugins-community, where it will be examined through review",
+        "Commit the plugin directly to main of the official catalog",
+        "It's enough to add the #claude-plugin tag on social media — the catalog will collect plugins itself"
+      ],
+      "correct": [1],
+      "explanation": "The community catalog is filled through submissions with review: your plugin lives in your repository, and the submission passes a check before acceptance into anthropics/claude-plugins-community. There are no direct commits to someone else's catalog, and support and social-media tags have nothing to do with the process."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "The world's final mission: a real plugin taken to publication. **Requires: Claude Code, a GitHub account, Python or Node.js.**\n\n1. Pick a real task from your work and assemble a plugin: an MCP server with at least one tool (you can extend the server from lessons 4-5) + a skill that teaches the agent to work with the results by your standard.\n2. Assemble the structure by the contract: the manifest `.claude-plugin/plugin.json` (kebab-case name, description, version, author), the skill in `skills/`, the server and `.mcp.json` in the plugin root.\n3. Run a local test: `claude --plugin-dir ./your-plugin` → `/mcp` → a task that uses both the tool and the skill.\n4. Publish the repository on GitHub with a README: what the plugin does, how to install, what permissions and environment variables are needed.\n5. Take it to people: add the plugin to your team's marketplace or prepare a submission to the community catalog. The pinnacle — ask a colleague to install the plugin and walk the scenario without your hints.",
+      "checklist": [
+        "The plugin contains an MCP server with a tool and a skill",
+        "The manifest is valid: kebab-case name, description, version, author",
+        "The local test via --plugin-dir passed: /mcp connected, the skill fires",
+        "The repository on GitHub is published, the README answers: what, how to install, what permissions",
+        "There are no secrets in the code or README — tokens only via environment variables",
+        "The plugin is added to the team marketplace or a submission to the community catalog is ready"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-mcp-boss", "badgeId": "badge-world-6" }
+}

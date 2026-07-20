@@ -10,7 +10,8 @@ import { ArrowLeft, ArrowRight, Brain, RefreshCw, Zap } from 'lucide-react';
 import { getLesson } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
 import { getDueLessonIds, REVIEW_MAX_TASKS, REVIEW_XP } from '../engine/review';
-import type { FindBugTask as FindBugTaskType, QuizTask as QuizTaskType } from '../engine/types';
+import { useLang, useT } from '../i18n/useT';
+import type { FindBugTask as FindBugTaskType, LangCode, QuizTask as QuizTaskType } from '../engine/types';
 import { QuizTask } from '../components/tasks/QuizTask';
 import { FindBugTask } from '../components/tasks/FindBugTask';
 import { ConfettiBurst } from '../components/gamification/ConfettiBurst';
@@ -35,12 +36,12 @@ function shuffle<T>(items: readonly T[]): T[] {
 }
 
 /** Собрать сессию: случайные quiz/find-bug из due-уроков */
-function buildSession(): ReviewItem[] {
+function buildSession(lang: LangCode): ReviewItem[] {
   const { completedLessons, reviewLog } = useProgressStore.getState();
   const dueIds = getDueLessonIds(completedLessons, reviewLog);
   const pool: ReviewItem[] = [];
   for (const lessonId of dueIds) {
-    const lesson = getLesson(lessonId);
+    const lesson = getLesson(lessonId, lang);
     if (!lesson) continue;
     for (const task of lesson.tasks) {
       if (task.type === 'quiz' || task.type === 'find-bug') {
@@ -76,6 +77,7 @@ function SessionProgress({ total, current }: { total: number; current: number })
 
 /** Итоговый экран «Память укреплена» */
 function ReviewDoneOverlay({ onContinue }: { onContinue: () => void }) {
+  const t = useT();
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4"
@@ -93,10 +95,9 @@ function ReviewDoneOverlay({ onContinue }: { onContinue: () => void }) {
         <div className="mb-3 text-4xl" aria-hidden="true">
           🧠
         </div>
-        <h2 className="font-display text-xl font-semibold sm:text-2xl">Память укреплена!</h2>
+        <h2 className="font-display text-xl font-semibold sm:text-2xl">{t('review.done.title')}</h2>
         <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-          Знания закреплены интервальным повторением. Следующее повторение этих уроков — через
-          больший интервал.
+          {t('review.done.body')}
         </p>
         <motion.div
           className="mx-auto mt-5 flex w-fit items-center gap-2 rounded-full px-5 py-2 font-display text-lg font-semibold"
@@ -120,7 +121,7 @@ function ReviewDoneOverlay({ onContinue }: { onContinue: () => void }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
-          На карту галактики
+          {t('nav.toGalaxy')}
         </motion.button>
       </motion.div>
     </motion.div>
@@ -130,10 +131,12 @@ function ReviewDoneOverlay({ onContinue }: { onContinue: () => void }) {
 export default function ReviewPage() {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const completeReview = useProgressStore((s) => s.completeReview);
 
   // Сессия собирается один раз при входе — обновления стора её не меняют
-  const [session] = useState<ReviewItem[]>(() => buildSession());
+  const [session] = useState<ReviewItem[]>(() => buildSession(lang));
   const [step, setStep] = useState(0);
   const [solvedSteps, setSolvedSteps] = useState<Record<number, boolean>>({});
   const [done, setDone] = useState(false);
@@ -169,14 +172,13 @@ export default function ReviewPage() {
       <div className="flex min-h-[60vh] items-center justify-center py-10">
         <div className="glass-card max-w-md p-8 text-center">
           <Brain size={40} className="mx-auto mb-4" style={{ color: 'var(--accent-cyan)' }} />
-          <h1 className="font-display text-xl font-semibold">Повторять пока нечего</h1>
+          <h1 className="font-display text-xl font-semibold">{t('review.empty.title')}</h1>
           <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Уроки для повторения появляются через 3, 7 и 30 дней после прохождения. Пройди новые
-            экспедиции — и возвращайся закреплять знания!
+            {t('review.empty.body')}
           </p>
           <Link to="/" className="btn-gradient mt-6 inline-flex items-center gap-2 px-6 py-3 text-sm">
             <ArrowLeft size={16} />
-            На карту миров
+            {t('common.toMap')}
           </Link>
         </div>
       </div>
@@ -190,21 +192,21 @@ export default function ReviewPage() {
         <Link
           to="/"
           className="btn-glass grid h-10 w-10 shrink-0 place-items-center"
-          aria-label="Назад на карту"
+          aria-label={t('lesson.back.aria')}
         >
           <ArrowLeft size={17} />
         </Link>
         <div className="min-w-0 flex-1">
           <h1 className="truncate font-display text-lg font-semibold sm:text-xl">
-            🔁 Повторение <span className="gradient-text">дня</span>
+            🔁 {t('review.daily.pre')} <span className="gradient-text">{t('review.daily.accent')}</span>
           </h1>
           <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
             <span className="flex items-center gap-1">
               <RefreshCw size={11} />
-              Задание {step + 1} из {session.length}
+              {t('lesson.taskOf', { n: step + 1, total: session.length })}
             </span>
             <span className="flex items-center gap-1" style={{ color: 'var(--accent-amber)' }}>
-              <Zap size={11} /> +{REVIEW_XP} XP за сессию
+              <Zap size={11} /> {t('review.perSession', { n: REVIEW_XP })}
             </span>
           </div>
         </div>
@@ -229,7 +231,7 @@ export default function ReviewPage() {
                 className="mb-3 text-xs font-semibold tracking-wide uppercase"
                 style={{ color: 'var(--text-muted)' }}
               >
-                Из урока «{current.lessonTitle}»
+                {t('review.fromLesson', { title: current.lessonTitle })}
               </div>
               {current.task.type === 'quiz' ? (
                 <QuizTask task={current.task} onSolved={handleSolved} />
@@ -249,7 +251,7 @@ export default function ReviewPage() {
           disabled={!canContinue}
           className="btn-gradient flex items-center gap-2 px-7 py-3 text-sm sm:text-base"
         >
-          {step < session.length - 1 ? 'Продолжить' : 'Завершить повторение'}
+          {step < session.length - 1 ? t('common.continue') : t('review.finish')}
           <ArrowRight size={17} />
         </button>
       </div>

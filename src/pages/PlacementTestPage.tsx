@@ -8,10 +8,11 @@ import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Compass, Eye, Map as MapIcon, Zap } from 'lucide-react';
-import { getBossLesson, PLACEMENT_QUESTIONS, WORLDS } from '../engine/content';
+import { getBossLesson, getPlacementQuestions, getWorlds } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
 import { getAccentColor, getIcon } from '../lib/icons';
 import { track } from '../lib/analytics';
+import { useLang, useT } from '../i18n/useT';
 import type { World } from '../engine/types';
 
 /** Тонкий прогресс-бар теста */
@@ -38,12 +39,14 @@ function TestProgress({ total, current }: { total: number; current: number }) {
 /** Строка результата по одному миру */
 function WorldResultRow({ world, score }: { world: World; score: number }) {
   const navigate = useNavigate();
+  const t = useT();
+  const { lang } = useLang();
   const passedWorlds = useProgressStore((s) => s.passedWorlds);
   const Icon = getIcon(world.icon);
   const accent = getAccentColor(world.color);
   const known = score >= 2;
   const passed = passedWorlds.includes(world.id);
-  const boss = getBossLesson(world);
+  const boss = getBossLesson(world, lang);
   const challengeReady = Boolean(boss) && !world.comingSoon;
 
   return (
@@ -57,7 +60,7 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
       <div className="min-w-0 flex-1" style={{ minWidth: 180 }}>
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: accent }}>
-            Сектор {world.order}
+            {t('map.sector', { order: world.order })}
           </span>
           <span
             className="rounded-full px-2 py-0.5 text-[11px] font-semibold"
@@ -80,9 +83,7 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
         </div>
         <div className="truncate font-display text-sm font-semibold sm:text-base">{world.title}</div>
         <p className="mt-0.5 text-xs sm:text-sm" style={{ color: 'var(--text-secondary)' }}>
-          {known
-            ? 'Похоже, ты это знаешь: пройди Испытание босса, чтобы зачесть мир'
-            : 'Слепая зона — начни отсюда'}
+          {known ? t('placement.row.known') : t('placement.row.blind')}
         </p>
       </div>
       <div className="shrink-0">
@@ -97,7 +98,7 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
               }}
             >
               <Zap size={12} />
-              Мир зачтён
+              {t('worldmap.passed')}
             </span>
           ) : challengeReady && boss ? (
             <button
@@ -111,7 +112,7 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
               }}
             >
               <Zap size={12} />
-              Испытание босса
+              {t('worldmap.bossChallenge')}
             </button>
           ) : (
             <span
@@ -121,10 +122,10 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
                 border: '1px solid var(--border-glass)',
                 color: 'var(--text-muted)',
               }}
-              title="Босс-урок мира ещё пишется"
+              title={t('placement.row.soon.title')}
             >
               <Zap size={12} />
-              Скоро
+              {t('placement.row.soon')}
             </span>
           )
         ) : (
@@ -139,7 +140,7 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
             }}
           >
             <MapIcon size={12} />
-            На карту
+            {t('placement.row.toMap')}
           </button>
         )}
       </div>
@@ -151,7 +152,10 @@ function WorldResultRow({ world, score }: { world: World; score: number }) {
 function ResultsScreen({ scores }: { scores: Record<string, number> }) {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
-  const knownCount = WORLDS.filter((w) => (scores[w.id] ?? 0) >= 2).length;
+  const t = useT();
+  const { lang } = useLang();
+  const worlds = getWorlds(lang);
+  const knownCount = worlds.filter((w) => (scores[w.id] ?? 0) >= 2).length;
 
   return (
     <motion.div
@@ -162,17 +166,18 @@ function ResultsScreen({ scores }: { scores: Record<string, number> }) {
     >
       <div className="mb-6 text-center">
         <h1 className="font-display text-2xl font-semibold sm:text-3xl">
-          Твоя карта <span className="gradient-text">знаний</span>
+          {t('placement.results.title.pre')}{' '}
+          <span className="gradient-text">{t('placement.results.title.accent')}</span>
         </h1>
         <p className="mx-auto mt-2 max-w-md text-sm sm:text-base" style={{ color: 'var(--text-secondary)' }}>
           {knownCount > 0
-            ? `Уверенно: ${knownCount} из ${WORLDS.length} секторов. Зачти их испытаниями боссов и сосредоточься на слепых зонах.`
-            : 'Все сектора пока — неизведанная территория. Отличный повод пройти экспедицию с самого начала!'}
+            ? t('placement.results.some', { known: knownCount, total: worlds.length })
+            : t('placement.results.none')}
         </p>
       </div>
 
       <div className="space-y-3">
-        {WORLDS.map((world) => (
+        {worlds.map((world) => (
           <WorldResultRow key={world.id} world={world} score={scores[world.id] ?? 0} />
         ))}
       </div>
@@ -184,7 +189,7 @@ function ResultsScreen({ scores }: { scores: Record<string, number> }) {
           className="btn-gradient flex items-center gap-2 px-7 py-3 text-sm sm:text-base"
         >
           <Compass size={17} />
-          На карту галактики
+          {t('nav.toGalaxy')}
         </button>
       </div>
     </motion.div>
@@ -194,9 +199,11 @@ function ResultsScreen({ scores }: { scores: Record<string, number> }) {
 export default function PlacementTestPage() {
   const navigate = useNavigate();
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
   const setPlacementResult = useProgressStore((s) => s.setPlacementResult);
 
-  const questions = PLACEMENT_QUESTIONS;
+  const questions = useMemo(() => getPlacementQuestions(lang), [lang]);
   const [index, setIndex] = useState(0);
   /** Индексы выбранных ответов по вопросам */
   const [answers, setAnswers] = useState<Record<string, number>>({});
@@ -241,9 +248,9 @@ export default function PlacementTestPage() {
       <div className="flex min-h-[60vh] items-center justify-center py-10">
         <div className="glass-card max-w-md p-8 text-center">
           <Eye size={40} className="mx-auto mb-4" style={{ color: 'var(--accent-cyan)' }} />
-          <h1 className="font-display text-xl font-semibold">Тест готовится</h1>
+          <h1 className="font-display text-xl font-semibold">{t('placement.notReady.title')}</h1>
           <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Вопросы входного теста ещё пишутся. Загляни позже!
+            {t('placement.notReady.body')}
           </p>
           <button
             type="button"
@@ -251,7 +258,7 @@ export default function PlacementTestPage() {
             className="btn-gradient mt-6 inline-flex items-center gap-2 px-6 py-3 text-sm"
           >
             <ArrowLeft size={16} />
-            На карту миров
+            {t('common.toMap')}
           </button>
         </div>
       </div>
@@ -276,16 +283,16 @@ export default function PlacementTestPage() {
           type="button"
           onClick={() => navigate(-1)}
           className="btn-glass grid h-10 w-10 shrink-0 place-items-center"
-          aria-label="Назад"
+          aria-label={t('placement.back')}
         >
           <ArrowLeft size={17} />
         </button>
         <div className="min-w-0 flex-1">
           <h1 className="truncate font-display text-lg font-semibold sm:text-xl">
-            Входной <span className="gradient-text">тест</span>
+            {t('placement.title.pre')} <span className="gradient-text">{t('placement.title.accent')}</span>
           </h1>
           <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            Вопрос {index + 1} из {questions.length} · без подсказок
+            {t('placement.progress', { n: index + 1, total: questions.length })}
           </div>
         </div>
       </div>
@@ -328,7 +335,7 @@ export default function PlacementTestPage() {
       </AnimatePresence>
 
       <p className="mt-4 text-center text-xs" style={{ color: 'var(--text-muted)' }}>
-        Не знаешь — выбирай наугад: тест лишь показывает, с чего начать.
+        {t('placement.randomHint')}
       </p>
     </div>
   );

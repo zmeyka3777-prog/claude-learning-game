@@ -1,0 +1,122 @@
+{
+  "id": "basics-dialog",
+  "world": "world-1-basics",
+  "order": 4,
+  "title": "A dialogue, not a request",
+  "subtitle": "Why refinements and iterations are more powerful than the most carefully crafted single prompt",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude prompting best practices — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" },
+    { "title": "Getting Started — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A shift in mindset: this is a conversation, not a vending machine for answers" },
+    { "type": "text", "md": "Beginners often treat Claude like a vending machine: drop in a request — get an answer — walk away. Didn't like the answer? Then \"the AI failed,\" and the person walks off disappointed.\n\nBut Claude isn't a vending machine — it's a conversation partner. Within a single chat it remembers the whole conversation: your first question, its own answers, your refinements. That means the first answer isn't the final result — it's a **draft, a starting point**. The real power unfolds on the second, third, fourth message, when you steer the result to where you need it.\n\nThink about how you work with a person: a designer shows a sketch — you ask for tweaks; a colleague sends a draft email — you ask to soften the tone. Nobody expects perfection on the first try. With Claude it's exactly the same, except the iterations take seconds and its edits never wear it out." },
+    { "type": "heading", "text": "Refinements: short commands work wonders" },
+    { "type": "text", "md": "Since Claude remembers the context, refinements can be very short — you don't need to restate the task. Get an answer, and steer it with a single phrase:\n\n- **\"Rewrite it shorter\"** — will condense the text while keeping the essence;\n- **\"Simpler\"** — will remove complex terms and jargon;\n- **\"Format it as a list\"** or \"make it a table\" — will change the structure;\n- **\"Expand the second point in more detail\"** — will go deeper into a specific spot;\n- **\"Give me 3 more options\"** — will offer alternatives;\n- **\"Not that. I need it for 10-year-old kids\"** — will reorient the whole answer.\n\nNotice the last example: even saying \"not that\" is helpful. Explain what exactly is wrong, and the next version will be closer to the goal." },
+    { "type": "table", "headers": ["What wasn't right", "What to tell Claude"], "rows": [
+      ["Too long", "\"Cut it in half, keep the main points\""],
+      ["Too complex", "\"Explain it simpler, without jargon\""],
+      ["Wrong tone", "\"Make the tone friendlier / more formal\""],
+      ["Wrong structure", "\"Format it as a numbered list / table\""],
+      ["Too few details in one spot", "\"Expand the part about… in more detail\""],
+      ["Completely off", "\"This doesn't fit, because… Try focusing on…\""],
+      ["I want to choose", "\"Offer 3 different options\""]
+    ] },
+    { "type": "heading", "text": "Continuing the thought: dig deeper" },
+    { "type": "text", "md": "A dialogue isn't only about edits. It's also about **developing the topic**. Claude remembers what you're talking about, so you can dig deeper without repeating the background:\n\n— \"Plan a weekend trip to St. Petersburg\" → you got a plan.\n— \"And what if it rains?\" → Claude will rework the day around museums and cafes, remembering the whole route.\n— \"Roughly how much money should I budget?\" → it'll estimate the budget for exactly this trip.\n— \"Make a packing list\" → it'll take into account the city, the season, and the rain from the question above.\n\nFour short messages — and you have a thought-out plan. Trying to cram all of this into one giant prompt would have worked worse: you didn't know in advance you'd ask about rain — that question was born from the answer. **A dialogue lets you think together with Claude, instead of writing a perfect spec blindly.**" },
+    { "type": "example",
+      "bad": "Prompt: \"Write a text about the benefits of running.\" Didn't like the answer — closed the chat, opened a new one: \"Write a text about the benefits of running for beginners.\" Still not it — new chat: \"Write a short text about the benefits of running for beginners\"…",
+      "good": "Prompt: \"Write a text about the benefits of running.\" Then in the same chat: \"Make it for beginners over 40\" → \"Shorter, under 200 words\" → \"At the end add 3 tips on how not to quit after a week\".",
+      "explanation": "In the first case the person starts from scratch every time and loses everything that already worked: each new chat knows nothing about the previous attempts. In the second, each iteration builds on the previous one, the text steadily gets closer to the goal, and less effort is spent: refinements are shorter than any new prompt." },
+    { "type": "heading", "text": "A master's technique: let Claude ask you" },
+    { "type": "text", "md": "A dialogue works both ways. If you yourself aren't sure what matters for the task, flip the game — ask Claude to ask questions **of you**: \"Help me choose a laptop. First, ask me 5 questions that will help figure out what I need.\"\n\nClaude will ask about your budget, your tasks, weight, battery life — and some of those questions wouldn't have occurred to you. Answer them, and you'll get a recommendation based on your real needs, not on guesswork.\n\nThis technique is a lifesaver for any task with non-obvious inputs: choosing a gift, planning a budget, writing a resume, preparing for a talk with your boss. If you don't know what context to give — ask Claude to figure it out itself. This is the highest level of dialogue: you use your conversation partner not only as an executor, but also as an interviewer." },
+    { "type": "callout", "kind": "docs", "md": "Claude's prompting guide (platform.claude.com) directly recommends an iterative approach: even for experienced authors, a prompt rarely comes out perfect on the first try — look at the answer, find what's wrong, and refine. Successful prompts are born in a \"try → evaluate → improve\" cycle, not in a single perfect request." },
+    { "type": "callout", "kind": "tip", "md": "If the answer is \"almost good,\" don't rewrite the prompt from scratch — refine it. But if the conversation has drifted completely off course and the chat has piled up a bunch of failed branches, then it's more honest to start a new chat with a prompt into which you've put everything you learned from the failed attempts." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Claude answered decently, but too long and too complex. What should you do?",
+      "options": [
+        "Close the chat — it didn't work the first time, so it won't work",
+        "Open a new chat and write the same prompt again — maybe you'll get lucky",
+        "Write in the same chat: \"Cut it in half and explain it simpler, without jargon\"",
+        "Copy the answer into another AI and ask it to shorten it there"
+      ],
+      "correct": [2],
+      "explanation": "The first answer is a draft, not a verdict. Claude remembers the chat's context, so a short refinement \"shorten and simplify\" will instantly give a new version. A new chat with the same prompt will most likely produce the same problem — because you didn't say what exactly was wrong.",
+      "hint": "Recall the main principle of the lesson: this is a conversation. What would you say to a colleague who sent you a draft that's too long?"
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Let's practice iterations! Step 1: ask Claude to come up with a name for a coffee shop by a park. Step 2: ask for shorter options or a different style. Step 3: pick a direction and ask to develop it (for example, add a slogan).",
+      "steps": [
+        {
+          "expect": ["name", "coffee", "come up", "suggest", "park"],
+          "minMatches": 2,
+          "claudeReply": "Gladly! Here are a few name options for a coffee shop by a park:\n\n1. **\"Coffee & Maples\"** — cozy, immediately hints at the park\n2. **\"The Third Bench\"** — intriguing, sounds like a meeting spot\n3. **\"Green Noise\"** — poetic, for connoisseurs\n4. **\"ParkPoint\"** — modern, easy to remember\n5. **\"Morning in the Park\"** — warm and clear\n\nI can offer more — for example, shorter, funnier, or in a different style. Which is closest?",
+          "failHint": "Write a request, for example: \"Come up with names for a coffee shop next to a park\"."
+        },
+        {
+          "expect": ["shorter", "short", "more", "differ", "funn", "style", "option", "simpler"],
+          "minMatches": 1,
+          "claudeReply": "Got it! Here are shorter options — one word, easy to remember and print on a cup:\n\n1. **\"Maple\"**\n2. **\"Bench\"**\n3. **\"Trail\"**\n4. **\"Rustle\"**\n5. **\"Alley\"**\n\nNotice: you didn't have to repeat \"for a coffee shop by a park\" — I remember what we're talking about. Do you like one of these directions? I can develop it: pick a slogan, check how it sounds, come up with a menu name in the same style.",
+          "failHint": "Refine the result briefly, for example: \"Give me shorter options\" or \"Now in a funny style\"."
+        },
+        {
+          "expect": ["slogan", "maple", "bench", "trail", "rustle", "alley", "develop", "like", "fits", "let's"],
+          "minMatches": 1,
+          "claudeReply": "Great choice! Here are slogans to pair with the name:\n\n- \"Coffee where you can breathe\"\n- \"Your own stop on the way through the park\"\n- \"Five minutes of quiet in a big city\"\n\nLook what happened in three messages: from a general idea we arrived at a ready \"name + slogan\" pairing. Each of your refinements was shorter than the last, and the result got more and more precise. This is the power of dialogue!",
+          "failHint": "Pick a name you like and ask to continue, for example: \"I like 'Bench' — come up with a slogan\"."
+        }
+      ],
+      "successMessage": "Superb! Three short messages — and a ready result. Notice: the second and third requests were far shorter than the first, because Claude remembered the context."
+    },
+    {
+      "type": "quiz",
+      "question": "Why does a dialogue often give a better result than a single, maximally thought-out prompt? Select all the correct reasons.",
+      "options": [
+        "The next questions often arise from the answer — you can't come up with them in advance",
+        "Refinements are short: no need to repeat the context, Claude remembers it",
+        "Claude answers better if you write it at least five messages — that's a technical requirement",
+        "You can steer the result along the way: saw the answer — corrected the course"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "1, 2, and 4 are correct: a dialogue lets you think as you go, lean on the context, and steer the result. And there's no \"technical requirement of five messages\" — if the first answer is perfect, you can stop right there.",
+      "hint": "One of the statements is made up and sounds like a superstition. The other three are real mechanics of dialogue."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Here's a transcript of a user's dialogue with Claude. One of the user's messages breaks the logic of working with a dialogue. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "User: Make a marathon training plan for a beginner.",
+        "Claude: [detailed 16-week plan]",
+        "User: Compress it to 12 weeks, I have less time.",
+        "Claude: [12-week plan]",
+        "User: Reminder that I'm preparing for a marathon, I'm a beginner, and the plan should be 12 weeks. Add nutrition tips.",
+        "Claude: [plan with nutrition tips]"
+      ],
+      "bugLineIndex": 4,
+      "explanation": "The fifth line is an unnecessary retelling of the entire context. Claude already remembers that it's about a marathon, a beginner, and 12 weeks — it's the same chat. It would have been enough to write: \"Add nutrition tips.\" You only need to repeat the background when moving to a new chat."
+    },
+    {
+      "type": "quiz",
+      "question": "In which case is it wiser to start a new chat rather than keep refining in the current one?",
+      "options": [
+        "Always, after every answer — it's cleaner that way",
+        "If the answer is good, but you'd like it a bit shorter",
+        "If the conversation has hopelessly tangled itself in failed branches, and it's easier to reformulate the task from scratch taking into account everything you've understood",
+        "Never — one chat should live forever"
+      ],
+      "correct": [2],
+      "explanation": "Refinements are the main tool, but if the chat has turned into a knot of contradictory attempts, a clean slate is more effective: gather everything you learned from the failed iterations into a new prompt. For small tweaks like \"a bit shorter,\" you don't need a new chat — that's one phrase in the current one.",
+      "hint": "Recall the tip from the lesson's last callout: when is it more honest to start over?"
+    }
+  ],
+  "reward": { "cardId": "card-dialog", "badgeId": null }
+}

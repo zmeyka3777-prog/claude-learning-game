@@ -6,6 +6,7 @@
 import { motion } from 'motion/react';
 import type { Badge } from '../../engine/types';
 import { getIcon } from '../../lib/icons';
+import { useT } from '../../i18n/useT';
 import { ConfettiBurst } from './ConfettiBurst';
 
 const HEX_CLIP = 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)';
@@ -57,6 +58,7 @@ interface BadgeUnlockProps {
 
 /** Анимация получения бейджа: scale + rotate + конфетти */
 export function BadgeUnlock({ badge }: BadgeUnlockProps) {
+  const t = useT();
   return (
     <div className="relative flex flex-col items-center gap-2">
       <ConfettiBurst count={18} spread={90} />
@@ -74,7 +76,7 @@ export function BadgeUnlock({ badge }: BadgeUnlockProps) {
         transition={{ delay: 0.45 }}
       >
         <div className="text-sm font-semibold" style={{ color: 'var(--accent-amber)' }}>
-          Новый бейдж!
+          {t('badge.new')}
         </div>
         <div className="font-display text-sm">{badge.title}</div>
       </motion.div>

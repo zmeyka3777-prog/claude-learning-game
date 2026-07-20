@@ -1,0 +1,113 @@
+{
+  "id": "eco-chrome",
+  "world": "world-8-ecosystem",
+  "order": 3,
+  "title": "Claude in Chrome",
+  "subtitle": "An agent in the browser: navigation, actions on pages, and debugging web apps",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude in Chrome — Claude Code Docs", "url": "https://code.claude.com/docs/en/chrome" },
+    { "title": "Security — Claude Code Docs", "url": "https://code.claude.com/docs/en/security" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "From chat to the browser's steering wheel" },
+    { "type": "text", "md": "Everything you've seen so far is Claude as a conversation partner: you bring the data, it answers. **Claude in Chrome** is a different genre: it's an agent that acts in your browser on its own. It sees the open page, clicks buttons, fills in forms, follows links, scrolls, and reads the result — like a human at the keyboard, only on your text command.\n\nThis opens up two big classes of tasks:\n\n- **Web routine.** 'Open this site, find a product in the catalog matching these criteria, compare three options, and write them into a table' — the kind of thing that eats an evening of clicking.\n- **Debugging web apps.** For developers, the Claude Code + Chrome pairing is an agent that opens your app itself, reproduces the bug, looks at the console and the network requests, and verifies the fix." },
+    { "type": "heading", "text": "How it works" },
+    { "type": "text", "md": "Claude connects to Chrome through a browser extension. After it's installed and connected, the agent gains the ability to work with pages: read content, interact with elements, take screenshots, and monitor the console and network activity.\n\nThe key detail — **you control where the agent is allowed to work**. Access isn't granted 'to the whole internet forever': the extension lets you limit which sites the agent can act on, and sensitive actions require human confirmation. The idea is the same as with permissions in Claude Code from World 4: the agent is exactly as powerful as you've allowed it to be." },
+    { "type": "heading", "text": "Debugging: a superpower for developers" },
+    { "type": "text", "md": "The classic pain of web development: 'it works on my machine'. Claude Code sees the code but doesn't see what's happening in the browser — and the bug lives exactly there: in the console, in a failed request, in CSS that 'shifted' on a narrow screen.\n\nWith the Chrome integration the loop closes:\n\n1. You describe the bug: 'on the checkout page the \"Pay\" button doesn't work'.\n2. The agent opens the page, repeats the user's actions, and looks at the console: there's a JavaScript error there.\n3. The agent maps the error to the project's code and proposes a fix.\n4. After the fix — it opens the page again and verifies that the button works.\n\nWithout the browser integration you do steps 2 and 4 yourself, by hand, relaying to the agent what you saw. With it, the agent runs the full cycle 'reproduced → fixed → verified' itself." },
+    { "type": "table", "headers": ["Scenario", "For whom", "Example command"], "rows": [
+      ["Gathering information", "Everyone", "'Open the sites of three competitors and write out their pricing into a table'"],
+      ["Routine actions", "Everyone", "'Fill in this long form with data from my document'"],
+      ["Reproducing a bug", "Developers", "'Repeat the steps from the ticket and show what appears in the console'"],
+      ["Verifying after a fix", "Developers", "'Check that after the fix the form submits and there are no console errors'"],
+      ["Checking the layout", "Developers", "'Open the landing page and see whether the header breaks apart on a narrow window'"]
+    ] },
+    { "type": "text", "md": "A note on observing: even when the agent acts on its own, you see what's happening in the browser — which pages are open, what's on screen. This isn't a trifle but part of the trust model: the browser agent works before your eyes, and you can stop it at any moment. Use this — especially on new scenarios and unfamiliar sites." },
+    { "type": "heading", "text": "Security: the browser is high-risk territory" },
+    { "type": "text", "md": "An agent in the browser is power, and it has a dark side. Web pages are written by people you don't know, and the agent **reads their content as context**. An attacker can hide instructions for the AI on a page — this is called **prompt injection**, and the next lesson is devoted entirely to it. For now, remember the operating rules:\n\n1. **Limit the territory.** Allow the agent to work only on the sites needed for the task. Local development and a couple of trusted sites — yes; 'the whole internet' — no.\n2. **Keep sensitive actions behind confirmation.** Purchases, submitting forms with personal data, anything irreversible — only with your explicit approval.\n3. **Don't let the agent into sessions with money and passwords.** Your bank, government services, production admin panels — not the place for experiments with autonomy.\n4. **Watch the first run.** A new scenario you first observe from start to finish, and only then do you trust it." },
+    { "type": "example",
+      "bad": "'Claude, here's my browser, I've got my online bank open in there — go through the sites from this newsletter, see what they offer, and sign up for something good'.",
+      "good": "'Work only on our staging environment's site. Open the order page, repeat the steps from bug #142, collect the console errors, and propose a fix. Don't submit or buy anything — show me all form actions for confirmation'.",
+      "explanation": "The first request is a perfect storm: unfamiliar sites from a newsletter (a potential injection), an open banking session (maximum damage), and a blank check for actions ('sign up for something'). The second is sound practice: narrow territory, a concrete task, irreversible actions kept behind the human."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude in Chrome documentation (code.claude.com/docs/en/chrome) describes the agent's work in the browser through the extension: interacting with pages, reading the console, and using it in the debugging loop, plus settings for where the agent can act. The Security page (code.claude.com/docs/en/security) separately warns about the risks of untrusted content and recommends confirmation of sensitive actions." },
+    { "type": "callout", "kind": "warning", "md": "Never leave a browser agent unattended on sites you don't trust one hundred percent. A page may contain hidden instructions for the AI — and the agent, reading it as context, risks taking them for yours. A detailed breakdown of this attack is in the next lesson." },
+    { "type": "callout", "kind": "tip", "md": "The best starter task for Claude in Chrome is 'look and tell', with no actions: ask it to open a page and describe the problems. Once you're comfortable with reading, you'll start trusting it with actions, one at a time and with confirmation." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "How is Claude in Chrome fundamentally different from Claude in a regular chat?",
+      "options": [
+        "It works faster and with a bigger limit",
+        "It's an agent that acts in the browser itself: opens pages, clicks, fills in forms, and reads the console",
+        "It can only answer questions about web development",
+        "No difference, just a different icon"
+      ],
+      "correct": [1],
+      "explanation": "In chat, Claude is a conversation partner: you bring the data, it answers. In Chrome it's an agent at the browser's wheel: it navigates, acts on pages, and observes the result itself. That's what gives new scenarios — and demands new security rules.",
+      "hint": "The key word is 'agent': who performs the actions on the pages?"
+    },
+    {
+      "type": "quiz",
+      "question": "Why is the Claude Code + Chrome pairing useful to a developer when debugging a web app?",
+      "options": [
+        "It automatically fixes all bugs with no human involvement",
+        "The agent can reproduce the bug in the browser itself, read the console errors, propose a fix, and verify the result on the live page",
+        "It replaces the version control system",
+        "It speeds up the internet connection"
+      ],
+      "correct": [1],
+      "explanation": "Without the browser the agent sees only the code, but the bug lives on the page: in the console, network requests, layout. The integration closes the loop 'reproduced → fixed → verified' — but decisions and review stay with the human.",
+      "hint": "Recall the four steps of the debugging cycle from the theory."
+    },
+    {
+      "type": "quiz",
+      "question": "Which security rules matter for an agent in the browser? Select all that apply.",
+      "options": [
+        "Allow work only on the sites needed for the task",
+        "Keep irreversible and sensitive actions behind explicit human confirmation",
+        "Don't run the agent in online-banking sessions and production admin panels",
+        "Allow everything at once so the agent doesn't bother you with questions"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Narrow territory, confirmation of sensitive actions, and a ban on sessions with money and critical access are the basics of safe operation. 'Allow everything so it doesn't bother you' is the path to the agent carrying out someone else's instruction from a page.",
+      "hint": "Three rules from the security section; the fourth option contradicts them."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you have a landing page, users complain that the subscription form 'doesn't work'. Claude is connected to Chrome, staging is open. Give the agent a debugging task.",
+      "steps": [
+        {
+          "expect": ["form", "subscri", "check", "reproduc", "console", "open", "bug", "error", "repeat"],
+          "minMatches": 2,
+          "claudeReply": "Checking. 🔍 Opened staging, entered a test email in the subscription form, clicked the button.\n\n**Observation:** visually nothing happens — no success message, no error.\n\n**Console:** `TypeError: Cannot read properties of null (reading 'value')` in `subscribe.js`, line 27.\n\n**Cause:** the script looks for the field by id `email-input`, but in the fresh layout the field was renamed to `email-field`. The script fails before sending the request.\n\nI suggest fixing the selector in subscribe.js. Apply?",
+          "failHint": "Ask the agent to open the subscription form, reproduce the problem, and look at the console errors."
+        },
+        {
+          "expect": ["apply", "yes", "fix", "go ahead", "check", "sure", "do it"],
+          "minMatches": 1,
+          "claudeReply": "Done. ✅ Fixed the selector in subscribe.js.\n\n**Check in the browser:** opened the page again, entered a test email, submitted — the message 'Thanks for subscribing' appeared, the console is clean, the API request went out with status 200.\n\nThe loop is closed: reproduced → found the cause in the console → fixed → verified on the live page. I recommend glancing at the diff before committing — the edit is one line.",
+          "failHint": "Approve the fix and ask it to check the result: 'Apply and check the form again'."
+        }
+      ],
+      "successMessage": "You ran the full browser-debugging cycle: reproduction → console → fix → verification. Notice: the agent verified the fix itself, but reviewing the diff is on you."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**A mission with a real browser.**\n\n⚠️ Required: the Chrome browser with the Claude in Chrome extension installed (see the documentation in the lesson's sources). If the extension isn't there — start by installing it per the official instructions.\n\n1. Set up access: allow the agent to work only on one or two sites you pick for the task.\n2. Give a 'read-only' task: ask it to open a public page (for example, documentation or a catalog) and collect specific information into a list.\n3. Watch the process from start to finish: how the agent navigates, what it reads.\n4. Check the result against the page itself.\n5. Note for yourself which actions you would NOT trust the agent with without confirmation.",
+      "checklist": [
+        "The agent's access is limited to specific sites",
+        "The task was done in 'read and collect' mode, with no irreversible actions",
+        "The result was checked against the real page",
+        "A personal list of 'confirmation-only' actions was compiled"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-eco-chrome", "badgeId": null }
+}

@@ -1,0 +1,111 @@
+{
+  "id": "pro-surfaces",
+  "world": "world-5-claude-code-pro",
+  "order": 8,
+  "title": "Every surface",
+  "subtitle": "Slack, Chrome, desktop, mobile, and web: one agent, everywhere you work",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Code in Slack — Claude Code Docs", "url": "https://code.claude.com/docs/en/slack" },
+    { "title": "Claude in Chrome — Claude Code Docs", "url": "https://code.claude.com/docs/en/chrome" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The terminal is just the start" },
+    { "type": "text", "md": "We've spent this whole world in the terminal, but Claude Code outgrew the command line long ago. Today it's one agent with a whole set of **surfaces** — places you can work with it from: the terminal (CLI), extensions for VS Code and JetBrains, the desktop app, the web on claude.ai, the mobile app, Slack, and the Chrome browser.\n\nThe key idea: this isn't seven different products, it's **one agent and one account**. A session you kicked off from your phone on the way to work you can open in the web over lunch and in the terminal that evening. The skills from this world — Skills, hooks, subagents, schedules — work the same way; all that changes is the \"window\" you look at the agent's work through. Let's go through the surfaces we haven't covered yet." },
+    { "type": "heading", "text": "Slack: an agent in the team chat" },
+    { "type": "text", "md": "The Slack integration turns your work messenger into a control panel for the agent. A bug comes up in a channel — you mention Claude right in the thread: \"@Claude look into this error in the shop-api project and prepare a fix.\" The agent reads the discussion context, spins up a cloud session, does the work, and reports back in the same thread — with a link to the result or a ready-made PR.\n\nThe power of this flow is that the task is born right where its discussion lives: you don't need to retell the context from chat into the terminal — the agent picks it up from the thread itself. Assigning tasks becomes available even to people who never open the terminal: a manager can send the agent to fix a typo on the site straight from the discussion." },
+    { "type": "heading", "text": "Chrome: an agent inside the browser" },
+    { "type": "text", "md": "The Claude for Chrome extension puts the agent right in the browser: it **sees the open page** and can act on it — click, fill in forms, read the console and network requests. For a web developer this is the missing link: the agent in the terminal was writing code blind, and now it opens your app itself, reproduces the bug, looks at the error in the console, and checks that the fix worked.\n\nA debugging scenario looks like this: \"Open localhost:3000, add an item to the cart, and figure out why the counter doesn't update.\" The agent clicks through the scenario like a live tester, sees the error in the console, fixes the code — and clicks through again to make sure. The \"edit the code → check it by hand in the browser\" loop closes without you." },
+    { "type": "heading", "text": "Desktop, web, and mobile" },
+    { "type": "table",
+      "headers": ["Surface", "What it gives you", "Typical scenario"],
+      "rows": [
+        ["Desktop app", "Several parallel sessions and background agents in tidy tabs, without juggling terminals", "Running three tasks at once and glancing at each one's progress"],
+        ["Web (claude.ai)", "Cloud sessions with a connected repository — the agent runs on Anthropic's servers", "You launched a task from any computer, and the agent makes the PR itself"],
+        ["Mobile", "Launching and monitoring cloud sessions from your phone", "You kicked off a bug fix on the way home, and the PR is ready by the time you arrive"],
+        ["Slack", "Tasks for the agent from the team chat, with context taken from the thread", "\"@Claude fix the bug from this thread\" — and a link to the PR comes back"],
+        ["Chrome", "The agent sees the page and acts on it: clicks, forms, console", "Debugging a web app: reproduced the bug, fixed it, re-checked"]
+      ]
+    },
+    { "type": "text", "md": "How do you choose a surface? By where the task lives. You're writing code and want full control — the terminal or IDE. The task was born in a team discussion — Slack. The bug lives in a web app's interface — Chrome. There are several tasks and they're long — the desktop app with background agents. You're away from your computer — mobile or web. The agent is the same one; don't choose a \"tool,\" choose the shortest path from task to assignment." },
+    { "type": "example",
+      "bad": "A bug in the interface: the \"Pay\" button doesn't work. The developer copies the button's code into a chat with the agent in the terminal and asks: \"What's wrong here?\"",
+      "good": "The same bug — to the agent in Chrome: \"Open the payment page on localhost:3000, click \"Pay,\" look at the errors in the console, find the cause in the code and fix it. Then click again and make sure the payment goes through.\"",
+      "explanation": "In the first case the agent sees a chunk of code with no live environment — and the cause could be anywhere: in the console, in a network request, in a neighboring script. In the second the agent looks at the real page: it reproduces the bug, reads the actual error, fixes it, and re-checks the result itself. The rule is simple: if the bug lives in the browser — give the agent the browser."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation describes the Slack integration (the Slack page: assigning tasks by mentioning the agent in channels and threads, using the discussion context) and working in the browser (the Chrome page: the agent sees pages, interacts with them, and uses the console and network activity for debugging). Separate pages are devoted to the desktop, web, and mobile apps." },
+    { "type": "callout", "kind": "warning", "md": "In the browser and in Slack the agent works with content you didn't write: web pages and messages can contain hidden instructions (that same prompt injection from the security lesson). Keep the agent in the browser on pages you trust, and don't turn off confirmations for sensitive actions — purchases, form submissions, working with email." },
+    { "type": "callout", "kind": "tip", "md": "Try the \"mobile start — desktop finish\" combo: launch a task from your phone in a cloud session, and in the evening open that same session at your computer and take it to the end. Once you feel that sessions travel with you, you stop tying the agent's work to a workplace." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "A button in a web app doesn't work, and the error is only visible in the browser console. Which surface will handle it best?",
+      "options": [
+        "Terminal: paste the button's code into the chat",
+        "Chrome: the agent opens the page itself, reproduces the bug, reads the console, and checks the fix",
+        "Slack: discuss the bug with the team",
+        "The mobile app"
+      ],
+      "correct": [1],
+      "explanation": "The bug lives in the browser — so the agent needs the browser: in Chrome it sees the real page, clicks like a user, reads the actual error in the console, and after the fix re-checks the scenario itself. A terminal agent would be working blind off a retelling.",
+      "hint": "Where the bug lives, that's where the agent goes."
+    },
+    {
+      "type": "quiz",
+      "question": "In a Slack thread the team discussed a bug and its solution. What's the fastest way to turn the discussion into work for the agent?",
+      "options": [
+        "Copy the whole thread, open the terminal, and paste it there",
+        "Mention the agent right in the thread: \"@Claude fix this bug in project X\" — it picks up the discussion context itself",
+        "Ask a manager to file a ticket in the tracker",
+        "You can't assign tasks to the agent through Slack"
+      ],
+      "correct": [1],
+      "explanation": "That's the whole point of the integration: the task is assigned where it was born. A mention in the thread launches the agent, which reads the discussion context itself — no retelling or copying. A report or a link to a ready PR comes back in the same thread.",
+      "hint": "The agent can read the thread — why retell it?"
+    },
+    {
+      "type": "quiz",
+      "question": "Which two scenarios are about background work and \"sessions traveling with you\"? (choose two)",
+      "options": [
+        "You launched a fix from your phone on the way home, opened that same session at your computer, and took it to the end",
+        "You're running three parallel tasks in the desktop app's tabs, glancing at the progress",
+        "You type every command by hand in a single terminal and wait for it to finish",
+        "You copy code off your phone's screen into a notebook"
+      ],
+      "correct": [0, 1],
+      "explanation": "One account — one agent — shared sessions: what was started on the phone continues on the computer, and the desktop app lets you keep several agents working at once. Typing by hand in a single terminal is exactly the \"bottleneck\" that advanced surfaces free you from.",
+      "hint": "Look for scenarios where work isn't tied to one window and one place."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a task for the agent in Chrome to debug a web app — the full cycle: reproduce, diagnose, fix, re-check. Toss the extra block overboard.",
+      "blocks": [
+        "Open localhost:3000 and repeat the scenario: add an item to the cart, go to checkout.",
+        "Look at the errors in the console and the network requests at the moment of failure.",
+        "Find the cause in the project's code and fix it.",
+        "Go through the scenario in the browser again and make sure the payment works."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Guess from the snippet of code I'll paste into the chat — don't open the page."
+      ],
+      "explanation": "The live-debugging cycle: reproduce the bug on the real page → gather evidence (console, network) → fix the cause in the code → re-check with the same scenario. The \"guess from the snippet\" block is a return to blind debugging, the very thing the agent was given a browser to escape."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission on real surfaces. **You need a Claude account; for the web part a browser is enough.**\n\n1. Open claude.ai and find the Claude Code section (cloud sessions) — see what launching a session outside the terminal looks like.\n2. If you have a repository on GitHub — connect it and give it a small task (for example, \"describe the project structure\"); watch the cloud session.\n3. From your phone: open the Claude app and find your cloud session — make sure you can see its progress from another device.\n4. Bonus: if you use Slack or Chrome — check the documentation (the Slack and Chrome pages) and sketch out one scenario for your team: what task would you assign the agent from chat or the browser?",
+      "checklist": [
+        "I saw Claude Code cloud sessions in the web",
+        "The task ran in the cloud, my computer had nothing to do with it",
+        "I opened the same session from a second device",
+        "I have one concrete scenario for Slack or Chrome"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-pro-surfaces", "badgeId": null }
+}

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Check, CircleHelp, Lightbulb, X } from 'lucide-react';
 import type { QuizTask as QuizTaskType } from '../../engine/types';
+import { useLang, useT } from '../../i18n/useT';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
 
 interface QuizTaskProps {
@@ -13,7 +14,15 @@ interface QuizTaskProps {
   onSolved: (mistakes: number) => void;
 }
 
+/** Буква варианта: А, Б, В… для ru; A, B, C… для остальных языков */
+function optionLetter(index: number, lang: string): string {
+  const base = lang === 'ru' ? 1040 : 65;
+  return String.fromCharCode(base + index);
+}
+
 export function QuizTask({ task, onSolved }: QuizTaskProps) {
+  const t = useT();
+  const { lang } = useLang();
   const isMulti = task.correct.length > 1;
   const [selected, setSelected] = useState<number[]>([]);
   const [status, setStatus] = useState<'idle' | 'wrong' | 'correct'>('idle');
@@ -81,7 +90,7 @@ export function QuizTask({ task, onSolved }: QuizTaskProps) {
 
       {isMulti && (
         <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-          Выбери несколько вариантов и нажми «Проверить».
+          {t('quiz.multiHint')}
         </p>
       )}
 
@@ -110,7 +119,7 @@ export function QuizTask({ task, onSolved }: QuizTaskProps) {
               ) : status === 'wrong' && selected.includes(i) ? (
                 <X size={14} />
               ) : (
-                String.fromCharCode(1040 + i) /* А, Б, В, Г... */
+                optionLetter(i, lang)
               )}
             </span>
             {option}
@@ -125,7 +134,7 @@ export function QuizTask({ task, onSolved }: QuizTaskProps) {
           disabled={selected.length === 0}
           onClick={() => evaluate(selected)}
         >
-          Проверить
+          {t('common.check')}
         </button>
       )}
 
@@ -153,7 +162,7 @@ export function QuizTask({ task, onSolved }: QuizTaskProps) {
               className="btn-glass flex items-center gap-1.5 px-4 py-2 text-sm"
             >
               <Lightbulb size={15} style={{ color: 'var(--accent-cyan)' }} />
-              Показать подсказку
+              {t('quiz.showHint')}
             </button>
           )}
         </div>
@@ -171,7 +180,7 @@ export function QuizTask({ task, onSolved }: QuizTaskProps) {
           }}
         >
           <div className="mb-1 font-semibold" style={{ color: 'var(--success)' }}>
-            Верно!
+            {t('common.correct')}
           </div>
           <p style={{ color: 'var(--text-secondary)' }}>{task.explanation}</p>
         </motion.div>

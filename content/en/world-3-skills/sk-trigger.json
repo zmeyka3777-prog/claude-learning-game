@@ -1,0 +1,104 @@
+{
+  "id": "sk-trigger",
+  "world": "world-3-skills",
+  "order": 4,
+  "title": "The Trigger Description",
+  "subtitle": "The description decides when a skill fires — learning to write it well",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" },
+    { "title": "Creating custom skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512198" },
+    { "title": "anthropics/skills — description examples", "url": "https://github.com/anthropics/skills" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why the description is the most important field" },
+    { "type": "text", "md": "Recall the mechanics from the first lesson: Claude doesn't read all your skills before every response. It sees only the \"spines\" — the names and descriptions — and decides by them whether to pull a skill off the shelf. Hence a hard conclusion: **however brilliant a skill's contents are, it will work exactly as well as its description.**\n\nA mistake in the description leads to two unpleasant scenarios. **The invisible skill**: the description is too vague, Claude doesn't understand that the task fits — and your wonderful instructions are never applied. **The show-off skill**: the description is too broad, the skill fires on everything — your report-formatting rules suddenly barge into a birthday note to grandma.\n\nThe goal of this lesson is to learn to write descriptions that fire precisely: when needed, and only then.\n\nA real-life analogy is a workshop's sign. A genius may be sitting inside, but if the sign says \"Services,\" the customer with a leaking faucet walks right past. But a sign that says \"Plumber: faucets, pipes, clogs — same day\" brings in exactly the people who need it. The description is your skill's sign: Claude decides by it whether to \"come in\" or not." },
+    { "type": "heading", "text": "The formula: what it does + when to apply it" },
+    { "type": "text", "md": "A working description has two halves:\n\n**1. What the skill does** — one crisp sentence about the result: \"Formats sales proposals from the company's price list.\"\n\n**2. When to apply it** — concrete situations and **trigger words**: the phrases a real user (that is, you) uses to describe such a task. \"Use for requests to make a proposal, a cost estimate, or a quote for a client.\"\n\nThe second half is the one people most often forget. And yet it's exactly what gets matched against your request. A useful trick: recall the words you **actually** use to ask for such a task, and include them in the description. Do you ask \"send over a proposal for the client\"? Then \"proposal\" must be in the description. Write the description in the third person (\"formats,\" \"produces\") — it's a description of a tool, not a command." },
+    { "type": "code", "lang": "markdown", "title": "A description built from the formula", "code": "description: Formats sales proposals from the company's\nprice list and template. Use when the user asks for a\nproposal, a quote, a cost estimate for a client,\nor a response to a price inquiry." },
+    { "type": "heading", "text": "Too narrow, too broad, just right" },
+    { "type": "text", "md": "Precision in a description is a balance. Compare three variants for the very same skill:\n\n- **Too broad:** \"Helps with documents.\" Half of all tasks fit this — the skill will pop up all over the place.\n- **Too narrow:** \"Produces proposals for supplying arabica-variety whole-bean coffee to Acme LLC.\" The customer changed — the skill is dead.\n- **Just right:** \"Formats sales proposals from the company's price list. Use for requests to make a proposal, a cost estimate, a quote for a client.\" It covers the whole task type without touching the neighboring ones.\n\nThe rule of thumb is this: the description should outline a **type of task**, not one specific task and not a whole profession. If in doubt — list 3–4 real request phrasings separated by commas: those are the best triggers." },
+    { "type": "example",
+      "bad": "description: A skill for work. Very useful, helps do various tasks better and faster.",
+      "good": "description: Produces replies to café customer reviews. Use when the user asks to reply to a review, a complaint, or a guest's comment — on maps, on social media, or on review sites.",
+      "explanation": "The bad description contains not a single signal to match against a request: \"for work\" and \"various tasks\" fit everything and nothing — the skill will never fire (or will always get in the way). The good one names the result (replies to reviews) and lists the trigger situations: review, complaint, guest comment, maps, social media. The request \"reply to an angry review on Google Maps\" lands in it without a miss." },
+    { "type": "heading", "text": "A checklist for a strong description" },
+    { "type": "text", "md": "Before you save the skill, run the description through four questions:\n\n1. **Is the result named?** From the first sentence it's clear what the skill produces.\n2. **Are there triggers?** The words and situations you actually use to describe the task are listed.\n3. **Are the boundaries outlined?** It's clear not only when to apply it, but also what the skill doesn't claim to do.\n4. **No value judgments?** \"Best,\" \"powerful,\" \"convenient\" are noise: Claude matches the description against the task, it doesn't pick the most-praised skill.\n\nAnd a final test: show the description to someone who hasn't seen the skill and ask: \"On which requests will this fire?\" If they answer confidently and correctly — the description is ready.\n\nNotice: this checklist works in reverse too. When some skill behaves strangely — doesn't fire, or, on the contrary, meddles where it shouldn't — the first thing to do is open its description and run it through the same four questions. Nine times out of ten the problem is right there." },
+    { "type": "callout", "kind": "docs", "md": "The Agent Skills specification (agentskills.io) directly calls the description the key field for discovering a skill: the agent selects skills by matching the description against the current task, so it must state both **what** the skill does and **when** to use it. The length limit is 1024 characters, but the best descriptions in the anthropics/skills library fit into two or three sentences." },
+    { "type": "callout", "kind": "tip", "md": "If a skill doesn't fire, the description is almost always to blame, not the instructions. The first debugging step: compare your description with your actual request phrasing. You say \"sketch a status for the boss,\" but the description only has \"weekly report\"? Add the word \"status\" to the triggers — and the skill comes alive." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "By which field does Claude decide whether to apply a skill to the current task?",
+      "options": [
+        "By the contents of all the skill's instructions — it reads them before every response",
+        "By the description field in the frontmatter",
+        "By the skill's creation date — newer ones take priority",
+        "By the number of resource files in the folder"
+      ],
+      "correct": [1],
+      "explanation": "Claude constantly sees only the skills' \"spines\" — name and description. The decision \"whether to pull the skill off the shelf\" is made by the description, and only then are the instructions read. That's why the quality of the description determines whether the skill works at all.",
+      "hint": "Recall the metaphor of the shelf of reference books and the spines."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Here's the frontmatter of a skill for replying to customer emails. The skill almost never fires. Find the culprit line.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: client-emails",
+        "description: A powerful and convenient assistant for better communication.",
+        "---"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The description consists of value judgments (\"powerful,\" \"convenient,\" \"better\") and contains neither a result nor triggers. Not a word about \"email,\" \"client,\" or \"reply\" — there's simply nothing to match the request \"reply to a client's email\" against. A working version: \"Writes replies to customer emails per the company's standards. Use for requests to reply to an email, write to a client, or handle an incoming inquiry.\"",
+      "hint": "The line format is correct — the problem is in the content. Is there even one word in the description from the real request \"reply to a client's email\"?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a strong description for a skill that prepares product listings for a marketplace. Order by the formula: what it does → when to apply → boundaries.",
+      "blocks": [
+        "Creates product listings for marketplaces: title, description, specifications, keywords.",
+        "Use when the user asks for a product listing, a marketplace description, or listing copy.",
+        "Do not use for social media posts and ad banners — there are separate skills for those."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "The best sales skill ever, does everything fast and with quality!",
+        "Use always, for any texts about products and beyond."
+      ],
+      "explanation": "The assembled description answers three questions: what the skill produces, on which requests it fires, and where its zone ends. The traps are classic failures: praise with no information, and \"use always,\" which turns the skill into a show-off that gets in others' way."
+    },
+    {
+      "type": "quiz",
+      "question": "A skill with the description \"Helps with texts\" fires on every request and gets in the way. How do you fix it?",
+      "options": [
+        "Delete the description entirely — let Claude figure it out",
+        "Add: \"A very high-quality skill, use carefully\"",
+        "Narrow it to a task type and add triggers: \"Edits articles for the company blog. Use for requests to edit, proofread, or shorten an article\"",
+        "Rename the skill to text-helper-2"
+      ],
+      "correct": [2],
+      "explanation": "\"Helps with texts\" is a classic show-off skill: everything falls under the description. The cure is concreteness: name the result (editing blog articles) and list the trigger words (edit, proofread, shorten). Deleting the description would break the skill entirely, and value judgments or renaming change nothing.",
+      "hint": "The problem is boundaries that are too broad. Which option narrows them?"
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Practicing the formula. Write Claude a description for a \"congratulations to colleagues from the department\" skill: state what the skill does (congratulations) and when to apply it (birthday, work anniversary, holiday — at least a couple of triggers).",
+      "steps": [
+        {
+          "expect": ["congratulat", "colleague", "birthday", "anniversary", "holiday", "use", "when"],
+          "minMatches": 3,
+          "claudeReply": "Great description! Let me run it through the checklist:\n\n- **Result named** — congratulations to colleagues on behalf of the department ✓\n- **Triggers present** — birthday, work anniversary, holiday ✓\n- **Boundaries clear** — work congratulations only ✓\n\nNow let's stress-test it. The request: \"It's Marina's work anniversary in accounting, sketch a few warm words from us\" — will it fire? Yes: \"anniversary\" and \"from us\" land in the triggers. And the request \"congratulate my grandma\"? It won't fire — and that's correct: grandma isn't a colleague, the skill shouldn't meddle in personal congratulations.\n\nYou just did what the authors of the best skills do: tested the description with real requests.",
+          "failHint": "Assemble it by the formula, for example: \"Writes congratulations to colleagues on behalf of the department. Use when asked to congratulate someone on a birthday, work anniversary, or holiday.\""
+        }
+      ],
+      "successMessage": "Formula mastered: result + trigger words + boundaries. These are the two or three most important sentences of any skill — and now you know how to write them."
+    }
+  ],
+  "reward": { "cardId": "card-sk-trigger", "badgeId": null }
+}

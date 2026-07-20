@@ -1,0 +1,116 @@
+{
+  "id": "sk-anatomy",
+  "world": "world-3-skills",
+  "order": 3,
+  "title": "Anatomy of SKILL.md",
+  "subtitle": "Frontmatter, instructions, and resources: what a skill is made of",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Creating custom skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512198" },
+    { "title": "Agent Skills — specification", "url": "https://agentskills.io" },
+    { "title": "anthropics/skills — spec/ and template/", "url": "https://github.com/anthropics/skills" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "The three layers of a skill" },
+    { "type": "text", "md": "Time to look inside. Any skill consists of three layers, and only the first is required:\n\n1. **YAML frontmatter** — the \"header\" at the very start of SKILL.md: the skill's name and a description of when to apply it. This is the one thing Claude always sees.\n2. **Markdown instructions** — the body of the file: what to do, in what order, by what rules. Claude reads them once it decides to apply the skill.\n3. **Resources** — extra files next to SKILL.md: templates, examples, reference sheets, scripts. Claude opens them only if the instructions reference them.\n\nThis design is called **progressive disclosure**: first a couple of lines of description, then the full file, then the resources. A skill can contain a whole library of materials — and the conversation only \"pays\" for it when it's used." },
+    { "type": "heading", "text": "Layer 1: YAML frontmatter" },
+    { "type": "text", "md": "Frontmatter is the block between two lines of three dashes `---` at the very start of the file. Inside are \"key: value\" pairs in YAML format. There are two required keys:\n\n- **name** — the skill's machine name. The rules are strict: only **lowercase Latin letters, digits, and hyphens**, no spaces or uppercase. Correct: `weekly-report`, `bakery-posts`. Incorrect: `Weekly Report`, `week_report`. The name must match the skill's folder name.\n- **description** — the description: what the skill does and **when** to apply it. This is the single most important field of the whole skill, and the next lesson is devoted entirely to it.\n\nA typo in the frontmatter is the most common cause of a \"dead\" skill: a file without a correct header simply won't load." },
+    { "type": "code", "lang": "markdown", "title": "SKILL.md: a minimal working example", "code": "---\nname: weekly-report\ndescription: Produces a weekly report for a manager. Use when the user asks for a weekly report, the week's results, or a status on tasks.\n---\n\n# Weekly report\n\n## Structure\n1. Done — 3–5 items with results\n2. Problems — risks and blockers, one sentence each\n3. Plans — what will be done next week\n\n## Rules\n- Business tone, no fluff or corporate speak\n- Format numbers as a table\n- Length — no more than one page\n\n## Template\nUse the starter from the file template.md" },
+    { "type": "heading", "text": "Layer 2: instructions" },
+    { "type": "text", "md": "After the frontmatter comes ordinary Markdown — and here you write the way you'd write a note for a capable new employee. Good instructions usually contain:\n\n- **A sequence of actions** — numbered steps: first clarify X, then do Y.\n- **Rules and limits** — tone, length, what's required, what to avoid.\n- **Examples** — a \"how it should look\" snippet works better than a paragraph of explanation.\n- **References to resources** — \"the template is in template.md,\" \"examples in examples/.\"\n\nThe main principle is concreteness, the same as with prompts: not \"write well,\" but \"business tone, up to one page, numbers as a table.\" And don't try to cram everything under the sun into one skill: one skill — one type of task. For a different type, set up a second skill." },
+    { "type": "heading", "text": "Layer 3: resources and the template/ starter" },
+    { "type": "text", "md": "Next to SKILL.md you can put any files: a contract template, a reference report, a rate table, a Python script. The instructions reference them by name — and Claude will open the file at the right moment. This is how a skill stops being just text and becomes a **toolkit**: instructions + materials.\n\nA real-life example: a skill for sales proposals stores the price list in `prices.md`. Prices changed? You update one file — and all future proposals are calculated with the new numbers, without even touching the instructions. Data separate, rules separate — that's easy to maintain.\n\nSo you don't have to build the structure from scratch, the anthropics/skills repository contains a `template/` folder — a starter for a new skill with SKILL.md already marked up: copy it, rename it, fill it with your own content. That's what we'll start from in lesson five." },
+    { "type": "table",
+      "headers": ["Layer", "Where it lives", "When Claude reads it"],
+      "rows": [
+        ["Frontmatter (name + description)", "The SKILL.md header, between ---", "Always — it decides whether the skill is needed"],
+        ["Instructions", "The body of SKILL.md (Markdown)", "Once it decides to apply the skill"],
+        ["Resources", "Files alongside: templates, examples, scripts", "When the instructions reference them"]
+      ]
+    },
+    { "type": "example",
+      "bad": "---\nname: My Cool Skill\ndescription: a useful skill\n---\nDo everything well and beautifully.",
+      "good": "---\nname: price-quote\ndescription: Formats sales proposals from the company's price list. Use for requests to make a proposal, a cost estimate, or a quote for a client.\n---\n# Sales proposal\n1. Take the current prices from the file prices.md\n2. Assemble the proposal: greeting, table of line items, total with discount, valid for 14 days\n3. Business tone, address the client formally",
+      "explanation": "In the bad example everything is broken: name has uppercase letters and spaces (a format violation — the skill won't load), the description doesn't say when to apply the skill, and the instruction \"do it well\" is empty. In the good one — a valid name, a description with triggers, concrete steps, and a reference to a resource with the prices." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Help Center (the \"Creating custom skills\" article) and the agentskills.io specification agree on the requirements: SKILL.md must begin with YAML frontmatter containing `name` (lowercase letters, digits, and hyphens) and `description`. The specification also limits the length: the name — up to 64 characters, the description — up to 1024. Everything else — instructions and resources — is up to you." },
+    { "type": "callout", "kind": "warning", "md": "Common beginner mistakes: forgetting the closing `---` after the frontmatter; naming the field `Description` with a capital letter (YAML is case-sensitive); using spaces or non-Latin characters in the name; naming the file skill.md in lowercase — when it must be named exactly SKILL.md. Any one of these little things makes the skill invisible." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Which two fields are required in a SKILL.md file's frontmatter?",
+      "options": [
+        "title and author",
+        "name and description",
+        "id and version",
+        "prompt and model"
+      ],
+      "correct": [1],
+      "explanation": "The required minimum is name (the machine name: lowercase letters, digits, hyphens) and description (what the skill does and when to apply it). Without a correct pair of these fields, Claude won't load the skill.",
+      "hint": "One field is \"what the skill is called,\" the other is \"when to pull it off the shelf.\""
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Here's a skill's frontmatter, broken down line by line. One line breaks the format rules and will keep the skill from loading. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: Meeting Notes",
+        "description: Formats meeting minutes. Use when the user asks for minutes, meeting notes, or a list of decisions and tasks.",
+        "---"
+      ],
+      "bugLineIndex": 1,
+      "explanation": "In name you can't use uppercase letters and spaces — only lowercase Latin letters, digits, and hyphens. Correct: `name: meeting-notes`. The description here is actually good: it says both what the skill does and when it fires.",
+      "hint": "Recall the rules for the machine name: which characters are allowed?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a SKILL.md in the correct order: first the frontmatter opens, then its fields, then the closing, then the instructions.",
+      "blocks": [
+        "---",
+        "name: bakery-posts",
+        "description: Writes social media posts for a bakery. Use for requests to make a post, an announcement, or a publication about the products.",
+        "---",
+        "# Bakery posts\n1. Warm tone, no corporate speak\n2. Up to 400 characters, one emoji\n3. A question to readers at the end"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "model: claude-opus (let's specify the model to run on)"
+      ],
+      "explanation": "The skeleton is always the same: `---`, the name and description fields, `---` again, and then the Markdown instructions. The trap block with a model field is extra: a skill doesn't choose a model, it's an instruction, not a configuration."
+    },
+    {
+      "type": "quiz",
+      "question": "What is \"progressive disclosure\" in the context of skills?",
+      "options": [
+        "The skill unlocks only after you reach a certain XP level",
+        "Claude first sees only the name and description, reads the instructions when applying the skill, and the resources only via references from the instructions",
+        "The skill's instructions must be written from simple to complex",
+        "The skill reveals its capabilities gradually, learning from your tasks"
+      ],
+      "correct": [1],
+      "explanation": "Progressive disclosure is a way to save attention: the short description is always visible, the full SKILL.md loads when it's used, and the extra files only when needed. That's why a skill can contain a lot of material without \"cluttering\" every conversation.",
+      "hint": "The three layers from the theory table — and the three moments when Claude reads them."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "Now a more serious mistake: this SKILL.md looks tidy, but one line makes the frontmatter invalid. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "---",
+        "name: travel-checklist",
+        "description: Builds checklists for trips. Use for requests like \"what to pack,\" preparing for a trip, or a business trip.",
+        "# Travel checklist",
+        "1. Clarify the country, season, and length of the trip",
+        "2. Split the list: documents, clothes, gadgets, first-aid kit"
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Right after the description the instructions begin — but the closing `---` line is gone. Without it the frontmatter isn't closed, the YAML is invalid, and the skill won't load. The header is always framed by two `---` lines: an opening one and a closing one.",
+      "hint": "Count the three-dash lines. How many should there be?"
+    }
+  ],
+  "reward": { "cardId": "card-sk-anatomy", "badgeId": null }
+}

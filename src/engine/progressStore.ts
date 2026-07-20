@@ -4,8 +4,9 @@
  * localStorage['academy_progress_v1'] = Progress (без обёрток).
  */
 import { create } from 'zustand';
-import type { Lesson, Progress, ReviewEntry, Track } from './types';
+import type { LangCode, Lesson, Progress, ReviewEntry, Track } from './types';
 import { getWorld } from './content';
+import { isLangCode } from '../i18n/languages';
 import { REVIEW_INTERVALS_DAYS, REVIEW_XP } from './review';
 
 export const STORAGE_KEY = 'academy_progress_v1';
@@ -37,6 +38,11 @@ function parseTrack(value: unknown): Track | null {
   return VALID_TRACKS.includes(value as Track) ? (value as Track) : null;
 }
 
+/** Язык из localStorage с валидацией; невалидное значение → 'ru' */
+function parseLang(value: unknown): LangCode {
+  return isLangCode(value) ? value : 'ru';
+}
+
 const DEFAULT_PROGRESS: Progress = {
   xp: 0,
   completedLessons: {},
@@ -49,6 +55,7 @@ const DEFAULT_PROGRESS: Progress = {
   placementResult: null,
   playerName: null,
   reviewLog: {},
+  lang: 'ru',
 };
 
 function parsePlacementResult(value: unknown): Record<string, number> | null {
@@ -95,6 +102,7 @@ function loadProgress(): Progress {
       placementResult: parsePlacementResult(parsed.placementResult),
       playerName: typeof parsed.playerName === 'string' ? parsed.playerName : null,
       reviewLog: parseReviewLog(parsed.reviewLog),
+      lang: parseLang(parsed.lang),
     };
   } catch {
     // Битые данные не должны ронять приложение
@@ -115,6 +123,7 @@ function saveProgress(p: Progress): void {
       placementResult: p.placementResult,
       playerName: p.playerName,
       reviewLog: p.reviewLog,
+      lang: p.lang,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -145,6 +154,8 @@ interface ProgressStore extends Progress {
   /** Зафиксировать активность сегодня и пересчитать стрик по датам */
   touchStreak: () => void;
   setTrack: (track: Track) => void;
+  /** Сменить язык интерфейса и контента (с валидацией) */
+  setLang: (lang: LangCode) => void;
   unlockBadge: (badgeId: string) => boolean;
   unlockCard: (cardId: string) => boolean;
   /** Полный цикл завершения урока: XP, стрик, награды, бейджи-условия */
@@ -195,6 +206,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
   },
 
   setTrack: (track) => set({ track }),
+
+  setLang: (lang) => set({ lang: isLangCode(lang) ? lang : 'ru' }),
 
   unlockBadge: (badgeId) => {
     const { badges } = get();
@@ -355,6 +368,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       placementResult: null,
       playerName: null,
       reviewLog: {},
+      // Язык не сбрасываем — это настройка, а не прогресс
+      lang: get().lang,
     }),
 }));
 

@@ -15,41 +15,42 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { LIBRARY_ITEMS } from '../engine/content';
+import { getLibraryItems } from '../engine/content';
 import { track } from '../lib/analytics';
+import { useLang, useT } from '../i18n/useT';
 import type { LibraryItem, LibraryKind, LibrarySource } from '../engine/types';
 
 // --- Справочники оформления --------------------------------------------------
 
 type TabId = 'all' | LibraryKind;
 
-const TABS: Array<{ id: TabId; label: string }> = [
-  { id: 'all', label: 'Все' },
-  { id: 'skill', label: 'Скиллы' },
-  { id: 'plugin', label: 'Плагины' },
-  { id: 'mcp', label: 'MCP' },
+const TABS: Array<{ id: TabId; labelKey: string }> = [
+  { id: 'all', labelKey: 'library.tab.all' },
+  { id: 'skill', labelKey: 'library.tab.skill' },
+  { id: 'plugin', labelKey: 'library.tab.plugin' },
+  { id: 'mcp', labelKey: 'library.tab.mcp' },
 ];
 
 const SOURCE_BADGES: Record<
   LibrarySource,
-  { label: string; color: string; background: string; border: string; Icon: typeof Sparkles }
+  { labelKey: string; color: string; background: string; border: string; Icon: typeof Sparkles }
 > = {
   official: {
-    label: 'Официальный Anthropic',
+    labelKey: 'library.source.official',
     color: 'var(--accent-amber)',
     background: 'rgba(245, 158, 11, 0.12)',
     border: 'rgba(245, 158, 11, 0.35)',
     Icon: Sparkles,
   },
   verified: {
-    label: 'Проверенный',
+    labelKey: 'library.source.verified',
     color: 'var(--accent-cyan)',
     background: 'rgba(34, 211, 238, 0.12)',
     border: 'rgba(34, 211, 238, 0.35)',
     Icon: ShieldCheck,
   },
   community: {
-    label: 'Сообщество',
+    labelKey: 'library.source.community',
     color: 'var(--text-secondary)',
     background: 'rgba(168, 176, 211, 0.1)',
     border: 'rgba(168, 176, 211, 0.3)',
@@ -96,6 +97,7 @@ function LibraryCard({
   onCopy: (item: LibraryItem) => void;
 }) {
   const reduced = useReducedMotion();
+  const t = useT();
   const badge = SOURCE_BADGES[item.source];
   const BadgeIcon = badge.Icon;
   const [copied, setCopied] = useState(false);
@@ -124,7 +126,7 @@ function LibraryCard({
           style={{ background: badge.background, border: `1px solid ${badge.border}`, color: badge.color }}
         >
           <BadgeIcon size={11} />
-          {badge.label}
+          {t(badge.labelKey)}
         </span>
       </div>
 
@@ -151,7 +153,7 @@ function LibraryCard({
           className="mb-1 text-[11px] font-semibold tracking-wide uppercase"
           style={{ color: 'var(--accent-violet)' }}
         >
-          Пригодится для:
+          {t('library.usefulFor')}
         </div>
         <div style={{ color: 'var(--text-secondary)' }}>{item.useFor}</div>
       </div>
@@ -170,14 +172,14 @@ function LibraryCard({
           type="button"
           onClick={handleCopy}
           className="btn-glass flex shrink-0 items-center gap-1.5 px-2.5 py-1.5 text-xs"
-          aria-label={`Копировать команду установки ${item.name}`}
+          aria-label={t('library.copy.aria', { name: item.name })}
         >
           {copied ? (
             <Check size={13} style={{ color: 'var(--success)' }} />
           ) : (
             <Copy size={13} />
           )}
-          {copied ? 'Готово' : 'Копировать'}
+          {copied ? t('library.copy.done') : t('library.copy')}
         </button>
       </div>
 
@@ -190,7 +192,7 @@ function LibraryCard({
           style={{ color: 'var(--accent-cyan)' }}
         >
           <ExternalLink size={14} />
-          Репозиторий
+          {t('library.repo')}
         </a>
         {item.docs && (
           <a
@@ -201,7 +203,7 @@ function LibraryCard({
             style={{ color: 'var(--accent-cyan)' }}
           >
             <BookOpen size={14} />
-            Документация
+            {t('library.docs')}
           </a>
         )}
       </div>
@@ -213,6 +215,9 @@ function LibraryCard({
 
 export default function LibraryPage() {
   const reduced = useReducedMotion();
+  const t = useT();
+  const { lang } = useLang();
+  const items = useMemo(() => getLibraryItems(lang), [lang]);
   const [tab, setTab] = useState<TabId>('all');
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<string | null>(null);
@@ -220,23 +225,23 @@ export default function LibraryPage() {
   const [toastTimer, setToastTimer] = useState<number | null>(null);
 
   const countByKind = useMemo(() => {
-    const counts: Record<TabId, number> = { all: LIBRARY_ITEMS.length, skill: 0, plugin: 0, mcp: 0 };
-    for (const item of LIBRARY_ITEMS) counts[item.kind] += 1;
+    const counts: Record<TabId, number> = { all: items.length, skill: 0, plugin: 0, mcp: 0 };
+    for (const item of items) counts[item.kind] += 1;
     return counts;
-  }, []);
+  }, [items]);
 
   // Категории — только по записям активной вкладки
   const categories = useMemo(() => {
     const set = new Set<string>();
-    for (const item of LIBRARY_ITEMS) {
+    for (const item of items) {
       if (tab === 'all' || item.kind === tab) set.add(item.category);
     }
-    return [...set].sort((a, b) => a.localeCompare(b, 'ru'));
-  }, [tab]);
+    return [...set].sort((a, b) => a.localeCompare(b, lang));
+  }, [tab, items, lang]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return LIBRARY_ITEMS.filter((item) => {
+    return items.filter((item) => {
       if (tab !== 'all' && item.kind !== tab) return false;
       if (category !== null && item.category !== category) return false;
       if (q !== '' && !item.name.toLowerCase().includes(q) && !item.description.toLowerCase().includes(q)) {
@@ -244,7 +249,7 @@ export default function LibraryPage() {
       }
       return true;
     });
-  }, [tab, query, category]);
+  }, [tab, query, category, items]);
 
   const showCopyToast = (item: LibraryItem) => {
     track('library_install_copied', { itemId: item.id });
@@ -268,17 +273,17 @@ export default function LibraryPage() {
         transition={{ duration: 0.5 }}
       >
         <h1 className="font-display text-2xl font-semibold sm:text-4xl">
-          <span className="gradient-text">Библиотека</span>
+          <span className="gradient-text">{t('topbar.library')}</span>
         </h1>
         <p
           className="mx-auto mt-2 max-w-md text-sm sm:text-base"
           style={{ color: 'var(--text-secondary)' }}
         >
-          Проверенные скиллы, плагины и MCP-серверы — с командами установки.
+          {t('library.subtitle')}
         </p>
       </motion.div>
 
-      {LIBRARY_ITEMS.length === 0 ? (
+      {items.length === 0 ? (
         // Контент пишется параллельно и мог ещё не появиться
         <motion.div
           className="glass-card mx-auto max-w-md p-10 text-center"
@@ -289,16 +294,16 @@ export default function LibraryPage() {
           <div className="mb-3 text-4xl" aria-hidden="true">
             📚
           </div>
-          <h2 className="font-display text-lg font-semibold">Библиотека пополняется</h2>
+          <h2 className="font-display text-lg font-semibold">{t('library.empty.title')}</h2>
           <p className="mt-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Мы собираем и проверяем первые скиллы, плагины и MCP-серверы. Загляни сюда чуть позже!
+            {t('library.empty.body')}
           </p>
         </motion.div>
       ) : (
         <>
           {/* Табы */}
-          <div className="mb-4 flex flex-wrap justify-center gap-2" role="tablist" aria-label="Тип расширения">
-            {TABS.map(({ id, label }) => {
+          <div className="mb-4 flex flex-wrap justify-center gap-2" role="tablist" aria-label={t('library.tablist.aria')}>
+            {TABS.map(({ id, labelKey }) => {
               const active = tab === id;
               return (
                 <button
@@ -309,7 +314,7 @@ export default function LibraryPage() {
                   onClick={() => selectTab(id)}
                   className={`${active ? 'btn-gradient' : 'btn-glass'} px-4 py-2 text-sm`}
                 >
-                  {label}
+                  {t(labelKey)}
                   <span className="ml-1.5 opacity-70">{countByKind[id]}</span>
                 </button>
               );
@@ -324,8 +329,8 @@ export default function LibraryPage() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Поиск по названию или описанию…"
-                aria-label="Поиск по библиотеке"
+                placeholder={t('library.search.placeholder')}
+                aria-label={t('library.search.aria')}
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none"
                 style={{ color: 'var(--text-primary)' }}
               />
@@ -361,7 +366,7 @@ export default function LibraryPage() {
           {filtered.length === 0 ? (
             <div className="glass-card mx-auto max-w-md p-8 text-center">
               <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                Ничего не найдено. Попробуй изменить запрос или сбросить фильтры.
+                {t('library.nothingFound')}
               </p>
               <button
                 type="button"
@@ -372,7 +377,7 @@ export default function LibraryPage() {
                   setTab('all');
                 }}
               >
-                Сбросить фильтры
+                {t('library.resetFilters')}
               </button>
             </div>
           ) : (
@@ -388,8 +393,7 @@ export default function LibraryPage() {
             className="mx-auto mt-10 max-w-2xl text-center text-xs leading-relaxed"
             style={{ color: 'var(--text-muted)' }}
           >
-            Библиотека обновляется еженедельно по официальным источникам. Устанавливая сторонние
-            расширения, проверяй, что доверяешь автору: они получают доступ к твоим данным.
+            {t('library.disclaimer')}
           </div>
         </>
       )}
@@ -415,7 +419,7 @@ export default function LibraryPage() {
               role="status"
             >
               <Check size={15} />
-              Скопировано
+              {t('common.copied')}
             </motion.div>
           )}
         </AnimatePresence>

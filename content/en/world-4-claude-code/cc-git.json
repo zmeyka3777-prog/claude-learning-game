@@ -1,0 +1,110 @@
+{
+  "id": "cc-git",
+  "world": "world-4-claude-code",
+  "order": 7,
+  "title": "Git together with Claude",
+  "subtitle": "Commits, branches and PRs in plain words — and how to delegate them to the agent",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Common workflows — Claude Code Docs", "url": "https://code.claude.com/docs/en/common-workflows" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Git is a time machine for your project" },
+    { "type": "text", "md": "If you're not a programmer, the word \"Git\" might have scared you. Relax: the idea is simple. **Git** is a system that stores the history of a project's changes. Remember files like \"Report_final_2_FIXED_definitely_final.docx\"? Git solves the same problem, only in a grown-up way: the whole version history is kept neatly, you can return to any point, and nothing gets lost.\n\nWhen you work with an agent, Git isn't optional — it's insurance: the agent changes files, and the change history lets you always see **exactly** what it changed and roll back anything that went wrong. Good news: you don't have to learn Git commands at all — Claude Code will run them for you. But there are three concepts you do need to know, otherwise you won't understand what the agent is asking about." },
+    { "type": "heading", "text": "Three words you need to know" },
+    { "type": "table",
+      "headers": ["Concept", "What it means in plain words", "Analogy"],
+      "rows": [
+        ["Commit", "A saved \"snapshot\" of changes with a note on what was done and why", "A save point in a game"],
+        ["Branch", "A parallel line of work: you experiment without touching the main version", "A draft next to the clean copy"],
+        ["Pull request (PR)", "A proposal to merge changes from a branch into the main version — with discussion and review", "\"Take a look at my draft before I publish\""]
+      ]
+    },
+    { "type": "text", "md": "How they connect: the main version of the project lives in the main branch (usually called `main`). For a new task you create a separate branch, work in it, recording progress with commits, and when everything is ready you open a PR: \"I propose merging my changes into the main version.\" Colleagues (or you yourself) review the changes, discuss, and accept them.\n\nFor a small personal project, commits in the main branch are enough. Branches and PRs become important when the project is a team effort or when a change is risky: the main version stays working, no matter what happens in the draft.\n\nOne more word you'll come across: **push** — sending your commits to a remote repository (for example, on GitHub) so others can see them. A commit saves locally, a push publishes." },
+    { "type": "heading", "text": "How to delegate this to the agent" },
+    { "type": "text", "md": "It's all done with plain phrases, without a single Git command:\n\n- **\"Show me what changed\"** — the agent will run the needed commands and summarize: which files changed and what the edits are about. Perfect before any commit.\n- **\"Commit the changes\"** — the agent will look at the edits, **write a meaningful commit message itself** (what was done and why), and create the commit — asking permission, as usual.\n- **\"Create a branch for the search feature\"** — the agent will create a branch with a sensible name and switch to it.\n- **\"Create a PR\"** — the agent will open a pull request with a description of the changes (this requires configured GitHub access — for example, the installed gh utility).\n\nThe main habit worth building: **commit small and often**. Finished a meaningful chunk — commit it. Every commit is a save point: the more of them there are, the cheaper it is to roll back a failed experiment." },
+    { "type": "example",
+      "bad": "(at the end of the week) Commit everything that piled up, write the message as \"changes\".",
+      "good": "We're done with recalculating the discount. Show me what changed, and if it's only the discount edits — commit it with a clear description. Don't commit the .env file.",
+      "explanation": "A giant \"everything for the week\" commit labeled \"changes\" is a save point you can't use: it's unclear what's inside, and you can't roll back one change without losing the rest. A good request keeps the commit small and meaningful: first look at the changes, commit one logical chunk with a descriptive message, and explicitly exclude things that don't belong in the history."
+    },
+    { "type": "heading", "text": "What to check before approving a commit" },
+    { "type": "text", "md": "A commit is an action that changes things, so the agent will ask for permission. Two things to look at before you say \"yes\":\n\n**1. Contents.** What's going into the commit? Only the files for the current task? If unrelated edits sneaked in — ask to split them out: \"commit that separately.\"\n\n**2. Secrets.** Files with passwords and keys should never end up in a commit (the classic one is the `.env` file). Anything that lands in Git history is very hard to scrub out later, and if the repository is published — consider the secret exposed.\n\nThe agent writes the commit message itself, and usually does it well — but read it: it's the label on a save point, the one you'll use to find the right version a month from now. A bad label like \"fixes\" turns the project history into a heap of identical gray boxes with no labels; a good one — \"fixed shipping calculation for orders under 500 rub.\" — lets you find the right point in seconds.\n\nAnd one final touch: if the agent offers to push — send the commits to a remote repository — make sure you understand exactly where they'll go and who will see them there." },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Common workflows page) covers working with Git separately: the agent can review changes, create commits with meaningful messages, work with branches, and open pull requests from an ordinary text request. The recommendation is the same: ask the agent to show the changes before a commit and keep commits small." },
+    { "type": "callout", "kind": "tip", "md": "Add a rule to CLAUDE.md: \"run the tests before a commit\" and \"never commit the .env file.\" Then the insurance kicks in automatically in every session — even when you forget to ask." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is a commit, explained in plain words?",
+      "options": [
+        "Sending the project to the internet",
+        "A saved \"snapshot\" of changes with a label — a save point you can return to",
+        "Deleting old versions of files",
+        "Checking the code for errors"
+      ],
+      "correct": [1],
+      "explanation": "A commit is a recorded snapshot of changes plus a message about what was done and why. The project's history is built from such save points: you can always see what changed, and you can roll back to any point. Sending to a remote repository is a separate action (push) — don't confuse the two.",
+      "hint": "Recall the analogy with a save point in a game."
+    },
+    {
+      "type": "quiz",
+      "question": "Why create a separate branch for a new feature?",
+      "options": [
+        "Without a branch Git won't let you change anything",
+        "To experiment in a parallel line of work without touching the main version, and merge the changes only when everything is ready and checked",
+        "Branches speed up the computer",
+        "So that files take up less space"
+      ],
+      "correct": [1],
+      "explanation": "A branch is a draft next to the clean copy: in it you can safely break and redo things while the main version (main) stays working. When the feature is ready, the changes are proposed for merging via a pull request. For small things in a personal project you can work in the main branch too, but for risky tasks a branch is cheap insurance.",
+      "hint": "Draft and clean copy: where is it safer to experiment?"
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "You've finished a chunk of work in a Claude Code session: the agent fixed the shipping calculation. Ask it to commit the changes (with a plain phrase, no Git commands), and when it shows the commit contents and message — approve it.",
+      "steps": [
+        {
+          "expectPattern": "(commit|save chang|record|snapshot)",
+          "output": "● Looking at the changes...\n\n  Changed files:\n  • delivery.js — fixed shipping cost calculation for orders under 500 rub.\n  • delivery.test.js — added 3 tests for boundary amounts\n\n  Proposed commit message:\n  \"Fixed shipping calculation for orders under 500 rub., added tests\"\n\n⚠ Create a commit with these files? (y/n) _",
+          "failHint": "Just ask in plain English, for example: \"Commit the changes.\""
+        },
+        {
+          "expectPattern": "^(y|yes|sure|go|approve|create|make|ok|okay|1)$",
+          "output": "✔ Commit created: a41f7c2\n  \"Fixed shipping calculation for orders under 500 rub., added tests\"\n\n● Done. A new save point has appeared in the project history —\n  you can always return to it.",
+          "failHint": "The commit contents are clean (two files for the task), the message is meaningful — approve it: y or \"yes\"."
+        }
+      ],
+      "successMessage": "Excellent! Notice the order: the agent first showed what would go into the commit and proposed a meaningful message — and the decision stayed with you. You didn't write a single Git command."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A Git work plan for the day. One item is a gross mistake — find it.",
+      "lang": "markdown",
+      "lines": [
+        "Create a branch for the new feature: \"create a branch for the feedback form.\"",
+        "After each finished chunk, ask the agent to commit with a clear message.",
+        "Before a commit, ask it to show what changed.",
+        "Commit .env with the database passwords — so the settings are saved in history too.",
+        "At the end of the day, create a PR with a description of the changes."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "Files with secrets (.env, passwords, API keys) are never committed to Git: once in the history, a secret is nearly impossible to scrub out, and when the repository is published it becomes everyone's. Settings with secrets are kept outside Git, and a template with no values goes into the repository instead (for example, .env.example). The other items in the plan are model habits."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "A mission in real Claude Code. **If Claude Code isn't installed yet — skip the mission, you'll come back to it later.**\n\n1. Open a `claude` session in the test folder from previous missions (or create a new one).\n2. If Git isn't set up in the folder yet — ask: \"Set up a Git repository here.\"\n3. Ask Claude to change something: for example, add a couple of lines to hello.txt.\n4. Say: \"Show me what changed\" — and read the summary.\n5. Say: \"Commit with a clear message\" — check the contents and message, approve it.\n6. Ask: \"Show me the commit history\" — make sure your save point is there.",
+      "checklist": [
+        "I asked to see the changes before the commit and understood what was changing",
+        "The commit message is meaningful — it's clear what was done",
+        "The commit was created and is visible in the history",
+        "I didn't write a single Git command by hand"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-cc-git", "badgeId": null }
+}

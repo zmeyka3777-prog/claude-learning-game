@@ -1,0 +1,108 @@
+{
+  "id": "api-vision",
+  "world": "world-7-api-sdk",
+  "order": 6,
+  "title": "Vision and PDF",
+  "subtitle": "Images and documents as API input: how to pass them and what to ask",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Vision — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/vision" },
+    { "title": "PDF support — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/pdf-support" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Claude can see: multimodal input" },
+    { "type": "text", "md": "Claude accepts not only text as input, but also **images** and **PDF documents**. Through the API this opens up whole classes of applications: recognizing receipts and invoices, parsing screenshots in support tickets, analyzing charts from reports, extracting tables from scans, describing product photos.\n\nTechnically it's all built on mechanics you already know: a message's `content` field can be not a string but a **list of blocks**. A text block is `{\"type\": \"text\", ...}`, an image is `{\"type\": \"image\", ...}`, a document is `{\"type\": \"document\", ...}`. Within one message the blocks mix freely: two images and a question about their differences is three blocks." },
+    { "type": "heading", "text": "How to pass an image" },
+    { "type": "text", "md": "An `image` block has a `source` field with two main options:\n\n- **base64** — the file is encoded into a base64 string and passed directly in the request: `{\"type\": \"base64\", \"media_type\": \"image/png\", \"data\": \"...\"}`. Reliable and works with local files.\n- **url** — a public link: `{\"type\": \"url\", \"url\": \"https://...\"}`. Simpler, but the image must be reachable externally.\n\nJPEG, PNG, GIF, and WebP formats are supported. There are limits on request size and resolution — the API downsizes very large images itself, but it makes sense to compress huge photos to a reasonable resolution before sending: pixels are tokens, which means money and latency.\n\nAn important practical trick: **put the image before the question text** — models work more accurately with the order \"data first, then question.\"" },
+    { "type": "code", "lang": "python", "title": "Parsing a receipt from a photo", "code": "import anthropic, base64\n\nclient = anthropic.Anthropic()\n\nwith open(\"receipt.jpg\", \"rb\") as f:\n    image_data = base64.standard_b64encode(f.read()).decode()\n\nmessage = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=1024,\n    messages=[{\n        \"role\": \"user\",\n        \"content\": [\n            {\n                \"type\": \"image\",\n                \"source\": {\"type\": \"base64\", \"media_type\": \"image/jpeg\", \"data\": image_data},\n            },\n            {\"type\": \"text\", \"text\": \"Extract from the receipt: store, date, list of line items with prices, and the total.\"},\n        ],\n    }],\n)\nprint(message.content[0].text)" },
+    { "type": "heading", "text": "PDF: whole documents" },
+    { "type": "text", "md": "A PDF is passed as a `document` block — just like an image, most often in base64 with `media_type: \"application/pdf\"`. The key difference from \"extract the text from the PDF yourself\": Claude sees the document **both visually and as text** — pages are processed both as images and as text. That's why questions about tables, charts, diagrams, stamps, and layout work, not just about plain text.\n\nIt's worth remembering the limits: up to 32 MB per request and up to a hundred or two pages (exact values are in the docs). A long 400-page contract will have to be split into parts.\n\nFor files that are used many times, there's the **Files API**: you upload the file once, get a `file_id`, and reference it with a `{\"source\": {\"type\": \"file\", \"file_id\": ...}}` block — without re-uploading megabytes in every request." },
+    { "type": "code", "lang": "typescript", "title": "A question to a PDF report", "code": "import Anthropic from \"@anthropic-ai/sdk\";\nimport fs from \"fs\";\n\nconst client = new Anthropic();\nconst pdfData = fs.readFileSync(\"report.pdf\").toString(\"base64\");\n\nconst message = await client.messages.create({\n  model: \"claude-opus-4-8\",\n  max_tokens: 2048,\n  messages: [{\n    role: \"user\",\n    content: [\n      {\n        type: \"document\",\n        source: { type: \"base64\", media_type: \"application/pdf\", data: pdfData },\n      },\n      { type: \"text\", text: \"What's the quarterly revenue trend? Cite the chart from the page with the diagrams.\" },\n    ],\n  }],\n});" },
+    { "type": "heading", "text": "What to ask — and what not to expect" },
+    { "type": "text", "md": "Vision is strong at tasks of **understanding**: \"what's in the image,\" \"extract all the invoice fields,\" \"what is this chart about,\" \"compare two UI screenshots,\" \"transcribe this handwritten text.\" It pairs excellently with structured outputs from the previous lesson: a receipt photo on input — strict JSON with line items on output. That's a ready-made recipe for digitizing documents.\n\nWhat to expect with caution:\n\n- **Precise counting of many small objects** — \"how many people in this stadium photo\" will stay approximate.\n- **Small or blurry text** — scan quality decides; a crumpled receipt shot in the dark won't be readable even to a human.\n- **Identifying a person** — Claude deliberately won't say who is pictured in a photo.\n- **Exact measurements** — \"how many centimeters is this table\" the model can only estimate." },
+    { "type": "example",
+      "bad": "content: [\n  {\"type\": \"text\", \"text\": \"What's wrong here? Look carefully!!!\"},\n  {\"type\": \"image\", \"source\": {...}}\n]",
+      "good": "content: [\n  {\"type\": \"image\", \"source\": {...}},\n  {\"type\": \"text\", \"text\": \"This is a screenshot of a payment form. Find UI issues: typos, alignment problems, unreadable elements. Return a bulleted list.\"}\n]",
+      "explanation": "Two problems in the bad version: the question comes before the image (better data first, then the question) and it's empty in substance — \"what's wrong\" doesn't say what to look for. The good version gives context (a payment form screenshot), search criteria, and a response format. With images, the specificity of the prompt matters exactly as much as with text." },
+    { "type": "callout", "kind": "docs", "md": "The Vision docs (platform.claude.com/docs/en/build-with-claude/vision) recommend placing images before text for better results, list the supported formats (JPEG, PNG, GIF, WebP), and the ways to pass them: base64, URL, and file_id via the Files API. The PDF support page describes the limits and stresses: PDF pages are analyzed both as text and as images — so Claude understands tables and charts in documents." },
+    { "type": "callout", "kind": "tip", "md": "The \"vision + structured outputs\" combo is one of the highest-ROI API patterns: a document photo on input, JSON by schema on output. One request replaces an OCR library, a parser, and a validator. Start with receipts or business cards — these are classic practice tasks." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "In what ways can you pass an image to the Messages API? Select all correct answers.",
+      "options": [
+        "Encode the file as base64 inside an image block",
+        "Pass a public URL of the image",
+        "Attach the file as a multipart form to an ordinary text message",
+        "Via file_id, if the file was uploaded to the Files API beforehand"
+      ],
+      "correct": [0, 1, 3],
+      "explanation": "Three working paths: base64 directly in the request, a public URL, and a file_id from the Files API for repeated use. The Messages API has no multipart forms — the whole structure is passed as JSON blocks in content.",
+      "hint": "Recall the source field of the image block — what source types does it accept?"
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A request with an image returns a validation error. Find the line with the error.",
+      "lang": "python",
+      "lines": [
+        "with open(\"invoice.png\", \"rb\") as f:",
+        "    image_data = base64.standard_b64encode(f.read()).decode()",
+        "",
+        "message = client.messages.create(",
+        "    model=\"claude-opus-4-8\",",
+        "    max_tokens=1024,",
+        "    messages=[{\"role\": \"user\", \"content\": [",
+        "        {\"type\": \"image\", \"source\": {\"type\": \"base64\", \"media_type\": \"image/svg\", \"data\": image_data}},",
+        "        {\"type\": \"text\", \"text\": \"Extract the invoice number and amount.\"},",
+        "    ]}],",
+        ")"
+      ],
+      "bugLineIndex": 7,
+      "explanation": "The file is a PNG, but `media_type` says `image/svg`. First, media_type must match the real file format (`image/png`); second, SVG isn't among the supported formats — only JPEG, PNG, GIF, and WebP. Vector graphics need to be rasterized before sending."
+    },
+    {
+      "type": "quiz",
+      "question": "Why is passing a PDF as a document block better than \"extract the text from the PDF yourself and send it as a string\"?",
+      "options": [
+        "Claude sees the pages visually too: tables, charts, and layout, not just plain text",
+        "The PDF block is processed for free",
+        "It lets you bypass the context-window limit",
+        "There's no difference — it's the same thing"
+      ],
+      "correct": [0],
+      "explanation": "PDF pages are processed two ways — as text and as images. That's why questions about the diagram on page 12 or a table's structure work, whereas manual text extraction loses all the visual information. The tokens for the document's content are still counted as usual, and the context limits don't go anywhere.",
+      "hint": "What's lost from a PDF when you extract only the text?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the content array of a request to verify a deal's paperwork: document → scan → a specific question. Discard the trap blocks.",
+      "blocks": [
+        "{\"type\": \"document\", \"source\": {\"type\": \"base64\", \"media_type\": \"application/pdf\", \"data\": contract_pdf}}",
+        "{\"type\": \"image\", \"source\": {\"type\": \"base64\", \"media_type\": \"image/jpeg\", \"data\": stamp_photo}}",
+        "{\"type\": \"text\", \"text\": \"Cross-check the company's details in the contract (PDF) against the stamp in the photo. List any discrepancies.\"}"
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "{\"type\": \"text\", \"text\": \"Who is this person in the photo on the third page? Give their first and last name.\"}",
+        "{\"type\": \"image\", \"source\": {\"type\": \"local_path\", \"path\": \"C:\\\\scans\\\\stamp.jpg\"}}"
+      ],
+      "explanation": "The correct order: data first (the document and image), then a specific question with a response format. The traps: Claude deliberately refuses to identify a person from a photo, and the source type \"local_path\" doesn't exist — the API runs in the cloud and can't see local paths; the file must be encoded as base64 or uploaded to the Files API."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Mission: digitize a receipt.** You'll need an API key (created in the Claude platform Console).\n\n1. Photograph any receipt (or find a receipt photo online).\n2. Write a script: read the file, encode it as base64, send it as an `image` block + a text question.\n3. First ask for a free-form description — see what Claude made out.\n4. Then level up: add `output_config.format` with the schema `{store, date, items: [{name, price}], total}` and get strict JSON.\n5. Compare the JSON with the real receipt: are all the line items present?",
+      "checklist": [
+        "The image went to the API as base64 with the correct media_type",
+        "The image comes before the text question in content",
+        "The second request returns valid JSON by schema",
+        "You checked the extracted line items against the real receipt"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-vision", "badgeId": null }
+}

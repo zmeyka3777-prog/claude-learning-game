@@ -1,0 +1,95 @@
+{
+  "badges": [
+    {
+      "id": "badge-first-lesson",
+      "title": "First Expedition",
+      "description": "You completed your first Academy lesson.",
+      "icon": "flag",
+      "condition": "any first lesson completed"
+    },
+    {
+      "id": "badge-first-prompt",
+      "title": "First Prompt",
+      "description": "You wrote your first real prompt.",
+      "icon": "star",
+      "condition": "lesson basics-first-prompt completed"
+    },
+    {
+      "id": "badge-world-1",
+      "title": "Sector 1 Explored",
+      "description": "All lessons of the \"First Steps\" world are complete, including the boss.",
+      "icon": "rocket",
+      "condition": "all lessons of world-1-basics completed"
+    },
+    {
+      "id": "badge-streak-3",
+      "title": "Picking Up Speed",
+      "description": "3 days of practice in a row.",
+      "icon": "flame",
+      "condition": "3-day streak"
+    },
+    {
+      "id": "badge-streak-7",
+      "title": "A Week in Space",
+      "description": "7 days of practice in a row.",
+      "icon": "flame",
+      "condition": "7-day streak"
+    },
+    {
+      "id": "badge-500-xp",
+      "title": "Half a Thousand",
+      "description": "500 XP earned.",
+      "icon": "zap",
+      "condition": "500 XP total"
+    },
+    {
+      "id": "badge-world-2",
+      "title": "Sector 2 Explored",
+      "description": "All lessons of the \"Advanced claude.ai\" world are complete, including the boss.",
+      "icon": "sparkles",
+      "condition": "boss adv-boss completed"
+    },
+    {
+      "id": "badge-world-4",
+      "title": "Sector 4 Explored",
+      "description": "All lessons of the \"Claude Code — Basics\" world are complete, including the boss.",
+      "icon": "terminal",
+      "condition": "boss cc-boss completed"
+    },
+    {
+      "id": "badge-world-3",
+      "title": "Sector 3 Explored",
+      "description": "The \"Skills\" world is complete, including the boss.",
+      "icon": "wand",
+      "condition": "boss sk-boss completed"
+    },
+    {
+      "id": "badge-world-5",
+      "title": "Sector 5 Explored",
+      "description": "The \"Claude Code — Advanced\" world is complete, including the boss.",
+      "icon": "cpu",
+      "condition": "boss pro-boss completed"
+    },
+    {
+      "id": "badge-world-6",
+      "title": "Sector 6 Explored",
+      "description": "The \"Plugins and MCP\" world is complete, including the boss.",
+      "icon": "plug",
+      "condition": "boss mcp-boss completed"
+    },
+    {
+      "id": "badge-world-7",
+      "title": "Sector 7 Explored",
+      "description": "The \"API and Agent SDK\" world is complete, including the boss.",
+      "icon": "code",
+      "condition": "boss api-boss completed"
+    },
+    {
+      "id": "badge-world-8",
+      "title": "Claude Master",
+      "description": "The final exam is passed. The entire Academy program is complete.",
+      "icon": "crown",
+      "condition": "exam eco-exam passed"
+    }
+  ]
+}

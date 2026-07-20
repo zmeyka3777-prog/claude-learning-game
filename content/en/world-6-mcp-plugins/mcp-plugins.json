@@ -1,0 +1,123 @@
+{
+  "id": "mcp-plugins",
+  "world": "world-6-mcp-plugins",
+  "order": 6,
+  "title": "Claude Code Plugins",
+  "subtitle": "The plugin.json manifest, the skills/commands/agents/hooks/.mcp.json components, and testing via --plugin-dir",
+  "xp": 50,
+  "durationMin": 10,
+  "isBoss": false,
+  "sources": [
+    { "title": "Plugins — Claude Code Docs", "url": "https://code.claude.com/docs/en/plugins" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A plugin — packaging for everything at once" },
+    { "type": "text", "md": "By this lesson you have a whole zoo of extensions in your arsenal: skills (world 3), slash commands and hooks (world 5), MCP servers (this world). One last problem remains — **delivery**. How do you hand a colleague \"my skill + my command + my MCP server\" in one move, rather than a five-step instruction?\n\nThe answer is a **plugin**. A Claude Code plugin is a folder that bundles any combination of extensions: skills, commands, agents, hooks, and MCP servers. It installs with one command, updates centrally, and works the same for everyone. If an MCP server is a part, then a plugin is a box of parts plus the instructions.\n\nWhen to build a plugin, and when a \"loose scatter\" is enough? A simple guideline: if an extension is needed only by you and only in one project — a local skill or `claude mcp add` is enough. As soon as the word \"share\" appears — with a colleague, another team, the community — it's time to package it into a plugin: it has a name, a version, and an author, which means it can be installed, updated, and discussed as a single whole." },
+    { "type": "heading", "text": "Plugin structure" },
+    { "type": "code", "lang": "text", "title": "Anatomy of a plugin", "code": "my-plugin/\n├── .claude-plugin/\n│   └── plugin.json        ← manifest (the only required file)\n├── skills/                ← skills (folders with SKILL.md)\n│   └── report-style/\n│       └── SKILL.md\n├── commands/              ← slash commands (Markdown files)\n│   └── weekly.md          ← becomes the /weekly command\n├── agents/                ← custom subagents\n│   └── reviewer.md\n├── hooks/\n│   └── hooks.json         ← hooks (auto-actions on events)\n└── .mcp.json             ← the plugin's MCP servers" },
+    { "type": "text", "md": "Remember two rules of geography:\n\n1. **The manifest lives in the service folder** `.claude-plugin/plugin.json` — and only it. This is the plugin's \"passport.\"\n2. **All components live in the plugin root**: `skills/`, `commands/`, `agents/`, `hooks/`, `.mcp.json` — next to the `.claude-plugin/` folder, not inside it. Putting `commands/` inside `.claude-plugin/` is the most common beginner mistake: the plugin formally installs, but the commands don't appear, and figuring out why without knowing this rule is nearly impossible.\n\nAll components are optional: a plugin can consist of a single skill or a single command — and that's fine. The loader simply looks at which of the known folders and files exist in the root and connects what it finds: found `commands/` — registered commands, found `.mcp.json` — brought up the servers. You don't need to declare anything extra — the folder structure is the declaration." },
+    { "type": "code", "lang": "json", "title": ".claude-plugin/plugin.json — a minimal manifest", "code": "{\n  \"name\": \"team-reports\",\n  \"description\": \"Weekly team reports: a formatting skill, the /weekly command, and a data MCP server\",\n  \"version\": \"0.1.0\",\n  \"author\": {\n    \"name\": \"Evgenia M.\"\n  }\n}" },
+    { "type": "text", "md": "There's exactly one required field in the manifest — **`name`**: lowercase, words separated by hyphens (kebab-case), no spaces. The rest — description, version, author — are formally optional, but for publishing they're required in human terms: without them a user won't understand what they're installing, and without a version they won't see that an update was released.\n\nWhat each component gives after the plugin is installed:" },
+    { "type": "table",
+      "headers": ["Component", "What it adds", "Example"],
+      "rows": [
+        ["skills/", "Skills — knowledge and instructions for the agent", "a skill \"format reports by our template\""],
+        ["commands/", "Slash commands from Markdown files", "weekly.md → the /weekly command"],
+        ["agents/", "Custom subagents for delegation", "a reviewer agent"],
+        ["hooks/hooks.json", "Auto-actions on session events", "auto-run a linter after edits"],
+        [".mcp.json", "MCP servers brought up together with the plugin", "a server with sales data"]
+      ]
+    },
+    { "type": "heading", "text": "Testing: --plugin-dir" },
+    { "type": "text", "md": "How do you test a plugin before any publishing? The **`--plugin-dir`** flag: run `claude --plugin-dir ./my-plugin` — and Claude Code loads the plugin straight from a local folder, with no installation and no marketplace.\n\nThe plugin development cycle looks like this: edited the files → restarted the session with `--plugin-dir` → checked that the commands show up in `/help`, the skills fire, and the MCP servers came up (`/mcp`). The local run is honest: the plugin behaves exactly as it would after a real installation, so everything you debugged via `--plugin-dir` will work the same for your users. When it all works locally — the plugin is ready for the next step: the marketplace (next lesson)." },
+    { "type": "example",
+      "bad": "my-plugin/\n├── plugin.json            ← manifest in the root\n└── .claude-plugin/\n    └── commands/\n        └── weekly.md      ← commands inside the service folder",
+      "good": "my-plugin/\n├── .claude-plugin/\n│   └── plugin.json        ← manifest in the service folder\n└── commands/\n    └── weekly.md          ← components in the plugin root",
+      "explanation": "Here everything is swapped: the manifest must live at .claude-plugin/plugin.json, and the components — in the plugin root. In the \"bad\" version Claude Code finds neither the manifest (it's not in the service folder) nor the /weekly command (it's hidden inside .claude-plugin/). File placement in a plugin isn't a matter of taste but a contract by which the loader reads it."
+    },
+    { "type": "callout", "kind": "docs", "md": "The Claude Code documentation (the Plugins page) fixes the contract: a plugin's only required file is the manifest `.claude-plugin/plugin.json` with a `name` field; all components — skills, commands, agents, hooks, and MCP servers — are optional and located in the plugin root. For local development and testing, running with the `--plugin-dir` flag is recommended." },
+    { "type": "callout", "kind": "tip", "md": "Build your first plugin from what you already have: a skill from world 3 and an MCP server from lesson 4 of this world. The transfer is literally copying folders into the plugin structure plus a six-line manifest. That's exactly what you'll do in this world's finale." }
+  ],
+  "tasks": [
+    {
+      "type": "find-bug",
+      "instruction": "The plugin won't install. Find the error in the .claude-plugin/plugin.json manifest.",
+      "lang": "json",
+      "lines": [
+        "{",
+        "  \"name\": \"Team Reports Plugin!\",",
+        "  \"description\": \"Weekly team reports\",",
+        "  \"version\": \"0.1.0\",",
+        "  \"author\": {",
+        "    \"name\": \"Evgenia M.\"",
+        "  }",
+        "}"
+      ],
+      "bugLineIndex": 1,
+      "explanation": "The plugin name must be in kebab-case: lowercase, words separated by hyphens, no spaces or special characters — for example, \"team-reports\". \"Team Reports Plugin!\" with capital letters, spaces, and an exclamation mark is an invalid name. The other fields are fine: the description, version, and author are formatted correctly."
+    },
+    {
+      "type": "quiz",
+      "question": "Where in a plugin must the plugin.json manifest be placed?",
+      "options": [
+        "In the plugin root, next to the component folders",
+        "In the .claude-plugin/ folder inside the plugin",
+        "In the commands/ folder — it's configuration too",
+        "In the user's home folder ~/.claude/"
+      ],
+      "correct": [1],
+      "explanation": "The manifest is the sole resident of the service folder: .claude-plugin/plugin.json. The components (skills/, commands/, agents/, hooks/, .mcp.json), on the other hand, live in the plugin root. Mixing up these two addresses is the most common mistake when building your first plugin.",
+      "hint": "The manifest — in the service folder, the components — in the root. All that's left is to recall the name of the service folder."
+    },
+    {
+      "type": "terminal-sim",
+      "instruction": "The team-reports plugin is ready in the ./team-reports folder. Launch Claude Code with the local plugin (`claude --plugin-dir ./team-reports`), then make sure its MCP server came up (/mcp).",
+      "steps": [
+        {
+          "expectPattern": "^claude --plugin-dir\\s+\\.?/?team-reports/?$",
+          "output": "╭────────────────────────────────────────────╮\n│ Claude Code                                │\n│ Loaded local plugin: team-reports          │\n│ + skill report-style                       │\n│ + command /weekly                          │\n│ + MCP server sales-data                    │\n╰────────────────────────────────────────────╯\n> _",
+          "failHint": "A local plugin is loaded with a flag at launch: claude --plugin-dir ./team-reports"
+        },
+        {
+          "expectPattern": "^/mcp$",
+          "output": "MCP Servers:\n\n  ✔ sales-data (plugin: team-reports) — connected\n    Tools: get_sales (Sales for a month in YYYY-MM format)\n\n  Total: 1 server, 1 tool.",
+          "failHint": "The status of MCP servers — including those brought up by a plugin — is shown by the /mcp slash command"
+        }
+      ],
+      "successMessage": "The plugin is loaded from a local folder: the skill, the command, and the MCP server all arrived in one package. This is what the development cycle looks like: edit the files → restart with --plugin-dir → check."
+    },
+    {
+      "type": "quiz",
+      "question": "Choose ALL the component types that can be packaged into a single Claude Code plugin:",
+      "options": [
+        "Skills (skills/)",
+        "Slash commands (commands/)",
+        "Subagents (agents/)",
+        "Hooks (hooks/hooks.json)",
+        "MCP servers (.mcp.json)",
+        "Its own language model"
+      ],
+      "correct": [0, 1, 2, 3, 4],
+      "explanation": "A plugin is a container for all five extension types: skills, commands, agents, hooks, and MCP servers, in any combination (all components are optional). A plugin does not contain a language model — the model is provided by Claude Code itself.",
+      "hint": "There are five correct answers — recall the folder tree from the theory."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the sequence of actions: turn a ready skill and an MCP server into a working local plugin.",
+      "blocks": [
+        "Create the plugin folder and, inside it, the service folder .claude-plugin/",
+        "Write the plugin.json manifest with a kebab-case name and a description",
+        "Lay out the components in the plugin root: the skill in skills/, the server in .mcp.json",
+        "Run claude --plugin-dir ./my-plugin",
+        "Check: the skill fires, /mcp shows the server connected"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "Publish the folder to a marketplace right away — users will test it"
+      ],
+      "explanation": "The build order: skeleton → manifest → components → local run → check. Publishing without a local test is an antipattern: --plugin-dir exists precisely so marketplace users never see your drafts."
+    }
+  ],
+  "reward": { "cardId": "card-mcp-plugins", "badgeId": null }
+}

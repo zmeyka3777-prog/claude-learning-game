@@ -1,0 +1,105 @@
+{
+  "id": "api-first-request",
+  "world": "world-7-api-sdk",
+  "order": 1,
+  "title": "Your first request",
+  "subtitle": "API key, the Messages API, and your first code in Python and TypeScript",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Quickstart — Claude Docs", "url": "https://platform.claude.com/docs/en/quickstart" },
+    { "title": "Working with messages — Claude Docs", "url": "https://platform.claude.com/docs/en/build-with-claude/working-with-messages" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "What the Claude API is" },
+    { "type": "text", "md": "So far you've talked to Claude through ready-made interfaces: the claude.ai website, the apps, Claude Code. The **API** (Application Programming Interface) is a way to reach Claude from your own code. Your program sends an HTTP request — Claude returns a response. This is what chatbots, in-product assistants, document-processing pipelines, and agents are built on.\n\nThe developer's home is the **Claude platform** (platform.claude.com): that's where the Console, the documentation, and key management live. In the Console you create a developer account, top up your balance, and get your master pass — the API key.\n\nIt's important to understand: a claude.ai subscription and the API are **different things with different billing**. A subscription is a fixed price for the interface; the API is pay-as-you-go, charged by the amount of text processed." },
+    { "type": "heading", "text": "The API key and keeping it safe" },
+    { "type": "text", "md": "An **API key** is a string like `sk-ant-...`, created in the platform's Console (the API Keys section). The key is your login, your password, and your wallet all at once: anyone who has it can make requests **on your dime**.\n\nRules for handling the key:\n\n- **Never paste the key directly into your code.** Code goes into git, git goes to GitHub, and keys from public repositories get stolen by bots within minutes.\n- Store the key in the **environment variable** `ANTHROPIC_API_KEY` — the official SDKs pick it up automatically, and the key never appears in your code at all.\n- In projects, use a `.env` file and be sure to add it to `.gitignore`.\n- If a key is exposed — immediately **revoke it in the Console** and create a new one. A key that made it into git history is considered compromised forever." },
+    { "type": "callout", "kind": "warning", "md": "Client-side code (a site in the browser, a mobile app) is also a public place: anything that reaches the user can be extracted. The API key must live **only on the server**. The frontend talks to your server, and your server talks to the Claude API." },
+    { "type": "heading", "text": "The Messages API: anatomy of a request" },
+    { "type": "text", "md": "The main endpoint is the **Messages API**: `POST https://api.anthropic.com/v1/messages`. Three required parameters:\n\n- **`model`** — which model answers, for example `\"claude-opus-4-8\"`.\n- **`max_tokens`** — the maximum length of the response in tokens (a hard cap: once reached, generation stops).\n- **`messages`** — the list of conversation messages. Each message is an object with `role` and `content` fields.\n\nThere are two roles in `messages`: **`user`** (your turns) and **`assistant`** (Claude's replies). A conversation always starts with `user`, and the roles alternate. When you send a history of several messages, Claude \"sees\" the whole conversation and continues it — that's how a multi-turn conversation works, which we'll come back to in the next lesson.\n\nThe response comes back as an object: a `content` array of blocks (text is in `content[0].text`), a `stop_reason` (why generation ended), and `usage` — how many tokens went into the input and the output." },
+    { "type": "code", "lang": "python", "title": "Python: pip install anthropic", "code": "import anthropic\n\n# The key is taken from the ANTHROPIC_API_KEY environment variable\nclient = anthropic.Anthropic()\n\nmessage = client.messages.create(\n    model=\"claude-opus-4-8\",\n    max_tokens=1024,\n    messages=[\n        {\"role\": \"user\", \"content\": \"Explain in two sentences what an API is.\"}\n    ],\n)\n\nprint(message.content[0].text)\nprint(message.usage)  # how many tokens were spent" },
+    { "type": "code", "lang": "typescript", "title": "TypeScript: npm install @anthropic-ai/sdk", "code": "import Anthropic from \"@anthropic-ai/sdk\";\n\n// The key is taken from the ANTHROPIC_API_KEY environment variable\nconst client = new Anthropic();\n\nconst message = await client.messages.create({\n  model: \"claude-opus-4-8\",\n  max_tokens: 1024,\n  messages: [{ role: \"user\", content: \"Explain in two sentences what an API is.\" }],\n});\n\nconst block = message.content[0];\nif (block.type === \"text\") console.log(block.text);" },
+    { "type": "example",
+      "bad": "client = anthropic.Anthropic(api_key=\"sk-ant-api03-XXXX...\")  # key right in the code",
+      "good": "client = anthropic.Anthropic()  # key lives in the ANTHROPIC_API_KEY environment variable",
+      "explanation": "In the bad version the key is baked into the source: one `git push` and it's in the repository history forever, even if you delete the line later. In the good version the code is clean and the secret lives in the environment: locally in `.env` (added to `.gitignore`), on the server in the hosting settings. The SDK will find the variable itself — the `api_key` argument isn't even needed." },
+    { "type": "callout", "kind": "docs", "md": "The official Quickstart (platform.claude.com/docs/en/quickstart) describes exactly this path: create an API key in the Console, export it as the `ANTHROPIC_API_KEY` environment variable, install the SDK (`pip install anthropic` or `npm install @anthropic-ai/sdk`), and make your first `client.messages.create` call with the `model`, `max_tokens`, and `messages` parameters." },
+    { "type": "callout", "kind": "tip", "md": "Don't pick a model at random: every task has its own \"weight class.\" Any current model works fine for first experiments, and we'll cover a deliberate choice by price and quality in the \"API economics\" lesson. The list of current model identifiers is always in the documentation — they look like `claude-opus-4-8`, `claude-sonnet-4-6`, `claude-haiku-4-5`." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Which roles are valid in the messages array when calling the Messages API?",
+      "options": [
+        "user and assistant",
+        "human and ai",
+        "sender and receiver",
+        "client and server"
+      ],
+      "correct": [0],
+      "explanation": "Two roles alternate in `messages`: `user` — your user's turns, and `assistant` — Claude's replies. A conversation always begins with a `user` message. By passing history with both roles, you let Claude see the whole context of the conversation.",
+      "hint": "One role is whoever asks, the other is the assistant itself."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A developer wrote their first request and is about to commit the code to a public repository. Find the line that will leak money from their account.",
+      "lang": "python",
+      "lines": [
+        "import anthropic",
+        "",
+        "client = anthropic.Anthropic(api_key=\"sk-ant-api03-h7Kd9s...\")",
+        "message = client.messages.create(",
+        "    model=\"claude-opus-4-8\",",
+        "    max_tokens=1024,",
+        "    messages=[{\"role\": \"user\", \"content\": \"Hi!\"}],",
+        ")",
+        "print(message.content[0].text)"
+      ],
+      "bugLineIndex": 2,
+      "explanation": "The API key is hardcoded right in the source. After a push to a public repository, scanner bots will find it — and start making requests on the owner's dime. The right way: remove the `api_key` argument entirely and put the key in the `ANTHROPIC_API_KEY` environment variable — the `Anthropic()` constructor picks it up automatically. And revoke the exposed key in the Console."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the body of a Messages API request in the right order: model → response limit → messages. Drop the parameters that don't exist in the API.",
+      "blocks": [
+        "\"model\": \"claude-opus-4-8\"",
+        "\"max_tokens\": 1024",
+        "\"messages\": [{\"role\": \"user\", \"content\": \"Draft an outline for an article about APIs\"}]"
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "\"password\": \"sk-ant-api03-...\"",
+        "\"speed\": \"turbo-max\""
+      ],
+      "explanation": "The minimal valid request is `model`, `max_tokens`, and `messages`. The key is passed not in the request body but in an HTTP header (the SDK does this itself), so the \"password\" block is a trap. There is no `speed: turbo-max` parameter — don't invent fields: the API rejects requests with unknown parameters."
+    },
+    {
+      "type": "quiz",
+      "question": "What happens if Claude's response turns out to be longer than the max_tokens you specified?",
+      "options": [
+        "The API returns a 400 error and you have to retry the request",
+        "The response is cut off at the limit, and stop_reason equals \"max_tokens\"",
+        "Claude automatically compresses the response to fit the limit",
+        "The limit is ignored — max_tokens is only for statistics"
+      ],
+      "correct": [1],
+      "explanation": "`max_tokens` is a hard cap: generation simply stops at it, and the response will have `stop_reason: \"max_tokens\"` instead of the usual `\"end_turn\"`. That's why it's useful to check `stop_reason` in your code — a truncated response is easy to mistake for a complete one. The model doesn't know about the limit in advance and doesn't \"squeeze\" the text to fit it.",
+      "hint": "Remember: max_tokens is a constraint that acts during generation, not an instruction for the model."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Mission: your first real request.** You'll need an API key — it's created in the Console of the Claude platform (platform.claude.com).\n\n1. Go to the platform's Console and create an API key (the **API Keys** section). Copy it right away — the full key is shown only once.\n2. Save the key to an environment variable: `export ANTHROPIC_API_KEY=\"sk-ant-...\"` (macOS/Linux) or via the environment settings on Windows.\n3. Install the SDK: `pip install anthropic` or `npm install @anthropic-ai/sdk`.\n4. Copy the example from the theory, run it, and get a response.\n5. Print `message.usage` and see how many tokens your request cost.",
+      "checklist": [
+        "The key is created in the Console and NOT pasted into the code",
+        "The ANTHROPIC_API_KEY environment variable is set",
+        "The request ran and Claude's response was printed",
+        "You looked at usage and know how many tokens were spent"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-api-first-request", "badgeId": null }
+}

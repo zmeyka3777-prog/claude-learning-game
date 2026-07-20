@@ -9,9 +9,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, ClipboardCheck, Rocket, Sparkles } from 'lucide-react';
+import { ArrowRight, ClipboardCheck, Languages, Rocket, Sparkles } from 'lucide-react';
 import { useProgressStore } from '../engine/progressStore';
 import { TRACKS, type TrackInfo } from '../lib/tracks';
+import { LANGUAGES } from '../i18n/languages';
+import { useLang, useT } from '../i18n/useT';
 
 /** Появление с задержкой: fade + slide-up 24px (stagger детей) */
 const containerVariants = {
@@ -24,9 +26,102 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
+/** Экран 0: выбор языка (первый шаг первого входа) */
+function LanguageScreen({ onSelect }: { onSelect: () => void }) {
+  const reduced = useReducedMotion();
+  const t = useT();
+  const { lang, setLang } = useLang();
+
+  return (
+    <motion.div
+      key="lang"
+      className="flex w-full max-w-xl flex-col items-center text-center"
+      variants={containerVariants}
+      initial={reduced ? 'visible' : 'hidden'}
+      animate="visible"
+      exit={reduced ? undefined : { opacity: 0, y: -24, transition: { duration: 0.3 } }}
+    >
+      <motion.span
+        variants={itemVariants}
+        className="mb-6 grid h-16 w-16 place-items-center rounded-3xl"
+        style={{
+          background: 'var(--gradient-brand)',
+          boxShadow: '0 0 50px rgba(139, 92, 246, 0.45)',
+        }}
+      >
+        <Languages size={30} className="text-white" />
+      </motion.span>
+
+      <motion.h1
+        variants={itemVariants}
+        className="font-display text-2xl font-semibold sm:text-4xl"
+      >
+        {t('onb.lang.title')}
+      </motion.h1>
+
+      <motion.p
+        variants={itemVariants}
+        className="mx-auto mt-3 max-w-md text-sm sm:text-base"
+        style={{ color: 'var(--text-secondary)' }}
+      >
+        {t('onb.lang.subtitle')}
+      </motion.p>
+
+      <motion.div variants={itemVariants} className="mt-8 grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
+        {LANGUAGES.map((l) => {
+          const active = l.code === lang;
+          return (
+            <button
+              key={l.code}
+              type="button"
+              onClick={() => setLang(l.code)}
+              className="glass-card flex items-center justify-between gap-3 p-4 text-left transition-shadow hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]"
+              style={{
+                border: active
+                  ? '1px solid rgba(139, 92, 246, 0.6)'
+                  : '1px solid var(--border-glass)',
+                cursor: 'pointer',
+              }}
+              aria-pressed={active}
+            >
+              <span className="font-display text-base font-semibold">{l.label}</span>
+              <span
+                className="grid h-8 min-w-8 place-items-center rounded-full px-2 text-xs font-bold"
+                style={{
+                  background: active ? 'var(--gradient-brand)' : 'var(--bg-card)',
+                  color: active ? '#fff' : 'var(--text-muted)',
+                  border: active ? 'none' : '1px solid var(--border-glass)',
+                }}
+              >
+                {l.short}
+              </span>
+            </button>
+          );
+        })}
+      </motion.div>
+
+      <motion.div variants={itemVariants} className="mt-8">
+        <button
+          type="button"
+          onClick={onSelect}
+          className="group flex items-center gap-2.5 rounded-full px-8 py-4 font-display text-base font-semibold text-white transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          style={{
+            background: 'var(--gradient-brand)',
+            boxShadow: '0 0 40px rgba(139, 92, 246, 0.45)',
+          }}
+        >
+          {t('onb.welcome.start')}
+          <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 /** Экран 1: приветствие экспедиции */
 function WelcomeScreen({ onStart }: { onStart: () => void }) {
   const reduced = useReducedMotion();
+  const t = useT();
 
   return (
     <motion.div
@@ -52,7 +147,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
         variants={itemVariants}
         className="font-display text-4xl leading-tight font-bold sm:text-6xl"
       >
-        Академия <span className="gradient-text">Claude</span>
+        {t('brand.academy')} <span className="gradient-text">Claude</span>
       </motion.h1>
 
       <motion.p
@@ -60,7 +155,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
         className="mx-auto mt-4 max-w-md text-base sm:text-lg"
         style={{ color: 'var(--text-secondary)' }}
       >
-        Изучи все возможности Claude — играя
+        {t('onb.welcome.subtitle')}
       </motion.p>
 
       <motion.div variants={itemVariants} className="mt-10">
@@ -74,7 +169,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
           }}
         >
           <Rocket size={20} />
-          Начать экспедицию
+          {t('onb.welcome.start')}
           <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
         </button>
       </motion.div>
@@ -84,6 +179,7 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
 
 /** Карточка трека: стекло + hover-свечение */
 function TrackCard({ track, onSelect }: { track: TrackInfo; onSelect: () => void }) {
+  const t = useT();
   return (
     <motion.button
       type="button"
@@ -108,7 +204,7 @@ function TrackCard({ track, onSelect }: { track: TrackInfo; onSelect: () => void
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2 font-display text-base font-semibold sm:text-lg">
-          {track.title}
+          {t(`track.${track.id}.title`)}
           <ArrowRight
             size={16}
             className="opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100"
@@ -116,7 +212,7 @@ function TrackCard({ track, onSelect }: { track: TrackInfo; onSelect: () => void
           />
         </span>
         <span className="mt-1 block text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-          {track.description}
+          {t(`track.${track.id}.desc`)}
         </span>
       </span>
     </motion.button>
@@ -126,6 +222,7 @@ function TrackCard({ track, onSelect }: { track: TrackInfo; onSelect: () => void
 /** Экран 2: выбор трека */
 function TrackScreen({ onSelect }: { onSelect: (track: TrackInfo) => void }) {
   const reduced = useReducedMotion();
+  const t = useT();
 
   return (
     <motion.div
@@ -139,15 +236,15 @@ function TrackScreen({ onSelect }: { onSelect: (track: TrackInfo) => void }) {
         variants={itemVariants}
         className="text-center font-display text-2xl font-semibold sm:text-4xl"
       >
-        Выбери свой <span className="gradient-text">трек</span>
+        {t('onb.tracks.titlePre')}{' '}
+        <span className="gradient-text">{t('onb.tracks.titleAccent')}</span>
       </motion.h2>
       <motion.p
         variants={itemVariants}
         className="mx-auto mt-3 mb-8 max-w-md text-center text-sm sm:text-base"
         style={{ color: 'var(--text-secondary)' }}
       >
-        От трека зависит рекомендованный маршрут по секторам галактики. Сменить его можно в любой
-        момент в профиле.
+        {t('onb.tracks.subtitle')}
       </motion.p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -168,6 +265,7 @@ function PlacementOfferScreen({
   onSkip: () => void;
 }) {
   const reduced = useReducedMotion();
+  const t = useT();
 
   return (
     <motion.div
@@ -192,7 +290,7 @@ function PlacementOfferScreen({
         variants={itemVariants}
         className="font-display text-2xl font-semibold sm:text-4xl"
       >
-        Уже пользуешься <span className="gradient-text">Claude</span>?
+        {t('onb.placement.titlePre')} <span className="gradient-text">Claude</span>?
       </motion.h2>
 
       <motion.p
@@ -200,8 +298,7 @@ function PlacementOfferScreen({
         className="mx-auto mt-3 max-w-md text-sm sm:text-base"
         style={{ color: 'var(--text-secondary)' }}
       >
-        Пройди входной тест (2 минуты) — 16 вопросов покажут, какие сектора ты уже знаешь, а какие
-        стали слепыми зонами. Знакомые миры можно зачесть испытаниями боссов.
+        {t('onb.placement.subtitle')}
       </motion.p>
 
       <motion.div variants={itemVariants} className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
@@ -215,7 +312,7 @@ function PlacementOfferScreen({
           }}
         >
           <ClipboardCheck size={19} />
-          Пройти тест
+          {t('onb.placement.take')}
         </button>
         <button
           type="button"
@@ -227,7 +324,7 @@ function PlacementOfferScreen({
             color: 'var(--text-secondary)',
           }}
         >
-          Пропустить
+          {t('onb.placement.skip')}
         </button>
       </motion.div>
     </motion.div>
@@ -238,9 +335,11 @@ export default function OnboardingPage() {
   const navigate = useNavigate();
   const setTrack = useProgressStore((s) => s.setTrack);
   const hasTrack = useProgressStore((s) => s.track !== null);
-  // Если трек уже выбран (пришли «сменить трек») — сразу экран выбора
-  const [step, setStep] = useState<'welcome' | 'tracks' | 'placement'>(
-    hasTrack ? 'tracks' : 'welcome',
+  // Первый вход: шаг языка → приветствие → трек → тест.
+  // Если трек уже выбран (пришли «сменить трек») — сразу экран выбора трека
+  // (язык меняется в топбаре/профиле, шаг языка не нужен).
+  const [step, setStep] = useState<'lang' | 'welcome' | 'tracks' | 'placement'>(
+    hasTrack ? 'tracks' : 'lang',
   );
 
   const handleSelect = (track: TrackInfo) => {
@@ -252,7 +351,9 @@ export default function OnboardingPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
       <AnimatePresence mode="wait">
-        {step === 'welcome' ? (
+        {step === 'lang' ? (
+          <LanguageScreen key="lang" onSelect={() => setStep('welcome')} />
+        ) : step === 'welcome' ? (
           <WelcomeScreen key="welcome" onStart={() => setStep('tracks')} />
         ) : step === 'tracks' ? (
           <TrackScreen key="tracks" onSelect={handleSelect} />

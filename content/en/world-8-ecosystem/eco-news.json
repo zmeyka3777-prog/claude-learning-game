@@ -1,0 +1,111 @@
+{
+  "id": "eco-news",
+  "world": "world-8-ecosystem",
+  "order": 7,
+  "title": "How to stay up to date",
+  "subtitle": "Changelog, release notes, news, and free courses: a system so you don't fall behind in six months",
+  "xp": 50,
+  "durationMin": 7,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Code Changelog", "url": "https://code.claude.com/docs/en/changelog" },
+    { "title": "API Release Notes — Claude Platform Docs", "url": "https://platform.claude.com/docs/en/release-notes/overview" },
+    { "title": "Anthropic Newsroom", "url": "https://www.anthropic.com/news" },
+    { "title": "Anthropic Academy", "url": "https://anthropic.skilljar.com/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "AI knowledge spoils faster than milk" },
+    { "type": "text", "md": "An unpleasant truth about everything you learned in the Academy: the Claude ecosystem changes so fast that some of the details will be out of date within a few months. New models, features, and surfaces appear; what was an experiment becomes the standard; what took three steps starts working out of the box.\n\nThis is no reason to be upset — the **principles** (prompting, working with context, security, verifying agents) live for years. But the person who knows 'what's new' steadily outpaces the one who learned everything a year ago and stopped. The good news: to stay up to date you don't need to live in the news. You need a system of four sources and one habit." },
+    { "type": "heading", "text": "Four official sources" },
+    { "type": "table", "headers": ["Source", "What's there", "For whom and how often"], "rows": [
+      ["anthropic.com/news", "Announcements: new models, products, major features, research", "Everyone; once a month"],
+      ["code.claude.com/docs/en/changelog", "Claude Code changelog: new agent capabilities by version", "Claude Code users; once a month"],
+      ["platform.claude.com/docs/en/release-notes", "API release notes: changes to the platform, models, developer tools", "Developers; when working with the API"],
+      ["support.claude.com (Release notes)", "claude.ai updates: features of chat, apps, connectors", "All claude.ai users; once a month"]
+    ] },
+    { "type": "text", "md": "The division of labor between them is simple. **Newsroom** answers 'what's happening at the big-picture level': new models and products. **Claude Code changelog** — 'what my agent learned to do this month': it reads in five minutes and pays off regularly, because new capabilities appear there constantly. **API release notes** — for those building on the platform: new parameters, models, tools. **Help Center release notes** — updates to claude.ai itself.\n\nNotice: all four are primary sources. Retellings on social media and in articles are sometimes faster, but that's also where exaggerations and errors live — the habit of checking against the primary source, which you built back in World 1, works for news too." },
+    { "type": "heading", "text": "Anthropic Academy: free courses with certificates" },
+    { "type": "text", "md": "For systematic deep dives, Anthropic has **Academy** — official learning courses (anthropic.skilljar.com, overview at anthropic.com/learn). These are free structured programs: the basics of working with Claude and AI literacy, developing with the API, MCP, Claude Code, agentic topics. Completing courses earns certificates — you can list them on your resume and profile.\n\nHow it fits with the Academy you're going through now: our game gives a map of the whole ecosystem, and the Academy courses give official depth on each topic. The logical next step after the final exam is to pick one Academy course for your track: for a user — about the basics and capabilities of Claude, for a developer — about the API or Claude Code." },
+    { "type": "heading", "text": "The habit: a 15-minute monthly ritual" },
+    { "type": "text", "md": "The whole system comes down to one ritual. Once a month, in a calm 15 minutes:\n\n1. Open anthropic.com/news — skim the headlines from the month (3 minutes).\n2. Open the changelog / release notes of your tool — Claude Code, the API, or claude.ai (5 minutes).\n3. Ask yourself one question: **'what among the new stuff solves a real task of mine?'** (2 minutes).\n4. Try one new thing right away, on a real task (5 minutes).\n\nPoint 4 is the main one: what's read gets forgotten, what's tried stays. One new thing a month is twelve mastered capabilities a year, almost for free.\n\nSo the ritual doesn't die within a week, tie it to an existing routine: the first Monday of the month, a standup, paying the bills — any anchor already in your calendar.\n\nAnd the ritual delegates beautifully to Claude itself: ask it to break down the fresh headlines and release notes for your profile — 'I'm a marketer, which of this relates to my tasks?'. You'll get a filter tuned personally to you: the assistant reads the news, you make the 'try or skip' decision." },
+    { "type": "heading", "text": "How to read big announcements" },
+    { "type": "text", "md": "When a big piece of news comes out — a new model, a new product — a wave rises around it: reviews, excitement, panic that 'everything's changed'. The master's protocol is simple:\n\n1. **The primary source first.** Read the announcement itself on anthropic.com/news, not three retellings of it: five minutes versus an hour, and without others' distortions.\n2. **Translate it into a question about yourself.** Not 'how revolutionary is this', but 'does this change my workflow this week'. Most often the honest answer is 'I'll try it in the monthly ritual', and that's fine.\n3. **Don't relearn on every announcement.** The Academy's principles — task framing, verification, security — outlive any releases. The details update, not the foundation." },
+    { "type": "example",
+      "bad": "Subscribe to twenty Telegram channels about AI, read retellings of retellings for an hour a day, and in a month get tired and unsubscribe from everything at once.",
+      "good": "Once a month on a calendar reminder: 15 minutes on news + your tool's changelog, pick one new thing, and that same day try it on a work task.",
+      "explanation": "An information binge doesn't scale: an hour a day on news is a tax nobody pays for long. Only a cheap habit is sustainable: rare, short, from primary sources, and with a mandatory hands-on trial — that's what gives the compounding effect."
+    },
+    { "type": "callout", "kind": "docs", "md": "The official update channels: announcements — anthropic.com/news, Claude Code changelog — code.claude.com/docs/en/changelog, platform release notes — platform.claude.com/docs/en/release-notes, claude.ai updates — in the support.claude.com Help Center. Learning courses with certificates — Anthropic Academy: anthropic.skilljar.com and anthropic.com/learn." },
+    { "type": "callout", "kind": "tip", "md": "Set the anchor right now, before you close the lesson: a recurring calendar reminder for the first Monday of each month — '15 minutes: what's new with Claude'. Future you will say thanks." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "Where do you look to see what's new in Claude Code?",
+      "options": [
+        "Only on social media and Telegram channels",
+        "In the official changelog: code.claude.com/docs/en/changelog",
+        "In the terminal settings",
+        "Nowhere — Claude Code doesn't get updates"
+      ],
+      "correct": [1],
+      "explanation": "The changelog at code.claude.com is the primary source of Claude Code updates: new capabilities by version, reads in five minutes. Retellings on social media can be faster, but it's worth checking against the primary source.",
+      "hint": "Recall the table of four sources — which one is about Claude Code?"
+    },
+    {
+      "type": "quiz",
+      "question": "What is Anthropic Academy?",
+      "options": [
+        "A paid master's program in machine learning",
+        "Official free Anthropic learning courses with certificates: the basics of Claude, the API, MCP, Claude Code, and other topics",
+        "A closed club for Anthropic employees",
+        "This game you're going through right now"
+      ],
+      "correct": [1],
+      "explanation": "Anthropic Academy (anthropic.skilljar.com, overview at anthropic.com/learn) — free official courses with certificates you can list on your resume. Our game is a map of the ecosystem, Academy is official depth on each topic.",
+      "hint": "Two key words: 'free' and 'certificates'."
+    },
+    {
+      "type": "quiz",
+      "question": "What makes up a sustainable 'stay up to date' system? Select all that apply.",
+      "options": [
+        "Once a month, 15 minutes on primary sources: news + your tool's changelog",
+        "The question 'what among the new stuff solves a real task of mine?'",
+        "Try one new thing right away on a real task",
+        "Read all AI news for an hour a day so you don't miss anything"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "A cheap habit works: rare, short, from primary sources, with a mandatory hands-on trial. 'An hour a day on all the news' is an information binge that ends in burnout and unsubscribing from everything.",
+      "hint": "Recall the bad and good examples: what sets a sustainable habit apart from a binge?"
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a prompt for the monthly ritual: you ask Claude to help break down the month's news. Order: context → task → filter → format.",
+      "blocks": [
+        "Context: I'm a marketer, I use claude.ai with projects, connectors, and data analysis; I don't write code.",
+        "Task: here are the Anthropic news headlines and release notes for the month (I'll paste them below) — break them down for me.",
+        "Filter: keep only what relates to my scenarios; skip the API and development stuff.",
+        "Format: the top 3 relevant new things, each with what it is and how to try it in my work in 10 minutes."
+      ],
+      "correctOrder": [0, 1, 2, 3],
+      "distractors": [
+        "Retell absolutely all the news of the AI industry for the year in maximum detail.",
+        "Make up news if there was nothing interesting."
+      ],
+      "explanation": "Context (who you are) → task (break it down) → filter (only the relevant) → format (top 3 with a 'try it' step) — that's how the monthly ritual takes minutes. 'All the year's news in detail' is the opposite of a filter, and 'make up news' is a direct request for hallucinations."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "**Mission: launch your monthly ritual.**\n\nNo special tools required — just a browser and a calendar.\n\n1. Open anthropic.com/news and skim the headlines from the last month.\n2. Open the changelog or release notes of your main tool (claude.ai → release notes in the Help Center; Claude Code → code.claude.com/docs/en/changelog; API → platform.claude.com).\n3. Pick one new thing that relates to your tasks and try it today.\n4. Go to anthropic.com/learn or anthropic.skilljar.com and pick one Academy course for your track — add it to your plans.\n5. Set a recurring calendar reminder: '15 minutes: what's new with Claude', once a month.",
+      "checklist": [
+        "The news and the changelog/release notes of your tool were reviewed",
+        "One new thing was tried on a real task",
+        "An Anthropic Academy course was picked for your track",
+        "A monthly reminder is set in the calendar"
+      ],
+      "xpBonus": 50
+    }
+  ],
+  "reward": { "cardId": "card-eco-news", "badgeId": null }
+}

@@ -1,0 +1,110 @@
+{
+  "id": "adv-memory",
+  "world": "world-2-claude-ai",
+  "order": 3,
+  "title": "Memory and instructions",
+  "subtitle": "How to teach Claude to remember you between chats — and how to keep it under control",
+  "xp": 50,
+  "durationMin": 8,
+  "isBoss": false,
+  "sources": [
+    { "title": "Claude Features: memory and personal settings — Claude Help Center", "url": "https://support.claude.com/en/" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Three levels of Claude's \"memory\"" },
+    { "type": "text", "md": "You already know two levels of context: the **chat** (Claude remembers everything within a single conversation) and the **project** (instructions and files apply to all chats in the project). There's a third level too — the **personal** one: settings and memory that apply to *all* your conversations with Claude in general.\n\nThis level consists of two different mechanisms, and it's important not to confuse them:\n\n1. **Personal instructions (preferences)** — what you *explicitly wrote* about yourself and your wishes in the settings.\n2. **Memory** — what Claude *remembered on its own* from your past conversations and can use in new ones." },
+    { "type": "heading", "text": "Personal instructions: a profile about you" },
+    { "type": "text", "md": "In claude.ai settings there's a place where you can tell Claude about yourself and set the style of answers. It's like a profile form: you fill it in once — it applies everywhere. What's worth writing there:\n\n- **Who you are:** \"I'm a marketer from Samara, I work at a pharma company\";\n- **Answer style:** \"Answer concisely and to the point, without long introductions\";\n- **Standing preferences:** \"Answer in English. Dates in DD.MM.YYYY format. If the question is about code — I write in Python\";\n- **What's not needed:** \"Don't restate my question before answering\".\n\nThe difference from project instructions: project ones apply only within the project (\"you're the editor of my blog\"), personal ones — in all chats (\"I always prefer brevity\"). If they overlap, the more specific level refines the more general one." },
+    { "type": "heading", "text": "Memory: Claude remembers on its own" },
+    { "type": "text", "md": "**Memory** works differently: you fill in nothing. Over the course of conversations Claude notices stable facts — what you do, which projects you work on, which formats you prefer — and can lean on them in later chats. Say once \"I'm training for a marathon in October\" — and a week later, in a new chat, Claude may take this into account when suggesting a training plan.\n\nThe main thing: memory is **not a black box**. In the settings you can:\n\n- **view** what exactly Claude remembered about you;\n- **edit or delete** individual entries — for example, an outdated fact (\"I no longer work at that company\");\n- **clear the memory entirely** or even **turn it off**, if you want every chat to start with a clean slate.\n\nYou can also manage memory right in the conversation: \"remember that I'm a vegetarian\" or, conversely, \"forget about my old project\".\n\nHow does memory show up in practice? Quietly and to the point: you ask \"suggest what to cook for dinner\", and Claude doesn't suggest meat dishes, because it remembers about your vegetarianism. Or you ask \"explain what inflation is\" — and get an explanation without condescending basics, because Claude remembers that you're an economist. Good memory is the kind you don't notice: the answers simply get more precise." },
+    { "type": "table", "headers": ["Mechanism", "Who fills it", "Where it applies", "How to change it"], "rows": [
+      ["Personal instructions", "You, explicitly, in settings", "All chats", "Edit the text in settings"],
+      ["Memory", "Claude, automatically from conversations", "All chats (if enabled)", "View, delete entries or turn off in settings"],
+      ["Project instructions", "You, in project settings", "Only the project's chats", "Edit in the project"],
+      ["Chat context", "The conversation itself", "Only this chat", "Start a new chat"]
+    ] },
+    { "type": "heading", "text": "When it helps, and when it gets in the way" },
+    { "type": "text", "md": "**Helps:** routine personalization disappears. You don't need to write \"answer concisely and in English\" in every chat, Claude remembers your profession and doesn't explain the basics of your own field to you, advice takes your context into account.\n\n**Can get in the way:**\n\n- **Outdated facts.** You changed jobs or cities — but memory prompts the old one. Cured by clearing entries.\n- **Role mixing.** You ask about a gift for your child, and Claude for some reason drags in your work project. Sometimes it's appropriate to ask: \"answer without taking into account what you know about me\".\n- **Sensitive topics.** Not everything said in a conversation is something you want turned into a long-term entry. Remember that memory can be viewed and cleaned — look in there from time to time, like the privacy settings of a social network.\n\nThe bottom-line rule: personalization is a tool, not a given. Set up instructions, keep an eye on memory — and you get an assistant tailored \"to you\". Want sterile cleanliness — turn off memory, clear the instructions, and every chat starts from scratch again. The choice is always yours." },
+    { "type": "example",
+      "bad": "Personal instructions: \"I'm Jamie. I love cats, I ate pizza yesterday, tomorrow I'm going to grandma's, recommend a series.\"",
+      "good": "Personal instructions: \"I'm Jamie, a data analyst from Kazan. Answer in English, concisely, no fluff. Show code in Python. If I ask you to explain a term — first the gist in one phrase, then the details.\"",
+      "explanation": "Instructions aren't a diary or a place for one-off requests: \"recommend a series\" is a request for the chat, and \"I ate pizza yesterday\" is noise that will pointlessly affect all answers. Good instructions contain only stable facts and preferences relevant to any conversation." },
+    { "type": "callout", "kind": "docs", "md": "The support.claude.com Help Center (Claude Features section) describes personalization: a user can set preferences in the settings, and the memory feature lets Claude lean on information from past conversations. It also describes how to view what's remembered, edit it, clear it or turn off memory — control stays with the user." },
+    { "type": "callout", "kind": "tip", "md": "A memory-hygiene practice: once a month open the settings and look through what Claude remembers about you. Delete what's outdated and unnecessary — that way the answers stay accurate, and there's nothing in memory that would surprise you yourself." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is the key difference between personal instructions and memory?",
+      "options": [
+        "You write the instructions yourself in settings, while Claude fills memory on its own from conversations",
+        "Instructions work only in projects, while memory only in regular chats",
+        "There's no difference, they're two names for one feature",
+        "Memory can't be viewed and changed, but instructions can"
+      ],
+      "correct": [0],
+      "explanation": "Instructions are an explicit \"profile\" you fill in; memory is what Claude remembered on its own. Both mechanisms apply in all chats, and both are under your control: memory can also be viewed, edited and turned off.",
+      "hint": "Recall the table from the theory: the \"who fills it\" column."
+    },
+    {
+      "type": "quiz",
+      "question": "Which of these can you do with Claude's memory? Select all correct answers.",
+      "options": [
+        "View what exactly Claude remembered",
+        "Delete a single outdated entry",
+        "Turn memory off completely",
+        "Nothing — memory can't be controlled"
+      ],
+      "correct": [0, 1, 2],
+      "explanation": "Memory is not a black box: in settings you can view it, edit it, clean it and turn it off entirely. The last option is exactly the misconception that makes people afraid of this feature.",
+      "hint": "The theory had a list of three actions with memory — and all of them start in the settings."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "A draft of personal instructions. One line here is out of place — it shouldn't go into personal instructions. Find it.",
+      "lang": "markdown",
+      "lines": [
+        "I'm Marina, an HR manager at an IT company.",
+        "Answer in English, concisely and in a structured way.",
+        "I prefer tables to lists when there's a lot of data.",
+        "Draft me a rejection letter to a candidate today.",
+        "If I ask for a document template — add explanations to each section."
+      ],
+      "bugLineIndex": 3,
+      "explanation": "\"Draft me a letter today\" is a one-off task, its place is in the chat. Personal instructions are only for the stable: who you are, what style, which formats. A one-off request in the instructions would pointlessly affect all future conversations."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Simulation: you've discovered that Claude remembers your old workplace and mentions it out of context. Ask it in the chat to forget the outdated fact and remember a new one (for example: you used to work at a bank, now — at an education startup).",
+      "steps": [
+        {
+          "expect": ["forget", "don't work", "outdated", "delete", "no longer", "remember", "now"],
+          "minMatches": 1,
+          "claudeReply": "Got it, updating memory. ✅\n\n— Deleted: \"works at a bank\".\n— Recorded: \"works at a startup in the education field\".\n\nNow new chats will lean on the up-to-date fact. By the way, the full list of what I remember about you can always be seen in the settings — and there you can delete anything that seems unnecessary. Want me to list what else I remember?",
+          "failHint": "Say directly what to forget and what to remember: \"Forget that I work at a bank — now I'm at an education startup\"."
+        },
+        {
+          "expect": ["yes", "list", "show", "what you remember", "go ahead", "list"],
+          "minMatches": 1,
+          "claudeReply": "Here's what I have in memory:\n\n1. Works at an education startup *(just updated)*.\n2. Prefers concise answers in English.\n3. Training for a marathon in October.\n\nIf any item is outdated or you don't want me to store it — say so, and I'll delete it. That's exactly what control over memory is: you always see what I'm leaning on.",
+          "failHint": "Ask to see the list: \"Yes, list what you remember about me\"."
+        }
+      ],
+      "successMessage": "You've learned the main skill of working with memory: not to fear it, but to manage it — update facts, review entries, delete the unnecessary."
+    },
+    {
+      "type": "real-mission",
+      "instruction": "Mission: set up personalization to fit you.\n\n1. Open **claude.ai** and go to settings. Find the section with personal instructions (preferences).\n2. Write 3–5 sentences by the lesson's formula: who you are, what answer style you want, which standing preferences (language, formats). No one-off tasks and no unnecessary details.\n3. In the same place, find the memory section: check whether it's enabled and look at whether there are already entries. Delete everything outdated or inaccurate.\n4. Open a new chat and ask any question on your topic. Check: does the answer's style match your instructions?\n5. If something's off — go back to settings and refine the wording.",
+      "checklist": [
+        "I found personal instructions in the settings and filled them in",
+        "The instructions contain only stable facts and preferences, no one-off requests",
+        "I looked at what's stored in memory and cleaned out the unnecessary (or confirmed there are no entries)",
+        "I know where memory is turned off entirely",
+        "I checked in a new chat that answers take my instructions into account"
+      ],
+      "xpBonus": 25
+    }
+  ],
+  "reward": { "cardId": "card-adv-memory", "badgeId": null }
+}

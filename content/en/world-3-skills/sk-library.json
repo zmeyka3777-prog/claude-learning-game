@@ -1,0 +1,103 @@
+{
+  "id": "sk-library",
+  "world": "world-3-skills",
+  "order": 2,
+  "title": "The Anthropic Library",
+  "subtitle": "17 official skills: documents, design, development, and a meta-skill",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "anthropics/skills — the official library", "url": "https://github.com/anthropics/skills" },
+    { "title": "Using skills — Claude Help Center", "url": "https://support.claude.com/en/articles/12512180" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "Why study other people's skills" },
+    { "type": "text", "md": "Before writing your own skill, it helps to see how Anthropic itself makes them. The company has published an official library of skills in an open repository — **github.com/anthropics/skills** — with 17 skills, and you can open and read each one: they're ordinary folders with SKILL.md files.\n\nFor you, this library is three things at once. First, **ready-made tools**: many of these skills already work in Claude \"out of the box\" — for example, creating Word documents or Excel spreadsheets. Second, a **textbook**: the best examples of how to phrase instructions and descriptions. Third, a **source of starters**: the repository contains a `template/` folder — a template that's convenient to start your own skill from." },
+    { "type": "heading", "text": "Category 1: documents — docx, pdf, pptx, xlsx" },
+    { "type": "text", "md": "The library's four \"workhorses\" are the skills for office files. They're exactly what fires when you ask Claude to produce not chat text, but a real file.\n\n- **docx** — Word documents: reports, contracts, letters with headings, a table of contents, tables. It can both read existing .docx files and create new ones.\n- **pdf** — working with PDFs: creating, extracting text and tables, merging and splitting files, filling out forms.\n- **pptx** — PowerPoint presentations: slides with structure, layouts, speaker notes.\n- **xlsx** — Excel spreadsheets: data, formulas, formatting, charts, cleaning up \"messy\" spreadsheets.\n\nA real-life example: you say \"put together a financial plan in Excel with formulas\" — and Claude applies the xlsx skill, which describes inside how to build a workbook correctly: sheets, formulas instead of hardcoded numbers, formatting." },
+    { "type": "heading", "text": "Category 2: design — canvas-design, frontend-design, brand-guidelines, theme-factory" },
+    { "type": "text", "md": "The second group is responsible for visual results.\n\n- **canvas-design** — creating posters, covers, and static graphics (PNG/PDF) by design principles: composition, typography, color.\n- **frontend-design** — quality web interfaces: it helps make sites and apps that look professional rather than \"like a student project.\"\n- **brand-guidelines** — Anthropic's brand style: the brand's colors and typography. Useful as a model: look at it to understand how to build a skill with **your** company's style.\n- **theme-factory** — a set of ready-made design themes (colors + fonts) that can be applied to slides, documents, and pages, or generate a theme on the fly.\n\nAlongside them in the library live **algorithmic-art** (generative art with p5.js code) and **slack-gif-creator** (animated GIFs for Slack) — more niche, but telling: even the \"skill\" of making GIFs can be a skill." },
+    { "type": "heading", "text": "Category 3: development — mcp-builder, webapp-testing" },
+    { "type": "text", "md": "The third group is for those building software with Claude.\n\n- **mcp-builder** — a guide to building MCP servers (integrations between Claude and external services) in Python or TypeScript. You'll come back to it in the world about MCP.\n- **webapp-testing** — testing web applications: how to check that the app you built actually works.\n\nThree more skills from the library sit next to development: **web-artifacts-builder** (complex interactive artifacts in React), **claude-api** (a reference for the Claude API: models, pricing, parameters), and a couple of \"text\" ones — **internal-comms** (internal communications: status updates, reports, announcements) and **doc-coauthoring** (co-authoring documentation and specs)." },
+    { "type": "heading", "text": "Category 4: meta — skill-creator" },
+    { "type": "text", "md": "The library's most unusual skill is **skill-creator**: a skill that creates other skills. It knows the specification, asks the right questions about your task, and assembles a finished folder with a SKILL.md. It's your main helper in this world — lesson six is devoted to it.\n\nWhat matters is that skill-creator is built the same way as the other sixteen: an ordinary folder with a SKILL.md. Open it in the repository — and you'll see that \"creating skills\" is described with the same means as \"creating presentations\": Markdown instructions. No magic, just well-packaged knowledge.\n\nBy category, then: 4 document + 6 design/media + 4 for development + 2 text + 1 meta = **17 skills**." },
+    { "type": "table",
+      "headers": ["Category", "Skills", "Typical request"],
+      "rows": [
+        ["Documents", "docx, pdf, pptx, xlsx", "\"Make a report in Word,\" \"put together a presentation\""],
+        ["Design and media", "canvas-design, frontend-design, brand-guidelines, theme-factory, algorithmic-art, slack-gif-creator", "\"Draw a poster,\" \"format it in the brand colors\""],
+        ["Development", "mcp-builder, webapp-testing, web-artifacts-builder, claude-api", "\"Build an MCP server,\" \"test the app\""],
+        ["Text and documentation", "internal-comms, doc-coauthoring", "\"Write a status report,\" \"help with the spec\""],
+        ["Meta", "skill-creator", "\"Help me create a skill\""]
+      ]
+    },
+    { "type": "example",
+      "bad": "I need to make a presentation. First I'll explain to Claude what a .pptx is, what kinds of slide layouts there are, how to format headings… (half a page of instructions about things Claude already knows how to do)",
+      "good": "Put together an 8-slide presentation about the launch of our delivery service: for investors, business tone, a slide with numbers at the end. (The pptx skill loads on its own and takes on all the \"how to make the file\" work.)",
+      "explanation": "The official skills already contain expertise on formats — there's no need to explain to Claude how PowerPoint works. Your job is to give context and content requirements; the skill's job is the technical execution. A good request describes \"what and for whom,\" not \"how the file is built.\"" },
+    { "type": "callout", "kind": "docs", "md": "In the README of the anthropics/skills repository, Anthropic describes it as an open collection of Agent Skills — examples of how to package expertise into a reusable form. Besides the skills themselves, it contains `spec/` (the format specification) and `template/` (a template for a new skill). The repository is open: skills can be read, forked, and adapted to your needs." },
+    { "type": "callout", "kind": "tip", "md": "Don't memorize all 17 by heart — memorize the categories: documents, design, development, text, meta. And when you're writing your own skill, open a similar official one in the repository and peek at how its description and instructions are built. Learning from reference examples is legitimate and correct." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "You ask Claude: \"Turn this data into an Excel spreadsheet with formulas and a chart.\" Which official skill takes on the work?",
+      "options": ["docx", "xlsx", "pptx", "canvas-design"],
+      "correct": [1],
+      "explanation": "Excel files are the xlsx skill's area of responsibility: data, formulas, formatting, charts. docx is for Word, pptx is for presentations, canvas-design is for posters and graphics.",
+      "hint": "The extension of Excel files is .xlsx."
+    },
+    {
+      "type": "quiz",
+      "question": "Which skills from the library belong to the \"design\" category? (select all that apply)",
+      "options": ["canvas-design", "mcp-builder", "theme-factory", "brand-guidelines", "xlsx"],
+      "correct": [0, 2, 3],
+      "explanation": "The design group: canvas-design (posters and graphics), theme-factory (design themes), brand-guidelines (brand style), plus frontend-design. mcp-builder is development (MCP servers), and xlsx is documents (Excel).",
+      "hint": "The names of the design skills contain the words design, theme, brand."
+    },
+    {
+      "type": "quiz",
+      "question": "Match the skill to the task: \"I want Claude to help me write a skill for formatting our sales proposals.\"",
+      "options": [
+        "doc-coauthoring — it's about documents too",
+        "skill-creator — the meta-skill that creates other skills",
+        "webapp-testing — it'll check everything",
+        "pdf — sales proposals are usually in PDF"
+      ],
+      "correct": [1],
+      "explanation": "The task is \"create a skill,\" and the skill for creating skills is skill-creator. It knows the specification, will ask questions, and assemble a folder with a SKILL.md. The pdf skill would come in handy later — when the finished skill produces the proposals themselves.",
+      "hint": "Look for \"meta\": the skill whose subject is skills themselves."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble a request to Claude so that the official pptx skill works at its best: first context, then the task, then the content requirements. Technical \"how to make the file\" instructions are not your concern.",
+      "blocks": [
+        "Context: I run a small coffee shop and I'm preparing a pitch to a potential partner.",
+        "Task: put together a presentation about our coffee shop and our plans to open a second location.",
+        "Requirements: 6–8 slides, business tone, and a table with the key numbers on the last slide."
+      ],
+      "correctOrder": [0, 1, 2],
+      "distractors": [
+        "Instruction: a .pptx file is a ZIP archive with XML markup, create slides via <p:sld> tags.",
+        "First explain to me in your own words what PowerPoint is."
+      ],
+      "explanation": "A correct request is context + task + content requirements: everything the skill can't know about you. The trap blocks intrude into the skill's area of responsibility: the skill knows how the .pptx format is built better than you, and asking it to \"explain what PowerPoint is\" doesn't get you any closer to the result at all."
+    },
+    {
+      "type": "chat-sim",
+      "instruction": "Practice choosing the tool. Describe to Claude a task that a document skill fits: ask for a finished Word file with a report (mention the format or the word \"document/file\" and what report it is).",
+      "steps": [
+        {
+          "expect": ["word", "docx", "document", "file", "report"],
+          "minMatches": 2,
+          "claudeReply": "Connecting the **docx** skill — it's responsible for Word files.\n\nDocument plan:\n1. A title page with the report's name\n2. A brief summary (half a page)\n3. Main sections with headings and tables\n4. Conclusions\n\nCreating the file… Done: **report.docx**. Inside are heading styles, an auto-generated table of contents, and tables, not just text. The docx skill does all this by default — you didn't have to explain how Word is built.",
+          "failHint": "For example: \"Prepare a quarterly sales report as a Word file (docx)\" — the important thing is that it's clear: you need an actual document file."
+        }
+      ],
+      "successMessage": "That's exactly how it works in real Claude: you name the result (\"a Word file with a report\"), and the right skill from the library loads on its own. Memorize the categories — and you'll always understand what's happening under the hood."
+    }
+  ],
+  "reward": { "cardId": "card-sk-library", "badgeId": null }
+}

@@ -4,6 +4,9 @@
  * Unbounded/Manrope (self-hosted через @fontsource).
  */
 
+import type { LangCode } from '../engine/types';
+import { translate } from '../i18n/useT';
+
 export const CERT_WIDTH = 1600;
 export const CERT_HEIGHT = 1131;
 
@@ -19,6 +22,8 @@ export interface CertificateData {
   lessonsCompleted: number;
   /** Дата выдачи */
   date: Date;
+  /** Язык текста сертификата (по умолчанию ru) */
+  lang?: LangCode;
 }
 
 /** Детерминированный ГПСЧ — звёзды рисуются одинаково при каждом рендере */
@@ -89,6 +94,9 @@ export async function renderCertificate(
   data: CertificateData,
 ): Promise<void> {
   await ensureFonts();
+
+  const lang: LangCode = data.lang ?? 'ru';
+  const s = (key: string, vars?: Record<string, string | number>) => translate(lang, key, vars);
 
   canvas.width = CERT_WIDTH;
   canvas.height = CERT_HEIGHT;
@@ -167,7 +175,7 @@ export async function renderCertificate(
   setLetterSpacing('14px');
   ctx.font = displayFont(600, 38);
   ctx.fillStyle = '#A8B0D3';
-  ctx.fillText('АКАДЕМИЯ CLAUDE', cx, 176);
+  ctx.fillText(s('cert.header'), cx, 176);
   setLetterSpacing('0px');
 
   // Разделитель под шапкой
@@ -182,7 +190,7 @@ export async function renderCertificate(
   setLetterSpacing('8px');
   ctx.font = bodyFont(600, 26);
   ctx.fillStyle = '#6B7399';
-  ctx.fillText('СЕРТИФИКАТ', cx, 292);
+  ctx.fillText(s('cert.word'), cx, 292);
   setLetterSpacing('0px');
 
   // Название сертификата — фирменным градиентом
@@ -200,10 +208,10 @@ export async function renderCertificate(
   // «Настоящим подтверждается, что»
   ctx.font = bodyFont(400, 28);
   ctx.fillStyle = '#6B7399';
-  ctx.fillText('Настоящим подтверждается, что', cx, 545);
+  ctx.fillText(s('cert.confirms'), cx, 545);
 
   // Имя игрока — крупно
-  const name = data.playerName.trim() || 'Исследователь';
+  const name = data.playerName.trim() || s('cert.defaultName');
   const nameSize = fitFontSize(ctx, name, 92, 44, W - 300, (s) => displayFont(700, s));
   ctx.font = displayFont(700, nameSize);
   ctx.fillStyle = '#EEF1FF';
@@ -215,21 +223,17 @@ export async function renderCertificate(
   // «успешно прошёл(ла) экспедицию…»
   ctx.font = bodyFont(400, 28);
   ctx.fillStyle = '#A8B0D3';
-  ctx.fillText('успешно прошёл(ла) экспедицию по галактике знаний Claude', cx, 745);
+  ctx.fillText(s('cert.completed'), cx, 745);
 
   // Статистика: XP и уроки
   ctx.font = bodyFont(600, 32);
   ctx.fillStyle = '#F59E0B';
-  ctx.fillText(
-    `⚡ ${data.xp} XP   ·   пройдено уроков: ${data.lessonsCompleted}`,
-    cx,
-    830,
-  );
+  ctx.fillText(s('cert.stats', { xp: data.xp, lessons: data.lessonsCompleted }), cx, 830);
 
   // Дата выдачи
   let dateStr: string;
   try {
-    dateStr = data.date.toLocaleDateString('ru-RU', {
+    dateStr = data.date.toLocaleDateString(lang === 'en' ? 'en-US' : 'ru-RU', {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -248,7 +252,7 @@ export async function renderCertificate(
   ctx.font = bodyFont(400, 20);
   ctx.fillStyle = '#6B7399';
   ctx.globalAlpha = 0.85;
-  ctx.fillText('Неофициальный образовательный проект', cx, 1020);
+  ctx.fillText(s('cert.disclaimer'), cx, 1020);
   ctx.globalAlpha = 1;
 }
 

@@ -1,0 +1,116 @@
+{
+  "id": "api-managed",
+  "world": "world-7-api-sdk",
+  "order": 11,
+  "title": "Managed Agents",
+  "subtitle": "Agents in Anthropic's cloud: sessions, sandbox, and life without your own server",
+  "xp": 50,
+  "durationMin": 9,
+  "isBoss": false,
+  "sources": [
+    { "title": "Managed Agents overview — Claude Docs", "url": "https://platform.claude.com/docs/en/managed-agents/overview" }
+  ],
+  "verifiedAt": "2026-07-19",
+  "theory": [
+    { "type": "heading", "text": "A third way to build agents" },
+    { "type": "text", "md": "You already know two ways: hand-build the loop on the Messages API, or take the Agent SDK. Both share one trait — **the hosting is yours**: the agent runs on your server, and you provide it a sandbox for executing code, state storage, restarts, and scaling.\n\n**Managed Agents** are a third path: the agent lives entirely **in Anthropic's cloud**. You describe the agent's configuration through the API and start sessions — while the agent loop, the isolated container for tools, history storage, and orchestration are handled by the platform. Your application just sends messages and reads a stream of events.\n\nA handy way to remember the distinction is the question \"who hosts?\": the Messages API and Agent SDK give you the mechanism, but you host it; Managed Agents give you both the mechanism and the hosting." },
+    { "type": "heading", "text": "Three entities: Agent, Session, Sandbox" },
+    { "type": "text", "md": "The model is built around three concepts:\n\n- **Agent** — a saved configuration: model, system prompt, set of tools. Created **once** (`POST /v1/agents`), it gets an id and is versioned: update the prompt and a new version appears, while old sessions keep running on theirs.\n- **Session** — a specific run of an agent (`POST /v1/sessions`): it references an agent by id, has a status (`running`, `idle`, `terminated`), and stores a history of events. One configuration — as many parallel sessions as you like.\n- **Sandbox (container)** — an isolated environment the platform spins up for each session: this is where the agent's tools run — bash, file operations, code. You can mount resources to a session: files or a git repository.\n\nCommunication happens through **events**: you send `user.message`, and out of the session flow `agent.message`, `agent.tool_use`, status changes. You can read them as a stream (SSE) — like streaming, but for an entire working session of the agent." },
+    { "type": "code", "lang": "python", "title": "Agent once — a session per run", "code": "# 1. Create the agent (once; save the id in config)\nagent = client.beta.agents.create(\n    name=\"Report Builder\",\n    model=\"claude-opus-4-8\",\n    system=\"You are an analyst. You build reports from data and save the result to files.\",\n    tools=[{\"type\": \"agent_toolset_20260401\"}],  # built-in set: bash, files, search\n)\n\n# 2. For each task — a new session referencing the agent\nsession = client.beta.sessions.create(\n    agent=agent.id,\n    environment_id=env_id,  # environment template for the container\n)\n\n# 3. Open the event stream and send the task\nstream = client.beta.sessions.events.stream(session_id=session.id)\nclient.beta.sessions.events.send(\n    session.id,\n    events=[{\"type\": \"user.message\",\n             \"content\": [{\"type\": \"text\", \"text\": \"Build a report from data.csv\"}]}],\n)\nfor event in stream:\n    print(event.type)  # agent.tool_use, agent.message, session.status_idle ..." },
+    { "type": "heading", "text": "What the platform does for you" },
+    { "type": "text", "md": "The list of \"free\" concerns is impressive:\n\n- **Sandbox.** Code execution by the agent is the scary part of self-hosted solutions: you need isolation, limits, cleanup. Here the container is spun up and disposed of by the platform.\n- **State.** Session history is stored on the server: the client can drop, reconnect, and read the remaining events — no work is lost.\n- **Long tasks.** A session lives independently of your process: the agent can work on a task while your laptop is closed.\n- **Orchestration.** Queues, retries, parallel sessions, auto-compaction of an overflowing context — not your code.\n- **Secrets.** Tokens for external services are kept in secure stores (vaults) and injected into requests outside the sandbox — the agent's code never sees them.\n\nPlus observability: every session has a trace in the platform console — you can see every step the agent takes." },
+    { "type": "heading", "text": "When managed, and when self-hosted" },
+    { "type": "table",
+      "headers": ["Situation", "Choice", "Why"],
+      "rows": [
+        ["Long autonomous tasks: reports, migrations, research", "Managed Agents", "The session outlives your process; sandbox and state are the platform's job"],
+        ["You don't want to maintain infrastructure for code execution", "Managed Agents", "Container isolation and lifecycle are the most expensive part of self-hosting"],
+        ["The agent must work with a developer's local files", "Agent SDK", "A managed agent lives in the cloud and can't see the local machine"],
+        ["Strict requirements: your own perimeter, your own policies, full control", "Messages API / Agent SDK on your own infrastructure", "Hosting it yourself is the price of control"]
+      ]
+    },
+    { "type": "example",
+      "bad": "A weekly report service: your own worker on a VPS, a homemade Docker sandbox for the agent's code, your own task queue, your own history storage, your own retry mechanism — and all of it needs to be monitored and fixed.",
+      "good": "A weekly report service: a managed agent is created once with the needed prompt and tools; on a schedule a session is created, the app reads the event stream and picks up the finished result files.",
+      "explanation": "The substantive part (prompt, tools, report logic) is the same in both variants — the difference is the plumbing. The self-hosted variant drags in a sandbox, a queue, storage, and on-call duty; managed reduces it all to three API calls. Self-hosting is justified when control over the infrastructure is a requirement, not a habit." },
+    { "type": "callout", "kind": "docs", "md": "The Managed Agents overview (platform.claude.com/docs/en/managed-agents/overview) describes the architecture: an Agent is a saved, versioned configuration (model, system prompt, tools), a Session is a stateful run referencing an agent, and for each session the platform spins up an isolated container where the tools run. Interaction is through sending events and reading them as a stream (SSE); the order is strict: first the agent is created, then sessions reference it by id." },
+    { "type": "callout", "kind": "tip", "md": "The main beginner anti-pattern is creating a new agent on every task run. An Agent is like a class, and a Session is like its instance: create the configuration once, save the id, and reuse it. When behavior changes — update the agent (a new version appears), don't spawn clones." }
+  ],
+  "tasks": [
+    {
+      "type": "quiz",
+      "question": "What is the main difference between Managed Agents and an agent on the Agent SDK?",
+      "options": [
+        "Managed Agents run on different, more powerful models",
+        "The agent and the sandbox for its tools are hosted at Anthropic — no server of your own is needed for the agent",
+        "Managed Agents can't use tools",
+        "There's no difference — it's one technology with different names"
+      ],
+      "correct": [1],
+      "explanation": "The key is \"who hosts.\" The Agent SDK is a library: the agent runs on your machine or server, and the sandbox is your concern. Managed Agents live in Anthropic's cloud: the platform holds the agent loop, the container for tools, session history, and orchestration, while your code only sends messages and reads events.",
+      "hint": "Ask the question from the lesson: on whose server does the agent run?"
+    },
+    {
+      "type": "quiz",
+      "question": "How do Agent and Session relate in Managed Agents?",
+      "options": [
+        "Agent is a saved configuration (created once), Session is a specific run of it; one agent can have many sessions",
+        "They're synonyms for the same object",
+        "A Session is created once, and an Agent — on every request",
+        "Agent is the user, Session is their password"
+      ],
+      "correct": [0],
+      "explanation": "An Agent relates to a Session as a class does to an instance: the configuration (model, prompt, tools) is created once, versioned, and reused, while a new session is created for each task referencing the agent id. Creating an agent on every run is the main anti-pattern: clones multiply and the point of versioning is lost.",
+      "hint": "Recall the analogy from the lesson: class and instance."
+    },
+    {
+      "type": "find-bug",
+      "instruction": "The script runs on a schedule every hour — and after a week the console has hundreds of identical agents. Find the line with the architectural mistake.",
+      "lang": "python",
+      "lines": [
+        "def hourly_job():",
+        "    agent = client.beta.agents.create(",
+        "        name=\"Log Analyzer\",",
+        "        model=\"claude-opus-4-8\",",
+        "        system=\"Analyze logs and flag anomalies.\",",
+        "        tools=[{\"type\": \"agent_toolset_20260401\"}],",
+        "    )",
+        "    session = client.beta.sessions.create(agent=agent.id, environment_id=ENV_ID)",
+        "    run_and_collect(session)"
+      ],
+      "bugLineIndex": 1,
+      "explanation": "`agents.create` is called inside the hourly job — each run creates a new clone agent. The right way: create the agent once (in a separate setup script), save its id in configuration, and in hourly_job only create sessions: `sessions.create(agent=SAVED_AGENT_ID, ...)`. The agent is a long-lived configuration, the session is a one-off run."
+    },
+    {
+      "type": "build-prompt",
+      "instruction": "Assemble the correct lifecycle of working with a managed agent: configuration → run → stream → task → results. Discard the extra steps.",
+      "blocks": [
+        "Create the agent once: model, system prompt, tools — save the agent id",
+        "For a new task, create a session referencing the agent id",
+        "Open the session's event stream (SSE)",
+        "Send a user.message event with the task statement",
+        "Read events until the idle status and pick up the results"
+      ],
+      "correctOrder": [0, 1, 2, 3, 4],
+      "distractors": [
+        "Before each task, create a new agent with the same configuration",
+        "Deploy your own Docker container for executing the agent's code"
+      ],
+      "explanation": "The canonical loop: agent once → session per task → stream opened before sending (so you don't miss the first events) → message → reading until idle. The traps: cloning agents on every run is an anti-pattern, and your own container isn't needed — the platform spins up the sandbox, which is the whole point of the managed approach."
+    },
+    {
+      "type": "quiz",
+      "question": "In which cases is self-hosting an agent preferable to Managed Agents? Select all that apply.",
+      "options": [
+        "The agent must work with local files on a developer's machine",
+        "Strict placement requirements: everything must run in your own perimeter",
+        "You don't want to maintain sandbox and queue infrastructure",
+        "You need long autonomous tasks that outlive a client restart"
+      ],
+      "correct": [0, 1],
+      "explanation": "Your own infrastructure is justified when the cloud fundamentally doesn't fit: the agent needs a local machine (that's Agent SDK territory) or policy requires working in your own perimeter. The options about \"not wanting to maintain a sandbox\" and \"long autonomous tasks\" are, on the contrary, the main arguments FOR managed: that's exactly what the platform takes on.",
+      "hint": "Two of the four options are arguments for managed. Find the other two."
+    }
+  ],
+  "reward": { "cardId": "card-api-managed", "badgeId": null }
+}
