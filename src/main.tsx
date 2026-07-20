@@ -1,6 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 
 // Self-hosted шрифты (@fontsource, включают кириллицу через unicode-range)
 import '@fontsource/unbounded/500.css';
@@ -16,10 +16,13 @@ import '@fontsource/jetbrains-mono/500.css';
 import './index.css';
 import App from './App';
 
+// Однофайловая сборка (артефакт) живёт без серверных rewrites — там нужен hash-роутинг
+const Router = import.meta.env.VITE_HASH_ROUTER ? HashRouter : BrowserRouter;
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <Router>
       <App />
-    </BrowserRouter>
+    </Router>
   </StrictMode>,
 );
