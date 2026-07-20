@@ -15,6 +15,10 @@ import '@fontsource/jetbrains-mono/500.css';
 
 import './index.css';
 import App from './App';
+import { initAnalytics } from './lib/analytics';
+
+// PostHog: fail-silent, в среде со строгим CSP превращается в no-op
+initAnalytics();
 
 // Однофайловая сборка (артефакт) живёт без серверных rewrites — там нужен hash-роутинг
 const Router = import.meta.env.VITE_HASH_ROUTER ? HashRouter : BrowserRouter;

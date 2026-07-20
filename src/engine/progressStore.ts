@@ -4,8 +4,9 @@
  * localStorage['academy_progress_v1'] = Progress (без обёрток).
  */
 import { create } from 'zustand';
-import type { Lesson, Progress, Track } from './types';
+import type { Lesson, Progress, ReviewEntry, Track } from './types';
 import { getWorld } from './content';
+import { REVIEW_INTERVALS_DAYS, REVIEW_XP } from './review';
 
 export const STORAGE_KEY = 'academy_progress_v1';
 
@@ -46,6 +47,8 @@ const DEFAULT_PROGRESS: Progress = {
   track: null,
   passedWorlds: [],
   placementResult: null,
+  playerName: null,
+  reviewLog: {},
 };
 
 function parsePlacementResult(value: unknown): Record<string, number> | null {
@@ -53,6 +56,19 @@ function parsePlacementResult(value: unknown): Record<string, number> | null {
   const result: Record<string, number> = {};
   for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
     if (typeof v === 'number') result[k] = v;
+  }
+  return result;
+}
+
+function parseReviewLog(value: unknown): Record<string, ReviewEntry> {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return {};
+  const result: Record<string, ReviewEntry> = {};
+  for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+    if (typeof v !== 'object' || v === null) continue;
+    const entry = v as Record<string, unknown>;
+    if (typeof entry.lastReviewedAt === 'string' && typeof entry.stage === 'number') {
+      result[k] = { lastReviewedAt: entry.lastReviewedAt, stage: entry.stage };
+    }
   }
   return result;
 }
@@ -77,6 +93,8 @@ function loadProgress(): Progress {
         ? parsed.passedWorlds.filter((w): w is string => typeof w === 'string')
         : [],
       placementResult: parsePlacementResult(parsed.placementResult),
+      playerName: typeof parsed.playerName === 'string' ? parsed.playerName : null,
+      reviewLog: parseReviewLog(parsed.reviewLog),
     };
   } catch {
     // Битые данные не должны ронять приложение
@@ -95,6 +113,8 @@ function saveProgress(p: Progress): void {
       track: p.track,
       passedWorlds: p.passedWorlds,
       placementResult: p.placementResult,
+      playerName: p.playerName,
+      reviewLog: p.reviewLog,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
@@ -136,6 +156,13 @@ interface ProgressStore extends Progress {
   passWorldChallenge: (bossLesson: Lesson) => ChallengeResult;
   /** Сохранить результат входного теста: worldId → баллы (0–2) */
   setPlacementResult: (result: Record<string, number>) => void;
+  /** Имя игрока для сертификатов */
+  setPlayerName: (name: string) => void;
+  /**
+   * Зачесть сессию «Повторения дня»: +25 XP и stage+1 (до 2)
+   * для всех затронутых уроков.
+   */
+  completeReview: (lessonIds: string[]) => void;
   resetProgress: () => void;
 }
 
@@ -294,6 +321,30 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
 
   setPlacementResult: (result) => set({ placementResult: { ...result } }),
 
+  setPlayerName: (name) => {
+    const trimmed = name.trim();
+    set({ playerName: trimmed.length > 0 ? trimmed : null });
+  },
+
+  completeReview: (lessonIds) => {
+    if (lessonIds.length === 0) return;
+    // Повторение — тоже активность за день
+    get().touchStreak();
+    const maxStage = REVIEW_INTERVALS_DAYS.length - 1;
+    set((s) => {
+      const now = new Date().toISOString();
+      const reviewLog = { ...s.reviewLog };
+      for (const id of lessonIds) {
+        const prevStage = reviewLog[id]?.stage ?? 0;
+        reviewLog[id] = {
+          lastReviewedAt: now,
+          stage: Math.min(prevStage + 1, maxStage),
+        };
+      }
+      return { reviewLog, xp: s.xp + REVIEW_XP };
+    });
+  },
+
   resetProgress: () =>
     set({
       ...DEFAULT_PROGRESS,
@@ -302,6 +353,8 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       cards: [],
       passedWorlds: [],
       placementResult: null,
+      playerName: null,
+      reviewLog: {},
     }),
 }));
 

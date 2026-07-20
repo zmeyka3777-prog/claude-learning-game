@@ -2,9 +2,9 @@
  * Реальная миссия: инструкция (markdown) + чек-лист самопроверки.
  * Кнопка «Выполнил» активна, когда отмечены все пункты; даёт бонус XP.
  */
-import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Check, Compass, Zap } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { Check, ChevronDown, Compass, Copy, Zap } from 'lucide-react';
 import type { RealMissionTask as RealMissionTaskType } from '../../engine/types';
 import { renderMarkdown } from '../../lib/markdown';
 import { ConfettiBurst } from '../gamification/ConfettiBurst';
@@ -14,9 +14,43 @@ interface RealMissionTaskProps {
   onSolved: (mistakes: number) => void;
 }
 
+/** Копирование в буфер: navigator.clipboard с fallback на скрытый textarea */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // переходим к fallback
+  }
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
   const [checked, setChecked] = useState<boolean[]>(() => task.checklist.map(() => false));
   const [solved, setSolved] = useState(false);
+  const [mentorOpen, setMentorOpen] = useState(false);
+  const [copiedToast, setCopiedToast] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+    };
+  }, []);
 
   const allChecked = checked.every(Boolean);
 
@@ -29,6 +63,23 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
     if (!allChecked || solved) return;
     setSolved(true);
     onSolved(0);
+  };
+
+  const copyForMentor = async () => {
+    const text = [
+      task.instruction,
+      '',
+      'Чек-лист:',
+      ...task.checklist.map((item) => `- ${item}`),
+      '',
+      'Проверь миссию из Академии Claude по этому чек-листу',
+    ].join('\n');
+    const ok = await copyToClipboard(text);
+    if (ok) {
+      setCopiedToast(true);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
+      toastTimer.current = setTimeout(() => setCopiedToast(false), 2000);
+    }
   };
 
   return (
@@ -87,6 +138,70 @@ export function RealMissionTask({ task, onSolved }: RealMissionTaskProps) {
             </span>
           </button>
         ))}
+      </div>
+
+      {/* Подсказка про скилл «Наставник Академии» */}
+      <div
+        className="rounded-2xl border"
+        style={{ borderColor: 'var(--border-glass)', background: 'var(--bg-card)' }}
+      >
+        <button
+          type="button"
+          onClick={() => setMentorOpen((v) => !v)}
+          aria-expanded={mentorOpen}
+          className="flex w-full items-center justify-between gap-3 p-3.5 text-left text-sm"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          <span>🧑‍🚀 Хочешь настоящую проверку?</span>
+          <ChevronDown
+            size={16}
+            className="shrink-0 transition-transform"
+            style={{
+              color: 'var(--text-muted)',
+              transform: mentorOpen ? 'rotate(180deg)' : 'none',
+            }}
+          />
+        </button>
+        {mentorOpen && (
+          <div className="space-y-3 px-3.5 pb-3.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <p>
+              Установи скилл «Наставник Академии» (раздел Библиотека) — и настоящий Claude проверит
+              твою миссию по этому чек-листу.
+            </p>
+            <div className="relative inline-block">
+              <button
+                type="button"
+                onClick={copyForMentor}
+                className="flex items-center gap-2 rounded-xl border px-4 py-2 text-sm transition-colors"
+                style={{
+                  borderColor: 'var(--border-glass)',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                <Copy size={14} style={{ color: 'var(--accent-cyan)' }} />
+                Скопировать миссию для наставника
+              </button>
+              <AnimatePresence>
+                {copiedToast && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg border px-3 py-1 text-xs font-semibold"
+                    style={{
+                      borderColor: 'rgba(52, 211, 153, 0.45)',
+                      background: 'rgba(52, 211, 153, 0.12)',
+                      color: 'var(--success)',
+                    }}
+                  >
+                    Скопировано
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
 
       {!solved ? (

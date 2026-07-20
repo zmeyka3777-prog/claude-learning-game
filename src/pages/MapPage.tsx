@@ -3,16 +3,152 @@
  * миры 2–8 — карточки «Скоро» с замком.
  * Миры выбранного трека отмечены бейджем «Рекомендовано».
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, Compass, Lock } from 'lucide-react';
-import { WORLDS } from '../engine/content';
+import { ArrowRight, ChevronDown, Compass, Lock } from 'lucide-react';
+import { CHANGELOG, WORLDS } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
+import { formatDueLessons, getDueLessonIds } from '../engine/review';
 import { WorldMap, RecommendedBadge } from '../components/map/WorldMap';
 import { getAccentColor, getIcon } from '../lib/icons';
 import { getTrackInfo, isWorldRecommended } from '../lib/tracks';
 import type { World } from '../engine/types';
+
+/** Стеклянный баннер «Повторение дня» — только когда есть due-уроки */
+function ReviewBanner() {
+  const reduced = useReducedMotion();
+  const completedLessons = useProgressStore((s) => s.completedLessons);
+  const reviewLog = useProgressStore((s) => s.reviewLog);
+
+  const dueCount = useMemo(
+    () => getDueLessonIds(completedLessons, reviewLog).length,
+    [completedLessons, reviewLog],
+  );
+
+  if (dueCount === 0) return null;
+
+  return (
+    <motion.div
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="mb-6"
+    >
+      <Link
+        to="/review"
+        className="glass-card glass-card-hover flex items-center gap-4 p-5"
+        style={{ border: '1px solid rgba(236, 72, 153, 0.35)' }}
+      >
+        <span
+          className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-2xl"
+          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glass)' }}
+          aria-hidden="true"
+        >
+          🔁
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="font-display text-base font-semibold">
+            <span className="gradient-text">Повторение дня</span> — {formatDueLessons(dueCount)}
+          </h3>
+          <p className="truncate text-sm" style={{ color: 'var(--text-secondary)' }}>
+            Короткая сессия закрепит пройденное. +25 XP за повторение.
+          </p>
+        </div>
+        <ArrowRight size={18} className="shrink-0" style={{ color: 'var(--accent-pink)' }} />
+      </Link>
+    </motion.div>
+  );
+}
+
+/** Формат даты записи ленты: «20 июля 2026» */
+function formatChangelogDate(iso: string): string {
+  const time = Date.parse(`${iso}T00:00:00`);
+  if (Number.isNaN(time)) return iso;
+  try {
+    return new Date(time).toLocaleDateString('ru-RU', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  } catch {
+    return iso;
+  }
+}
+
+/** Блок «Что нового»: последние 3 записи, summary разворачивается кликом */
+function ChangelogBlock() {
+  const reduced = useReducedMotion();
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const entries = CHANGELOG.slice(0, 3);
+
+  if (entries.length === 0) return null;
+
+  return (
+    <motion.section
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.4 }}
+      className="glass-card p-5"
+      aria-label="Что нового"
+    >
+      <h2 className="mb-3 font-display text-base font-semibold">
+        ✨ Что <span className="gradient-text">нового</span>
+      </h2>
+      <div className="space-y-2">
+        {entries.map((entry) => {
+          const key = `${entry.date}-${entry.title}`;
+          const open = expanded === key;
+          return (
+            <div
+              key={key}
+              className="rounded-2xl border"
+              style={{ borderColor: 'var(--border-glass)', background: 'rgba(255,255,255,0.03)' }}
+            >
+              <button
+                type="button"
+                onClick={() => setExpanded(open ? null : key)}
+                aria-expanded={open}
+                className="flex w-full items-center gap-3 p-3.5 text-left"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: 'var(--accent-cyan)' }}>
+                    {formatChangelogDate(entry.date)}
+                  </div>
+                  <div className="truncate text-sm font-semibold">{entry.title}</div>
+                </div>
+                <ChevronDown
+                  size={16}
+                  className="shrink-0 transition-transform"
+                  style={{
+                    color: 'var(--text-muted)',
+                    transform: open ? 'rotate(180deg)' : 'none',
+                  }}
+                />
+              </button>
+              <AnimatePresence initial={false}>
+                {open && (
+                  <motion.div
+                    initial={reduced ? false : { height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={reduced ? undefined : { height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-3.5 pb-3.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                      {entry.summary}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </motion.section>
+  );
+}
 
 /** Приветственный тост после выбора трека в онбординге */
 function WelcomeToast() {
@@ -157,6 +293,9 @@ export default function MapPage() {
         </p>
       </motion.div>
 
+      {/* Баннер «Повторение дня» — над списком миров */}
+      <ReviewBanner />
+
       <div className="space-y-6">
         {activeWorlds.map((world) => (
           <WorldMap
@@ -216,6 +355,9 @@ export default function MapPage() {
             <ArrowRight size={18} className="shrink-0" style={{ color: 'var(--accent-cyan)' }} />
           </Link>
         </motion.div>
+
+        {/* Лента «Что нового» — под баннером библиотеки */}
+        <ChangelogBlock />
       </div>
     </div>
   );

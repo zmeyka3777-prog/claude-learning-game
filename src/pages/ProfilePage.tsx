@@ -4,7 +4,7 @@
  */
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
-import { Award, BookOpenCheck, ClipboardCheck, Compass, Layers, Zap } from 'lucide-react';
+import { Award, BookOpenCheck, ClipboardCheck, Compass, Layers, ScrollText, Zap } from 'lucide-react';
 import { BADGES, CARDS } from '../engine/content';
 import { getLevel, useProgressStore, XP_PER_LEVEL } from '../engine/progressStore';
 import { getTrackInfo } from '../lib/tracks';
@@ -116,6 +116,20 @@ export default function ProfilePage() {
             </div>
           </div>
           <div className="flex shrink-0 flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/certificates')}
+              className="flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all hover:scale-[1.03] active:scale-[0.98]"
+              style={{
+                background: 'var(--bg-card)',
+                border: '1px solid rgba(245, 158, 11, 0.45)',
+                color: 'var(--accent-amber)',
+              }}
+              title="Именные сертификаты за пройденные сектора"
+            >
+              <ScrollText size={16} />
+              Сертификаты
+            </button>
             <button
               type="button"
               onClick={() => navigate('/placement')}

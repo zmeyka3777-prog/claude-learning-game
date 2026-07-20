@@ -3,7 +3,8 @@
  * награды (карточка, бейджи), кнопка «Дальше».
  */
 import { motion } from 'motion/react';
-import { Star, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Award, Star, Zap } from 'lucide-react';
 import type { LessonCompletionResult } from '../../engine/progressStore';
 import type { Lesson } from '../../engine/types';
 import { getBadge, getCard } from '../../engine/content';
@@ -26,6 +27,7 @@ export function LessonCompleteOverlay({
   bonusXp,
   onContinue,
 }: LessonCompleteOverlayProps) {
+  const navigate = useNavigate();
   const card = result.newCardId ? getCard(result.newCardId) : undefined;
   const badges = result.newBadgeIds
     .map((id) => getBadge(id))
@@ -130,10 +132,26 @@ export function LessonCompleteOverlay({
           </div>
         )}
 
+        {/* Финальный экзамен пройден — можно получить сертификат */}
+        {lesson.id === 'eco-exam' && (
+          <motion.button
+            type="button"
+            onClick={() => navigate('/certificates')}
+            className="btn-glass mt-7 flex w-full items-center justify-center gap-2 px-6 py-3.5 text-base"
+            style={{ border: '1px solid rgba(245, 158, 11, 0.45)', color: 'var(--accent-amber)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.85 }}
+          >
+            <Award size={18} />
+            Получить сертификат
+          </motion.button>
+        )}
+
         <motion.button
           type="button"
           onClick={onContinue}
-          className="btn-gradient mt-7 w-full px-6 py-3.5 text-base"
+          className={`btn-gradient w-full px-6 py-3.5 text-base ${lesson.id === 'eco-exam' ? 'mt-3' : 'mt-7'}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}

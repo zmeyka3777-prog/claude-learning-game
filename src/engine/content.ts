@@ -8,6 +8,8 @@ import type {
   Badge,
   BadgesFile,
   CardsFile,
+  ChangelogEntry,
+  ChangelogFile,
   FunctionCard,
   Lesson,
   LibraryItem,
@@ -160,6 +162,30 @@ export function getCard(cardId: string): FunctionCard | undefined {
 export function getBadge(badgeId: string): Badge | undefined {
   return BADGES.find((b) => b.id === badgeId);
 }
+
+// ---------------------------------------------------------------------------
+// Лента «Что нового» (content/changelog.json)
+// ---------------------------------------------------------------------------
+
+function isChangelogEntry(value: unknown): value is ChangelogEntry {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v.date === 'string' &&
+    typeof v.title === 'string' &&
+    typeof v.summary === 'string'
+  );
+}
+
+function loadChangelog(): ChangelogEntry[] {
+  const raw = readJson('/content/changelog.json') as ChangelogFile | undefined;
+  if (!raw || !Array.isArray(raw.entries)) return [];
+  // Битые записи не роняют приложение; свежие — первыми (даты YYYY-MM-DD)
+  return raw.entries.filter(isChangelogEntry).sort((a, b) => b.date.localeCompare(a.date));
+}
+
+/** Записи ленты «Что нового», свежие первыми */
+export const CHANGELOG: ChangelogEntry[] = loadChangelog();
 
 // ---------------------------------------------------------------------------
 // Библиотека расширений (content/library/*.json)

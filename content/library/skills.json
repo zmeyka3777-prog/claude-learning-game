@@ -1,6 +1,17 @@
 {
   "items": [
     {
+      "id": "skill-academy-mentor",
+      "name": "Наставник Академии",
+      "kind": "skill",
+      "source": "community",
+      "category": "Мета",
+      "description": "Скилл-компаньон игры: превращает настоящий Claude в наставника «Академии Claude». Проверяет реальные миссии по чек-листу, даёт задания сложнее и объясняет темы заново с квизом.",
+      "useFor": "Каждому исследователю Академии. Скопируй миссию кнопкой «Скопировать миссию для наставника», вставь в чат с Claude — и получи честный вердикт: ✅ МИССИЯ ЗАЧТЕНА или 🔄 ДОРАБОТАЙ.",
+      "install": "См. companion/README.md в репозитории игры: вставь SKILL.md в свой скилл на claude.ai или в .claude/skills/ проекта",
+      "link": "https://github.com/zmeyka3777-prog/claude-learning-game/tree/main/companion"
+    },
+    {
       "id": "skill-docx",
       "name": "docx",
       "kind": "skill",

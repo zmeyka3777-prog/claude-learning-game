@@ -220,6 +220,14 @@ export interface StreakState {
   lastActiveDate: string;
 }
 
+/** Запись журнала повторений (интервальное повторение) */
+export interface ReviewEntry {
+  /** ISO-время последнего повторения */
+  lastReviewedAt: string;
+  /** Этап повторения: 0 → 1 → 2 (интервалы 3/7/30 дней) */
+  stage: number;
+}
+
 export interface Progress {
   xp: number;
   completedLessons: Record<string, CompletedLesson>;
@@ -232,6 +240,10 @@ export interface Progress {
   passedWorlds: string[];
   /** Результат входного теста: worldId → баллы (0–2); null — тест не пройден */
   placementResult: Record<string, number> | null;
+  /** Имя игрока для сертификатов; null — ещё не введено */
+  playerName: string | null;
+  /** Журнал повторений: lessonId → этап и время последнего повторения */
+  reviewLog: Record<string, ReviewEntry>;
 }
 
 // ---------------------------------------------------------------------------
@@ -282,6 +294,21 @@ export interface Badge {
 
 export interface BadgesFile {
   badges: Badge[];
+}
+
+// ---------------------------------------------------------------------------
+// Лента «Что нового» (content/changelog.json)
+// ---------------------------------------------------------------------------
+
+export interface ChangelogEntry {
+  /** Дата записи, YYYY-MM-DD */
+  date: string;
+  title: string;
+  summary: string;
+}
+
+export interface ChangelogFile {
+  entries: ChangelogEntry[];
 }
 
 // ---------------------------------------------------------------------------

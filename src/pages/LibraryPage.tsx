@@ -16,6 +16,7 @@ import {
   Users,
 } from 'lucide-react';
 import { LIBRARY_ITEMS } from '../engine/content';
+import { track } from '../lib/analytics';
 import type { LibraryItem, LibraryKind, LibrarySource } from '../engine/types';
 
 // --- Справочники оформления --------------------------------------------------
@@ -245,7 +246,8 @@ export default function LibraryPage() {
     });
   }, [tab, query, category]);
 
-  const showCopyToast = () => {
+  const showCopyToast = (item: LibraryItem) => {
+    track('library_install_copied', { itemId: item.id });
     if (toastTimer !== null) window.clearTimeout(toastTimer);
     setToastVisible(true);
     setToastTimer(window.setTimeout(() => setToastVisible(false), 2200));

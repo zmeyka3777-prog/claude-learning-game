@@ -6,7 +6,7 @@
  * сразу задания; больше одной ошибки — испытание провалено. Успех зачитывает
  * весь мир (XP босса + бейдж мира), карточки уроков при этом не выдаются.
  */
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import {
@@ -33,6 +33,7 @@ import { LessonCompleteOverlay } from '../components/gamification/LessonComplete
 import { BadgeUnlock } from '../components/gamification/BadgeUnlock';
 import { ConfettiBurst } from '../components/gamification/ConfettiBurst';
 import { showXpToast } from '../components/gamification/XPToast';
+import { track } from '../lib/analytics';
 
 /** Сегментный прогресс-бар урока */
 function SegmentedProgress({ total, current }: { total: number; current: number }) {
@@ -216,6 +217,11 @@ export default function LessonPage() {
   const [challengeResult, setChallengeResult] = useState<ChallengeResult | null>(null);
   const [challengeFailed, setChallengeFailed] = useState(false);
 
+  // Аналитика: урок открыт
+  useEffect(() => {
+    if (lesson) track('lesson_started', { lessonId: lesson.id });
+  }, [lesson]);
+
   const totalSteps = lesson ? 1 + lesson.tasks.length : 1;
   const currentTask = lesson && step >= 1 ? lesson.tasks[step - 1] : undefined;
   const canContinue = step === 0 || Boolean(solvedSteps[step]);
@@ -230,6 +236,7 @@ export default function LessonPage() {
       if (isChallenge && nextMistakes > CHALLENGE_MAX_MISTAKES) {
         // Вторая ошибка — испытание провалено
         setChallengeFailed(true);
+        if (lesson) track('challenge_failed', { worldId: lesson.world });
         return;
       }
       if (!isChallenge && currentTask?.type === 'real-mission') {
@@ -238,7 +245,7 @@ export default function LessonPage() {
         showXpToast(currentTask.xpBonus);
       }
     },
-    [step, currentTask, addXp, isChallenge, totalMistakes],
+    [step, currentTask, addXp, isChallenge, totalMistakes, lesson],
   );
 
   const goNext = () => {
@@ -250,11 +257,13 @@ export default function LessonPage() {
       // Успех испытания: мир зачтён, XP босса, бейдж мира
       const res = passWorldChallenge(lesson);
       if (res.xpGained > 0) showXpToast(res.xpGained);
+      track('challenge_passed', { worldId: lesson.world });
       setChallengeResult(res);
     } else {
       // Завершение урока
       const res = completeLesson(lesson, totalMistakes);
       if (res.xpGained > 0) showXpToast(res.xpGained);
+      track('lesson_completed', { lessonId: lesson.id, mistakes: totalMistakes });
       setResult(res);
     }
   };
@@ -418,6 +427,33 @@ export default function LessonPage() {
             Проверено: {lesson.verifiedAt}
           </p>
         </div>
+      )}
+
+      {/* Обратная связь: нашёл ошибку в уроке */}
+      {!isChallenge && (
+        <p className="mt-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+          <a
+            href={`https://github.com/zmeyka3777-prog/claude-learning-game/issues/new?title=${encodeURIComponent(
+              `Ошибка в уроке ${lesson.id}`,
+            )}&body=${encodeURIComponent('Что не так:\n\n')}`}
+            target="_blank"
+            rel="noreferrer"
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            ⚑ Нашёл ошибку в уроке?
+          </a>{' '}
+          <span aria-hidden="true">·</span>{' '}
+          <a
+            href={`mailto:zmeyka3777@gmail.com?subject=${encodeURIComponent(
+              `Ошибка в уроке ${lesson.id}`,
+            )}`}
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            или напиши на почту
+          </a>
+        </p>
       )}
 
       {/* Оверлей завершения */}

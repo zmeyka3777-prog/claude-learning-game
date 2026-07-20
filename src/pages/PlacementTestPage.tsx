@@ -11,6 +11,7 @@ import { ArrowLeft, Compass, Eye, Map as MapIcon, Zap } from 'lucide-react';
 import { getBossLesson, PLACEMENT_QUESTIONS, WORLDS } from '../engine/content';
 import { useProgressStore } from '../engine/progressStore';
 import { getAccentColor, getIcon } from '../lib/icons';
+import { track } from '../lib/analytics';
 import type { World } from '../engine/types';
 
 /** Тонкий прогресс-бар теста */
@@ -226,6 +227,9 @@ export default function PlacementTestPage() {
         if (nextAnswers[q.id] === q.correct) finalScores[q.worldId] += 1;
       }
       setPlacementResult(finalScores);
+      // Аналитика: суммарный балл теста (без персональных данных)
+      const totalScore = Object.values(finalScores).reduce((sum, n) => sum + n, 0);
+      track('placement_completed', { score: totalScore });
       setFinished(true);
     }
     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });

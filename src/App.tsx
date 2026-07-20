@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Library, Sparkles, User, Zap } from 'lucide-react';
 import { useProgressStore } from './engine/progressStore';
+import { trackPageview } from './lib/analytics';
 import { StreakFlame } from './components/gamification/StreakFlame';
 import { XPToastHost } from './components/gamification/XPToast';
 import { StarLoader } from './components/common/StarLoader';
@@ -13,6 +14,8 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 const PlacementTestPage = lazy(() => import('./pages/PlacementTestPage'));
 const LibraryPage = lazy(() => import('./pages/LibraryPage'));
+const CertificatesPage = lazy(() => import('./pages/CertificatesPage'));
+const ReviewPage = lazy(() => import('./pages/ReviewPage'));
 
 /** Верхняя панель: лого, XP, стрик, профиль */
 function TopBar() {
@@ -98,6 +101,11 @@ export default function App() {
   const location = useLocation();
   const isOnboarding = location.pathname === '/onboarding';
 
+  // SPA-аналитика: ручной $pageview на каждую смену маршрута (fail-silent)
+  useEffect(() => {
+    trackPageview(location.pathname);
+  }, [location.pathname]);
+
   // Первый вход: пока трек не выбран — только онбординг
   if (track === null && !isOnboarding) {
     return <Navigate to="/onboarding" replace />;
@@ -129,6 +137,8 @@ export default function App() {
                   <Route path="/lesson/:lessonId" element={<LessonPage />} />
                   <Route path="/placement" element={<PlacementTestPage />} />
                   <Route path="/library" element={<LibraryPage />} />
+                  <Route path="/certificates" element={<CertificatesPage />} />
+                  <Route path="/review" element={<ReviewPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
                   <Route path="*" element={<MapPage />} />
                 </Routes>
