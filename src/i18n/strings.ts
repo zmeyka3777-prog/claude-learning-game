@@ -317,7 +317,9 @@ const ru: Record<string, string> = {
   'footer.channel': 'Telegram-канал «Вайбкодинг»',
   'footer.contact': 'Написать в личку',
   'footer.tagline': 'Нужно создать сайт, бота или приложение? Напишите — помогу.',
-  'footer.disclaimer': 'Неофициальный образовательный проект. Не аффилирован с Anthropic.',
+  'footer.disclaimer':
+    'Неофициальный образовательный проект. Не аффилирован с Anthropic, PBC и не одобрен ею. Claude и Anthropic — товарные знаки их правообладателей. Контент — самостоятельный образовательный пересказ со ссылками на первоисточники.',
+  'footer.legal': 'Правовая информация',
 };
 
 const en: Record<string, string> = {
@@ -627,7 +629,9 @@ const en: Record<string, string> = {
   'footer.channel': 'Telegram channel “Vibecoding”',
   'footer.contact': 'Message me directly',
   'footer.tagline': 'Need a website, bot, or app built? Message me — I can help.',
-  'footer.disclaimer': 'An unofficial educational project. Not affiliated with Anthropic.',
+  'footer.disclaimer':
+    'An unofficial educational project. Not affiliated with, or endorsed by, Anthropic, PBC. Claude and Anthropic are trademarks of their respective owners. The content is an independent educational retelling with links to primary sources.',
+  'footer.legal': 'Legal',
 };
 
 export const STRINGS: Record<LangCode, Record<string, string>> = { ru, en };
