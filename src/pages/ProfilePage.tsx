@@ -2,9 +2,21 @@
  * Профиль исследователя: XP, уровень, стрик, бейджи,
  * альбом карточек функций с редкостями.
  */
+import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useReducedMotion } from 'motion/react';
-import { Award, BookOpenCheck, ClipboardCheck, Compass, Layers, ScrollText, Zap } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import {
+  Award,
+  BookOpenCheck,
+  ClipboardCheck,
+  Compass,
+  Download,
+  HardDrive,
+  Layers,
+  ScrollText,
+  Upload,
+  Zap,
+} from 'lucide-react';
 import { getBadges, getCards } from '../engine/content';
 import { getLevel, useProgressStore, XP_PER_LEVEL } from '../engine/progressStore';
 import { getTrackInfo } from '../lib/tracks';
@@ -24,6 +36,46 @@ export default function ProfilePage() {
   const earnedBadges = useProgressStore((s) => s.badges);
   const earnedCards = useProgressStore((s) => s.cards);
   const completedLessons = useProgressStore((s) => s.completedLessons);
+  const exportProgress = useProgressStore((s) => s.exportProgress);
+  const importProgress = useProgressStore((s) => s.importProgress);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [toast, setToast] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToast(msg);
+    window.setTimeout(() => setToast(null), 2500);
+  };
+
+  const handleDownloadBackup = () => {
+    try {
+      const blob = new Blob([exportProgress()], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'ai-expedition-progress.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast(t('backup.downloaded'));
+    } catch {
+      showToast(t('backup.error'));
+    }
+  };
+
+  const handleRestoreFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // сброс, чтобы повторный выбор того же файла сработал
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const ok = typeof reader.result === 'string' && importProgress(reader.result);
+      showToast(ok ? t('backup.restored') : t('backup.error'));
+    };
+    reader.onerror = () => showToast(t('backup.error'));
+    reader.readAsText(file);
+  };
 
   const badges = getBadges(lang);
   const cards = getCards(lang);
@@ -166,6 +218,48 @@ export default function ProfilePage() {
         </div>
       </motion.section>
 
+      {/* Резервная копия прогресса */}
+      <motion.section className="glass-card p-6" {...fadeUp(0.09)}>
+        <h2 className="mb-2 flex items-center gap-2 font-display text-lg font-semibold">
+          <HardDrive size={20} style={{ color: 'var(--accent-cyan)' }} />
+          {t('backup.title')}
+        </h2>
+        <p className="mb-4 text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          {t('backup.body')}
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={handleDownloadBackup}
+            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-transform hover:scale-[1.03] active:scale-[0.98]"
+            style={{ background: 'var(--gradient-brand)' }}
+          >
+            <Download size={16} />
+            {t('backup.download')}
+          </button>
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors"
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-glass)',
+              color: 'var(--text-primary)',
+            }}
+          >
+            <Upload size={16} style={{ color: 'var(--accent-cyan)' }} />
+            {t('backup.restore')}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={handleRestoreFile}
+            className="hidden"
+          />
+        </div>
+      </motion.section>
+
       {/* Бейджи */}
       <motion.section className="glass-card p-6" {...fadeUp(0.1)}>
         <h2 className="mb-4 flex items-center gap-2 font-display text-lg font-semibold">
@@ -216,6 +310,29 @@ export default function ProfilePage() {
           ))}
         </div>
       </motion.section>
+
+      {/* Тост обратной связи (копия/восстановление) */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key={toast}
+            initial={reduced ? false : { opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit max-w-[90%] rounded-full px-5 py-3 text-sm font-semibold shadow-lg"
+            style={{
+              background: 'var(--bg-card-hover)',
+              border: '1px solid var(--border-glass)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              color: 'var(--text-primary)',
+            }}
+            role="status"
+          >
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

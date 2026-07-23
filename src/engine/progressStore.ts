@@ -80,30 +80,34 @@ function parseReviewLog(value: unknown): Record<string, ReviewEntry> {
   return result;
 }
 
+/** Привести произвольный объект к валидному Progress (общая логика для load и import) */
+function normalizeProgress(parsed: Partial<Progress>): Progress {
+  return {
+    xp: typeof parsed.xp === 'number' ? parsed.xp : 0,
+    completedLessons: parsed.completedLessons ?? {},
+    streak: {
+      current: parsed.streak?.current ?? 0,
+      best: parsed.streak?.best ?? 0,
+      lastActiveDate: parsed.streak?.lastActiveDate ?? '',
+    },
+    badges: Array.isArray(parsed.badges) ? parsed.badges : [],
+    cards: Array.isArray(parsed.cards) ? parsed.cards : [],
+    track: parseTrack(parsed.track),
+    passedWorlds: Array.isArray(parsed.passedWorlds)
+      ? parsed.passedWorlds.filter((w): w is string => typeof w === 'string')
+      : [],
+    placementResult: parsePlacementResult(parsed.placementResult),
+    playerName: typeof parsed.playerName === 'string' ? parsed.playerName : null,
+    reviewLog: parseReviewLog(parsed.reviewLog),
+    lang: parseLang(parsed.lang),
+  };
+}
+
 function loadProgress(): Progress {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_PROGRESS };
-    const parsed = JSON.parse(raw) as Partial<Progress>;
-    return {
-      xp: typeof parsed.xp === 'number' ? parsed.xp : 0,
-      completedLessons: parsed.completedLessons ?? {},
-      streak: {
-        current: parsed.streak?.current ?? 0,
-        best: parsed.streak?.best ?? 0,
-        lastActiveDate: parsed.streak?.lastActiveDate ?? '',
-      },
-      badges: Array.isArray(parsed.badges) ? parsed.badges : [],
-      cards: Array.isArray(parsed.cards) ? parsed.cards : [],
-      track: parseTrack(parsed.track),
-      passedWorlds: Array.isArray(parsed.passedWorlds)
-        ? parsed.passedWorlds.filter((w): w is string => typeof w === 'string')
-        : [],
-      placementResult: parsePlacementResult(parsed.placementResult),
-      playerName: typeof parsed.playerName === 'string' ? parsed.playerName : null,
-      reviewLog: parseReviewLog(parsed.reviewLog),
-      lang: parseLang(parsed.lang),
-    };
+    return normalizeProgress(JSON.parse(raw) as Partial<Progress>);
   } catch {
     // Битые данные не должны ронять приложение
     return { ...DEFAULT_PROGRESS };
@@ -174,6 +178,10 @@ interface ProgressStore extends Progress {
    * для всех затронутых уроков.
    */
   completeReview: (lessonIds: string[]) => void;
+  /** Экспорт прогресса в JSON-строку (для резервной копии) */
+  exportProgress: () => string;
+  /** Импорт прогресса из JSON-строки резервной копии; true при успехе */
+  importProgress: (raw: string) => boolean;
   resetProgress: () => void;
 }
 
@@ -356,6 +364,36 @@ export const useProgressStore = create<ProgressStore>((set, get) => ({
       }
       return { reviewLog, xp: s.xp + REVIEW_XP };
     });
+  },
+
+  exportProgress: () => {
+    const s = get();
+    const data: Progress = {
+      xp: s.xp,
+      completedLessons: s.completedLessons,
+      streak: s.streak,
+      badges: s.badges,
+      cards: s.cards,
+      track: s.track,
+      passedWorlds: s.passedWorlds,
+      placementResult: s.placementResult,
+      playerName: s.playerName,
+      reviewLog: s.reviewLog,
+      lang: s.lang,
+    };
+    return JSON.stringify(data, null, 2);
+  },
+
+  importProgress: (raw) => {
+    try {
+      const parsed = JSON.parse(raw) as Partial<Progress>;
+      // Минимальная проверка, что это похоже на нашу копию
+      if (typeof parsed !== 'object' || parsed === null) return false;
+      set({ ...normalizeProgress(parsed) });
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   resetProgress: () =>

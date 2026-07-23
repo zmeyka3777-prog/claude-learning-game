@@ -222,6 +222,16 @@ const ru: Record<string, string> = {
   'profile.album': 'Альбом карточек',
   'profile.album.desc': 'Каждая карточка — освоенная функция Claude. Собери весь альбом!',
 
+  // --- Резервная копия прогресса ---
+  'backup.title': 'Прогресс и резервная копия',
+  'backup.body':
+    'Прогресс хранится в этом браузере на этом устройстве. Не заходи в режиме инкогнито — там он стирается. Чтобы не потерять прогресс или перенести его на другое устройство, сохрани резервную копию.',
+  'backup.download': 'Скачать копию',
+  'backup.restore': 'Восстановить из копии',
+  'backup.downloaded': 'Копия сохранена',
+  'backup.restored': 'Прогресс восстановлен',
+  'backup.error': 'Не удалось прочитать файл копии',
+
   // --- Входной тест ---
   'placement.title.pre': 'Входной',
   'placement.title.accent': 'тест',
@@ -538,6 +548,16 @@ const en: Record<string, string> = {
   'profile.badges': 'Badges',
   'profile.album': 'Card album',
   'profile.album.desc': 'Each card is a Claude feature you’ve mastered. Collect them all!',
+
+  // --- Progress backup ---
+  'backup.title': 'Progress & backup',
+  'backup.body':
+    'Your progress is stored in this browser on this device. Don’t use private/incognito mode — it wipes progress. To avoid losing progress or to move it to another device, save a backup.',
+  'backup.download': 'Download backup',
+  'backup.restore': 'Restore from backup',
+  'backup.downloaded': 'Backup saved',
+  'backup.restored': 'Progress restored',
+  'backup.error': 'Could not read the backup file',
 
   // --- Placement test ---
   'placement.title.pre': 'Placement',
