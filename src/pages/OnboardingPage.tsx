@@ -9,7 +9,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { ArrowRight, ClipboardCheck, Languages, Rocket, Sparkles } from 'lucide-react';
+import { ArrowRight, ClipboardCheck, Languages, Rocket, Compass } from 'lucide-react';
 import { useProgressStore } from '../engine/progressStore';
 import { TRACKS, type TrackInfo } from '../lib/tracks';
 import { LANGUAGES } from '../i18n/languages';
@@ -140,22 +140,22 @@ function WelcomeScreen({ onStart }: { onStart: () => void }) {
           boxShadow: '0 0 60px rgba(139, 92, 246, 0.5)',
         }}
       >
-        <Sparkles size={38} className="text-white" />
+        <Compass size={38} className="text-white" />
       </motion.span>
 
       <motion.h1
         variants={itemVariants}
         className="font-display text-4xl leading-tight font-bold sm:text-6xl"
       >
-        {t('brand.academy')} <span className="gradient-text">Claude</span>
+        {t('brand.pre')} <span className="gradient-text">{t('brand.accent')}</span>
       </motion.h1>
 
       <motion.p
         variants={itemVariants}
-        className="mx-auto mt-4 max-w-md text-base sm:text-lg"
+        className="mx-auto mt-4 max-w-xl text-base sm:text-lg"
         style={{ color: 'var(--text-secondary)' }}
       >
-        {t('onb.welcome.subtitle')}
+        {t('brand.subtitle')}
       </motion.p>
 
       <motion.div variants={itemVariants} className="mt-10">

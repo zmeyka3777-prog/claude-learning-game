@@ -1,5 +1,5 @@
 /**
- * Словарь интерфейсных строк «Академии Claude».
+ * Словарь интерфейсных строк «AI Экспедиции».
  * Ключи — семантические (напр. 'map.title.pre', 'lesson.continue').
  * ВСЕ видимые строки интерфейса живут здесь; в компонентах — только t('...').
  * Плейсхолдеры вида {name} подставляются через useT()/translate().
@@ -11,7 +11,11 @@ import type { LangCode } from '../engine/types';
 
 const ru: Record<string, string> = {
   // --- Бренд / топбар ---
-  'brand.academy': 'Академия',
+  'brand.academy': 'AI Экспедиция',
+  'brand.pre': 'AI',
+  'brand.accent': 'Экспедиция',
+  'brand.subtitle':
+    'Интерактивная обучающая игра по Claude: чат, Claude Code, скиллы, плагины, MCP и API — от новичка до профи',
   'topbar.toMap': 'На карту миров',
   'topbar.xp': 'Опыт',
   'topbar.library': 'Библиотека',
@@ -173,10 +177,10 @@ const ru: Record<string, string> = {
   'mission.checkYourself': 'Проверь себя:',
   'mission.mentor.toggle': '🧑‍🚀 Хочешь настоящую проверку?',
   'mission.mentor.body':
-    'Установи скилл «Наставник Академии» (раздел Библиотека) — и настоящий Claude проверит твою миссию по этому чек-листу.',
+    'Установи скилл «Наставник экспедиции» (раздел Библиотека) — и настоящий Claude проверит твою миссию по этому чек-листу.',
   'mission.mentor.copy': 'Скопировать миссию для наставника',
   'mission.copyBlock.checklist': 'Чек-лист:',
-  'mission.copyBlock.footer': 'Проверь миссию из Академии Claude по этому чек-листу',
+  'mission.copyBlock.footer': 'Проверь миссию из AI Экспедиции по этому чек-листу',
   'mission.done': 'Выполнил',
   'mission.done.title': 'Миссия выполнена! +{n} бонусного XP',
   'mission.done.body': 'Реальная практика — лучший способ закрепить навык. Так держать!',
@@ -289,10 +293,10 @@ const ru: Record<string, string> = {
   'certs.modal.needName': 'Введи имя, чтобы скачать сертификат.',
   'certs.modal.close': 'Закрыть',
   'certs.modal.dialogAria': 'Сертификат «{title}»',
-  'certs.share.title': 'Академия Claude — {title}',
+  'certs.share.title': 'AI Экспедиция — {title}',
 
   // --- Сертификат (canvas) ---
-  'cert.header': 'АКАДЕМИЯ CLAUDE',
+  'cert.header': 'AI ЭКСПЕДИЦИЯ',
   'cert.word': 'СЕРТИФИКАТ',
   'cert.confirms': 'Настоящим подтверждается, что',
   'cert.defaultName': 'Исследователь',
@@ -324,7 +328,11 @@ const ru: Record<string, string> = {
 
 const en: Record<string, string> = {
   // --- Brand / topbar ---
-  'brand.academy': 'Academy',
+  'brand.academy': 'AI Expedition',
+  'brand.pre': 'AI',
+  'brand.accent': 'Expedition',
+  'brand.subtitle':
+    'An interactive learning game for Claude: chat, Claude Code, skills, plugins, MCP and API — from beginner to pro',
   'topbar.toMap': 'To the world map',
   'topbar.xp': 'Experience',
   'topbar.library': 'Library',
@@ -486,10 +494,10 @@ const en: Record<string, string> = {
   'mission.checkYourself': 'Check yourself:',
   'mission.mentor.toggle': '🧑‍🚀 Want a real review?',
   'mission.mentor.body':
-    'Install the “Academy Mentor” skill (Library section) — and the real Claude will review your mission against this checklist.',
+    'Install the “Expedition Mentor” skill (Library section) — and the real Claude will review your mission against this checklist.',
   'mission.mentor.copy': 'Copy mission for the mentor',
   'mission.copyBlock.checklist': 'Checklist:',
-  'mission.copyBlock.footer': 'Review this Claude Academy mission against the checklist',
+  'mission.copyBlock.footer': 'Review this AI Expedition mission against the checklist',
   'mission.done': 'Done',
   'mission.done.title': 'Mission complete! +{n} bonus XP',
   'mission.done.body': 'Real practice is the best way to cement a skill. Keep it up!',
@@ -601,10 +609,10 @@ const en: Record<string, string> = {
   'certs.modal.needName': 'Enter a name to download the certificate.',
   'certs.modal.close': 'Close',
   'certs.modal.dialogAria': 'Certificate “{title}”',
-  'certs.share.title': 'Claude Academy — {title}',
+  'certs.share.title': 'AI Expedition — {title}',
 
   // --- Certificate (canvas) ---
-  'cert.header': 'CLAUDE ACADEMY',
+  'cert.header': 'AI EXPEDITION',
   'cert.word': 'CERTIFICATE',
   'cert.confirms': 'This certifies that',
   'cert.defaultName': 'Explorer',

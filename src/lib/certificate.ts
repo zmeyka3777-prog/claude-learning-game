@@ -171,7 +171,7 @@ export async function renderCertificate(
     if ('letterSpacing' in spacedCtx) spacedCtx.letterSpacing = value;
   };
 
-  // Шапка «АКАДЕМИЯ CLAUDE»
+  // Шапка «AI ЭКСПЕДИЦИЯ»
   setLetterSpacing('14px');
   ctx.font = displayFont(600, 38);
   ctx.fillStyle = '#A8B0D3';
@@ -262,7 +262,7 @@ export function downloadCertificate(canvas: HTMLCanvasElement, certId: string): 
     const url = canvas.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = url;
-    a.download = `academy-claude-${certId}.png`;
+    a.download = `ai-expedition-${certId}.png`;
     document.body.appendChild(a);
     a.click();
     a.remove();

@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Library, Sparkles, User, Zap } from 'lucide-react';
+import { Library, Compass, User, Zap } from 'lucide-react';
 import { useProgressStore } from './engine/progressStore';
 import { trackPageview } from './lib/analytics';
 import { StreakFlame } from './components/gamification/StreakFlame';
@@ -79,10 +79,10 @@ function TopBar() {
               className="grid h-9 w-9 shrink-0 place-items-center rounded-xl"
               style={{ background: 'var(--gradient-brand)' }}
             >
-              <Sparkles size={18} className="text-white" />
+              <Compass size={18} className="text-white" />
             </span>
             <span className="truncate font-display text-sm font-semibold sm:text-base">
-              {t('brand.academy')} <span className="gradient-text">Claude</span>
+              {t('brand.pre')} <span className="gradient-text">{t('brand.accent')}</span>
             </span>
           </Link>
 

@@ -6,7 +6,7 @@
       "kind": "skill",
       "source": "community",
       "category": "Meta",
-      "description": "The game's companion skill: turns the real Claude into a mentor for the \"Claude Academy.\" It checks your real missions against a checklist, gives you tougher assignments, and re-explains topics with a quiz.",
+      "description": "The game's companion skill: turns the real Claude into a mentor for \"AI Expedition.\" It checks your real missions against a checklist, gives you tougher assignments, and re-explains topics with a quiz.",
       "useFor": "Every Academy explorer. Copy a mission with the \"Copy mission for the mentor\" button, paste it into a chat with Claude — and get an honest verdict: ✅ MISSION PASSED or 🔄 NEEDS WORK.",
       "install": "See companion/README.md in the game's repo: paste SKILL.md into your skill on claude.ai or into your project's .claude/skills/",
       "link": "https://github.com/zmeyka3777-prog/claude-learning-game/tree/main/companion"
