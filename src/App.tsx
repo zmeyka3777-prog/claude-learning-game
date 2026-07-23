@@ -90,7 +90,7 @@ function TopBar() {
             <LanguageToggle />
 
             <span
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold"
+              className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold"
               style={{
                 background: 'rgba(245, 158, 11, 0.12)',
                 color: 'var(--accent-amber)',

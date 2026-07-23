@@ -120,7 +120,7 @@ export default function ProfilePage() {
               </p>
             </div>
           </div>
-          <div className="flex shrink-0 flex-wrap items-center gap-3">
+          <div className="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:shrink-0">
             <button
               type="button"
               onClick={() => navigate('/certificates')}
